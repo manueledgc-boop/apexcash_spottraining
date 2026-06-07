@@ -1,0 +1,835 @@
+# APEXCASH — TECHNICAL IMPLEMENTATION SPEC V1.2
+
+## Base de datos, APIs, contratos JSON, estadísticas y pruebas
+
+---
+
+# 1. Tablas obligatorias
+
+## 1.1 users
+
+Laravel base.
+
+Debe relacionarse con:
+
+```text
+training_bankroll
+cash_sessions
+hands
+stat_summaries
+```
+
+---
+
+## 1.2 user_bankrolls
+
+Campos:
+
+```text
+id
+user_id
+training_bankroll_units
+created_at
+updated_at
+```
+
+Reglas:
+
+```text
+Nunca dinero real
+Todo en unidades
+2 unidades = 1 BB
+```
+
+---
+
+## 1.3 cash_sessions
+
+Campos:
+
+```text
+id
+user_id
+difficulty
+buyin_units
+starting_bankroll_units
+ending_bankroll_units
+hero_start_stack_units
+hero_end_stack_units
+hands_count
+profit_units
+rake_units
+status
+started_at
+ended_at
+created_at
+updated_at
+```
+
+Estados:
+
+```text
+active
+finished
+hero_busted
+abandoned
+error_closed
+```
+
+---
+
+## 1.4 cash_table_players
+
+Campos:
+
+```text
+id
+cash_session_id
+seat_id
+name
+type
+is_hero
+bot_profile
+starting_stack_units
+current_stack_units
+hands_played
+status
+rejoin_after_hand
+created_at
+updated_at
+```
+
+Estados:
+
+```text
+active
+busted
+waiting_replacement
+replaced
+```
+
+---
+
+## 1.5 hands
+
+Campos:
+
+```text
+id
+cash_session_id
+hand_number
+dealer_seat
+small_blind_seat
+big_blind_seat
+street_final
+ended_by
+showdown
+board_json
+pot_units
+rake_units
+winner_seat_ids_json
+raw_state_json
+safe_state_json
+started_at
+ended_at
+created_at
+updated_at
+```
+
+`raw_state_json` guarda todo.
+
+`safe_state_json` guarda versión segura para frontend.
+
+---
+
+## 1.6 hand_players
+
+Campos:
+
+```text
+id
+hand_id
+seat_id
+name
+type
+is_hero
+bot_profile
+position
+cards_json
+cards_revealed
+stack_start_units
+stack_end_units
+profit_units
+contributed_units
+folded
+all_in
+went_to_showdown
+won_hand
+hand_rank
+created_at
+updated_at
+```
+
+---
+
+## 1.7 hand_actions
+
+Campos:
+
+```text
+id
+hand_id
+street
+action_order
+seat_id
+position
+action
+amount_units
+bet_to_units
+pot_after_units
+stack_after_units
+is_aggressive
+is_all_in
+created_at
+updated_at
+```
+
+---
+
+## 1.8 hand_pots
+
+Campos:
+
+```text
+id
+hand_id
+pot_index
+pot_type
+amount_units
+rake_units
+net_amount_units
+contributor_seat_ids_json
+eligible_seat_ids_json
+winner_seat_ids_json
+created_at
+updated_at
+```
+
+---
+
+## 1.9 stat_summaries
+
+Opcional. No fuente de verdad.
+
+Campos:
+
+```text
+id
+user_id
+cash_session_id nullable
+scope
+hands
+vpip
+pfr
+vpip_pfr_gap
+three_bet
+fold_to_three_bet
+four_bet
+fold_to_four_bet
+ats
+fold_bb_vs_steal
+fold_sb_vs_steal
+squeeze
+cbet_flop
+fold_vs_flop_cbet
+cbet_turn
+fold_vs_turn_cbet
+wtsd
+wsd
+wwsf
+profit_units
+bb_100
+rake_units
+updated_at
+```
+
+---
+
+# 2. Contratos JSON
+
+## 2.1 CashSession
+
+```php
+[
+    'id' => 1,
+    'user_id' => 25,
+    'difficulty' => 'hard',
+    'buyin_units' => 150,
+    'status' => 'active',
+
+    'starting_bankroll_units' => 600,
+    'ending_bankroll_units' => null,
+
+    'hero_start_stack_units' => 150,
+    'hero_current_stack_units' => 188,
+    'hero_end_stack_units' => null,
+
+    'hands_count' => 32,
+    'profit_units' => 38,
+    'rake_units' => 22,
+]
+```
+
+---
+
+## 2.2 CashTablePlayer
+
+```php
+[
+    'seat_id' => 1,
+    'name' => 'MadridReg',
+    'type' => 'bot',
+    'is_hero' => false,
+    'bot_profile' => 'regular_solid',
+    'stack_units' => 212,
+    'hands_played' => 32,
+    'status' => 'active',
+    'rejoin_after_hand' => null,
+]
+```
+
+---
+
+## 2.3 Hand
+
+```php
+[
+    'hand_number' => 55,
+    'status' => 'in_progress',
+    'street' => 'TURN',
+
+    'dealer_seat' => 3,
+    'small_blind_seat' => 4,
+    'big_blind_seat' => 5,
+
+    'pot_units' => 48,
+    'rake_units' => 0,
+
+    'board' => ['Ah', 'Td', '5s', '2c'],
+
+    'current_turn_seat' => 1,
+    'amount_to_call_units' => 12,
+    'min_raise_to_units' => 24,
+
+    'players' => [],
+    'actions' => [],
+    'pots' => [],
+]
+```
+
+---
+
+## 2.4 HandPlayer
+
+```php
+[
+    'seat_id' => 0,
+    'name' => 'Hero',
+    'type' => 'hero',
+    'is_hero' => true,
+    'bot_profile' => null,
+
+    'stack_start_units' => 150,
+    'stack_units' => 149,
+    'stack_end_units' => null,
+
+    'cards' => ['Ah', 'Kd'],
+
+    'poker_position' => 'BTN',
+    'is_dealer' => true,
+    'is_sb' => false,
+    'is_bb' => false,
+
+    'bet_units' => 0,
+    'total_contributed_units' => 1,
+
+    'folded' => false,
+    'in_hand' => true,
+    'all_in' => false,
+
+    'last_action' => null,
+    'last_action_amount_units' => 0,
+    'last_bet_to_units' => 0,
+
+    'went_to_showdown' => false,
+    'won_hand' => false,
+    'hand_rank' => null,
+    'profit_units' => null,
+]
+```
+
+---
+
+## 2.5 Action
+
+```php
+[
+    'street' => 'PRE-FLOP',
+    'action_order' => 3,
+    'seat_id' => 4,
+    'position' => 'HJ',
+    'action' => 'RAISE',
+    'amount_units' => 5,
+    'bet_to_units' => 5,
+    'pot_after_units' => 8,
+    'stack_after_units' => 195,
+    'is_aggressive' => true,
+    'is_all_in' => false,
+]
+```
+
+---
+
+## 2.6 Pot
+
+```php
+[
+    'pot_index' => 0,
+    'pot_type' => 'main',
+    'amount_units' => 240,
+    'rake_units' => 4,
+    'net_amount_units' => 236,
+    'contributor_seat_ids' => [0, 1, 2],
+    'eligible_seat_ids' => [0, 1, 2],
+    'winner_seat_ids' => [0],
+]
+```
+
+---
+
+## 2.7 SafeFrontendHand
+
+```php
+[
+    'hand_number' => 10,
+    'street' => 'FLOP',
+    'board' => ['Ah', '7d', '2c'],
+    'players' => [
+        [
+            'seat_id' => 0,
+            'name' => 'Hero',
+            'cards' => ['Ac', 'Ks'],
+            'cards_visible' => true,
+        ],
+        [
+            'seat_id' => 1,
+            'name' => 'MadridReg',
+            'cards' => [null, null],
+            'cards_visible' => false,
+        ],
+    ],
+]
+```
+
+---
+
+# 3. Endpoints
+
+## 3.1 POST /cash/session/start
+
+Crea Cash Session.
+
+Entrada:
+
+```json
+{
+  "difficulty": "normal",
+  "buyin_units": 150
+}
+```
+
+Acciones:
+
+```text
+validar bankroll
+descontar buy-in
+crear cash_session
+crear cash_table_players
+redirigir mesa
+```
+
+Salida:
+
+```json
+{
+  "success": true,
+  "cash_session_id": 1,
+  "redirect": "/cash/table"
+}
+```
+
+---
+
+## 3.2 POST /cash/session/end
+
+Finaliza Cash Session.
+
+Acciones:
+
+```text
+devolver stack Hero al bankroll
+guardar sesión
+limpiar mesa activa
+mantener User Session
+```
+
+---
+
+## 3.3 POST /cash/hand/start
+
+Inicia mano usando mesa persistente.
+
+---
+
+## 3.4 POST /cash/action
+
+Aplica acción Hero.
+
+Entrada:
+
+```json
+{
+  "seat_id": 0,
+  "action": "CALL",
+  "amount_units": 4
+}
+```
+
+---
+
+## 3.5 POST /cash/bot-step
+
+Ejecuta bots hasta Hero o fin de mano.
+
+---
+
+## 3.6 GET /cash/session/stats
+
+Devuelve stats rápidas de sesión.
+
+---
+
+## 3.7 GET /cash/session/last-hands
+
+Devuelve últimas 10 manos de la sesión.
+
+---
+
+## 3.8 GET /cash/history
+
+Blade historial completo.
+
+Debe finalizar Cash Session antes de abrir si hay una activa.
+
+---
+
+## 3.9 GET /cash/stats
+
+Blade estadísticas completas.
+
+Debe finalizar Cash Session antes de abrir si hay una activa.
+
+---
+
+# 4. Fórmulas de estadísticas
+
+## Hands
+
+```text
+Número de manos repartidas a Hero
+```
+
+---
+
+## VPIP
+
+```text
+Numerador = manos donde Hero hizo CALL, RAISE, BET o ALL-IN voluntario preflop
+Denominador = Hands
+No cuentan POST_SB ni POST_BB
+VPIP = numerador / denominador * 100
+```
+
+---
+
+## PFR
+
+```text
+Numerador = manos donde Hero hizo RAISE o ALL-IN agresivo preflop
+Denominador = Hands
+PFR = numerador / denominador * 100
+```
+
+---
+
+## Gap VPIP-PFR
+
+```text
+Gap = VPIP - PFR
+```
+
+---
+
+## 3Bet
+
+```text
+3Bet = segunda subida preflop
+Numerador = Hero hizo la segunda subida preflop
+Denominador = Hero tuvo oportunidad real de 3Bet
+```
+
+Oportunidad:
+
+```text
+alguien abrió antes
+Hero seguía en mano
+Hero actuaba después del open
+```
+
+---
+
+## Fold to 3Bet
+
+```text
+Numerador = Hero abrió preflop y foldeó ante 3Bet
+Denominador = Hero abrió preflop y recibió 3Bet
+```
+
+---
+
+## 4Bet
+
+```text
+4Bet = tercera subida preflop
+Numerador = Hero hizo 4Bet
+Denominador = Hero tuvo oportunidad real de 4Bet
+```
+
+---
+
+## Fold to 4Bet
+
+```text
+Numerador = Hero hizo 3Bet y foldeó ante 4Bet
+Denominador = Hero hizo 3Bet y recibió 4Bet
+```
+
+---
+
+## ATS
+
+```text
+Attempt To Steal
+Numerador = Hero hizo open raise desde CO, BTN o SB
+Denominador = Hero tuvo oportunidad de abrir desde CO, BTN o SB sin open previo
+```
+
+---
+
+## Fold BB vs Steal
+
+```text
+Numerador = Hero en BB foldeó ante open steal de CO, BTN o SB
+Denominador = Hero en BB enfrentó open steal de CO, BTN o SB
+```
+
+---
+
+## Fold SB vs Steal
+
+```text
+Numerador = Hero en SB foldeó ante open steal de CO o BTN
+Denominador = Hero en SB enfrentó open steal de CO o BTN
+```
+
+---
+
+## Squeeze
+
+```text
+Numerador = Hero hizo raise después de open raise + al menos un caller
+Denominador = Hero tuvo oportunidad después de open raise + caller
+```
+
+---
+
+## CBet Flop
+
+```text
+Numerador = Hero fue agresor preflop y apostó primero en flop
+Denominador = Hero fue agresor preflop y vio flop con oportunidad de apostar
+```
+
+---
+
+## Fold vs Flop CBet
+
+```text
+Numerador = Hero foldeó ante cbet flop
+Denominador = Hero enfrentó cbet flop
+```
+
+---
+
+## CBet Turn
+
+```text
+Numerador = Hero fue agresor preflop y apostó turn manteniendo iniciativa
+Denominador = Hero tuvo oportunidad de cbet turn
+```
+
+---
+
+## Fold vs Turn CBet
+
+```text
+Numerador = Hero foldeó ante cbet turn
+Denominador = Hero enfrentó cbet turn
+```
+
+---
+
+## WTSD
+
+```text
+Numerador = Hero llegó a showdown
+Denominador = Hero vio flop
+```
+
+---
+
+## WSD
+
+```text
+Numerador = Hero ganó o empató en showdown
+Denominador = Hero llegó a showdown
+```
+
+---
+
+## WWSF
+
+```text
+Numerador = Hero ganó la mano después de ver flop
+Denominador = Hero vio flop
+```
+
+---
+
+## Profit BB
+
+```text
+profit_bb = profit_units / 2
+```
+
+---
+
+## bb/100
+
+```text
+bb/100 = (profit_bb / hands) * 100
+```
+
+---
+
+## Rake BB
+
+```text
+rake_bb = rake_units / 2
+```
+
+---
+
+## BB/100 por posición
+
+```text
+bb/100_position = (profit_bb_position / hands_position) * 100
+```
+
+---
+
+# 5. Pruebas obligatorias
+
+## Bankroll
+
+```text
+Depósito 100 BB
+Buy-in descuenta bankroll
+Salida devuelve stack
+Hero busted redirige correctamente
+```
+
+## Mesa
+
+```text
+Bots persisten
+Stacks persisten
+Dealer rota
+No se recrean bots innecesariamente
+```
+
+## Bots
+
+```text
+Bot busted sale
+Pasa una mano
+Entra bot nuevo
+Nick diferente
+Stack según distribución
+```
+
+## Mano
+
+```text
+Preflop
+Flop
+Turn
+River
+Showdown
+Fold
+All-in runout
+```
+
+## Rake
+
+```text
+Preflop sin flop = 0
+Flop visto = 5%
+Cap = 6 unidades
+Side pots distribuyen rake exacto
+```
+
+## Cartas
+
+```text
+Frontend no recibe cartas ocultas
+Showdown muestra solo jugadores activos
+Historial completo puede mostrar todo
+```
+
+## Estadísticas
+
+```text
+VPIP
+PFR
+3Bet
+Fold to 3Bet
+CBet
+WTSD
+WSD
+WWSF
+bb/100
+rake
+```
+
+---

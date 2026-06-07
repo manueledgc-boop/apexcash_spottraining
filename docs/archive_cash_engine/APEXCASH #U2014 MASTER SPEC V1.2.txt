@@ -1,0 +1,729 @@
+# APEXCASH — MASTER SPEC V1.2
+
+## Documento maestro funcional del sistema
+
+---
+
+# 1. Objetivo general
+
+ApexCash es un simulador profesional de Cash Games No Limit Hold’em 6-Max orientado al entrenamiento intensivo.
+
+No es una sala de dinero real.
+No es un casino social.
+No es un videojuego arcade.
+No es un coach que interrumpe durante la mano.
+
+El objetivo es que el usuario juegue volumen contra bots realistas, genere estadísticas fiables, detecte leaks y luego pueda entrenarlos en Spot Training.
+
+---
+
+# 2. Flujo general del usuario
+
+## Usuario sin bankroll suficiente
+
+```text
+Login
+↓
+Dashboard
+↓
+Bankroll < 50 BB
+↓
+Pantalla de depósito
+↓
+Depositar 100 BB ficticios
+↓
+Lobby Cash
+```
+
+## Usuario con bankroll suficiente
+
+```text
+Login
+↓
+Dashboard
+↓
+Lobby Cash
+↓
+Elegir mesa Normal / Difícil
+↓
+Elegir buy-in 50-100 BB
+↓
+Entrar mesa
+↓
+Jugar Cash Session
+```
+
+---
+
+# 3. Dashboard
+
+El Dashboard es el centro del usuario cuando no está jugando.
+
+Debe mostrar:
+
+```text
+Bankroll actual
+Manos totales jugadas
+Profit total
+bb/100 global
+VPIP
+PFR
+3Bet
+Últimas sesiones
+```
+
+Acciones principales:
+
+```text
+Jugar Cash
+Historial de manos
+Estadísticas
+Cerrar sesión de usuario
+```
+
+Si el usuario no tiene bankroll suficiente:
+
+```text
+Mostrar CTA: Depositar 100 BB
+```
+
+---
+
+# 4. Bankroll ficticio
+
+No existe dinero real.
+
+Campo interno:
+
+```text
+training_bankroll_units
+```
+
+Regla monetaria:
+
+```text
+2 unidades = 1 BB
+```
+
+Depósito:
+
+```text
+Depositar 100 BB = +200 unidades
+```
+
+Si bankroll < 50 BB:
+
+```text
+No puede entrar a mesa
+Debe ir a depósito
+```
+
+---
+
+# 5. Buy-in Hero
+
+Rango permitido:
+
+```text
+50 BB a 100 BB
+```
+
+En unidades:
+
+```text
+100 a 200 unidades
+```
+
+Al entrar:
+
+```text
+training_bankroll_units -= buyin_units
+hero_stack_units = buyin_units
+```
+
+Ejemplo:
+
+```text
+Bankroll = 300 BB
+Buy-in = 75 BB
+
+Bankroll restante = 225 BB
+Hero stack mesa = 75 BB
+```
+
+El buy-in solo se usa una vez: al sentar a Hero.
+
+---
+
+# 6. Cash Session
+
+Una Cash Session empieza cuando el usuario entra a mesa.
+
+Termina cuando:
+
+```text
+Pulsa Dashboard
+Pulsa Historial de manos
+Pulsa Estadísticas
+Cierra pestaña
+Cierra navegador
+Recarga página
+Hero bustea
+```
+
+Finalizar Cash Session NO cierra la sesión de usuario Laravel.
+
+---
+
+# 7. Salida de mesa
+
+Al salir:
+
+```text
+Hero stack actual vuelve al bankroll
+Cash Session se marca como finished
+Mesa activa se limpia
+User Session sigue activa
+```
+
+Ejemplo:
+
+```text
+Hero entra con 75 BB
+Hero sale con 113 BB
+
+training_bankroll_units += 226 unidades
+```
+
+---
+
+# 8. Hero busted
+
+Si Hero llega a 0 BB:
+
+```text
+Cash Session termina automáticamente
+```
+
+Luego:
+
+```text
+Si bankroll restante >= 50 BB:
+    ir a Lobby Cash
+
+Si bankroll restante < 50 BB:
+    ir a Depósito
+```
+
+---
+
+# 9. Mesa persistente
+
+La mesa contiene:
+
+```text
+Hero
+5 bots
+stacks
+nicks
+perfiles
+asientos
+dealer
+hand_number
+historial
+dificultad
+```
+
+La mesa NO se recrea entre manos.
+
+---
+
+# 10. Mano temporal
+
+Cada mano contiene:
+
+```text
+deck
+hole cards
+board
+pot
+side pots
+acciones
+turno actual
+street
+ganador
+rake
+resultado
+```
+
+Al terminar se guarda y se crea una nueva mano usando la misma mesa.
+
+---
+
+# 11. Bots iniciales
+
+Cuando Hero entra, debe parecer que la mesa ya estaba viva.
+
+Los bots iniciales pueden tener entre:
+
+```text
+50 BB y 250 BB
+```
+
+Distribución recomendada:
+
+```text
+20% entre 50-99 BB
+50% entre 100-150 BB
+30% entre 151-250 BB
+```
+
+---
+
+# 12. Bots nuevos tras bustear
+
+Si un bot queda en 0:
+
+```text
+status = busted
+```
+
+No se reemplaza inmediatamente.
+
+Debe pasar 1 mano completa.
+
+Después entra un bot nuevo:
+
+```text
+nick nuevo
+perfil nuevo
+stack nuevo
+hands_played = 0
+```
+
+Stack de bot nuevo:
+
+```text
+80% entra con 100 BB
+20% entra con 50-99 BB
+```
+
+Si bustean 2 bots en la misma mano, ambos esperan 1 mano y luego entran 2 bots nuevos.
+
+---
+
+# 13. Dificultad de mesa
+
+## Mesa Normal
+
+```text
+60% recreacionales
+40% regs/nits
+```
+
+Características:
+
+```text
+más calls
+menos 3bet
+más errores postflop
+sizings menos precisos
+más pasividad
+```
+
+## Mesa Difícil
+
+```text
+80% regs/nits/TAG
+20% recreacionales
+```
+
+Características:
+
+```text
+rangos más sólidos
+más 3bet
+mejores sizings
+mejor defensa de ciegas
+menos calls débiles
+más agresión controlada
+```
+
+---
+
+# 14. Posiciones
+
+Mesa 6-Max:
+
+```text
+BTN
+SB
+BB
+UTG
+HJ
+CO
+```
+
+El BTN rota cada mano al siguiente asiento activo.
+
+---
+
+# 15. Orden preflop
+
+En mesa completa:
+
+```text
+UTG → HJ → CO → BTN → SB → BB
+```
+
+Saltar jugadores:
+
+```text
+busted
+sit-out
+sin stack
+fuera de la mano
+```
+
+---
+
+# 16. Orden postflop
+
+Postflop empieza el primer jugador activo a la izquierda del BTN.
+
+Orden conceptual:
+
+```text
+SB → BB → UTG → HJ → CO → BTN
+```
+
+---
+
+# 17. Flujo de mano
+
+Normal:
+
+```text
+PRE-FLOP
+↓
+FLOP
+↓
+TURN
+↓
+RIVER
+↓
+SHOWDOWN
+↓
+HAND_OVER
+```
+
+Por fold:
+
+```text
+Cualquier street
+↓
+Queda un jugador activo
+↓
+Se entrega bote
+↓
+HAND_OVER
+```
+
+All-in:
+
+```text
+Jugadores all-in
+↓
+No quedan decisiones pendientes
+↓
+Runout automático hasta river
+↓
+Showdown
+↓
+HAND_OVER
+```
+
+---
+
+# 18. Showdown
+
+Evaluador oficial:
+
+```text
+si2k63/php-texas-hold-em-evaluator
+```
+
+Servicio:
+
+```text
+PokerHandEvaluatorService
+```
+
+La librería evalúa 5 cartas.
+
+El servicio debe recibir 7 cartas, crear combinaciones de 5, evaluar y devolver ganador o ganadores.
+
+---
+
+# 19. Side pots
+
+Obligatorios.
+
+Soporte:
+
+```text
+Main Pot
+Side Pot 1
+Side Pot 2
+Side Pot 3...
+```
+
+Un jugador solo puede ganar pots donde esté en `eligible_seat_ids`.
+
+---
+
+# 20. Rake
+
+Regla:
+
+```text
+Rake = min(5% del pot total, 3 BB)
+```
+
+En unidades:
+
+```text
+Cap = 6 unidades
+```
+
+No flop no drop:
+
+```text
+Si no hubo flop, rake = 0
+```
+
+Con side pots, el rake total se calcula una vez y se distribuye proporcionalmente entre pots.
+
+---
+
+# 21. Visibilidad de cartas
+
+Backend guarda todas las cartas.
+
+Frontend en mesa viva solo recibe:
+
+```text
+cartas Hero
+board
+cartas de villanos activos en showdown
+```
+
+Frontend nunca recibe:
+
+```text
+cartas de bots foldeados
+cartas ocultas de bots
+cartas de jugadores no-showdown
+```
+
+En historial completo/replayer sí se podrán mostrar todas las cartas de la mano finalizada.
+
+---
+
+# 22. Panel derecho de mesa
+
+Layout:
+
+```text
+Mesa 75%
+Panel derecho 25%
+```
+
+Panel ocultable:
+
+```text
+Panel visible: mesa 75%, panel 25%
+Panel oculto: mesa 100%
+```
+
+Contenido:
+
+```text
+70% historial últimas 10 manos
+30% estadísticas rápidas
+```
+
+---
+
+# 23. Historial del panel
+
+Muestra últimas 10 manos de la Cash Session actual.
+
+Debe tener scroll interno.
+
+Formato estilo Winamax.
+
+Debe mostrar:
+
+```text
+Preflop
+Flop
+Turn
+River
+Showdown si existe
+Ganador
+Pot
+Rake
+```
+
+No mostrar cartas de jugadores que foldearon.
+
+---
+
+# 24. Estadísticas rápidas en panel
+
+Mostrar solo:
+
+```text
+Mesa: Normal/Difícil
+Hands
+VPIP
+PFR
+3Bet
+bb/100
+```
+
+---
+
+# 25. Menú superior
+
+Icono:
+
+```text
+☰
+```
+
+Opciones:
+
+```text
+Dashboard
+Historial de manos
+Estadísticas
+```
+
+Al pulsar cualquiera, si hay Cash Session activa:
+
+```text
+Confirmar finalizar sesión actual
+```
+
+---
+
+# 26. Historial completo
+
+Blade independiente.
+
+Acceder implica finalizar Cash Session.
+
+Debe mostrar:
+
+```text
+todas las manos
+filtros
+buscador
+detalle completo
+cartas completas
+resultado
+pot
+rake
+acciones
+```
+
+---
+
+# 27. Estadísticas completas
+
+Blade independiente.
+
+Acceder implica finalizar Cash Session.
+
+Debe mostrar estadísticas globales, por sesión, por posición y por tipo de spot.
+
+---
+
+# 28. Animaciones
+
+Filosofía:
+
+```text
+rápido
+profesional
+limpio
+no arcade
+```
+
+Prioridad:
+
+```text
+badges
+reparto cartas
+fichas al centro
+pot al ganador
+showdown
+side pots
+```
+
+---
+
+# 29. Sonidos
+
+Permitidos:
+
+```text
+card_deal.wav
+chip_single.wav
+chip_bet.wav
+pot_collect.wav
+hero_turn.wav
+```
+
+Prohibidos:
+
+```text
+fanfarrias
+jackpots
+aplausos
+sirenas
+sonidos arcade
+```
+
+---
+
+# 30. Coach
+
+Durante Cash Session el coach debe estar en silencio.
+
+No debe sugerir acciones.
+
+No debe decir “buen call” o “mal fold”.
+
+El análisis del coach ocurre después de la sesión.
+
+---
+
+# 31. Resultado esperado
+
+El usuario debe sentir:
+
+```text
+Estoy sentado en una mesa real.
+Los mismos rivales siguen ahí.
+Sus stacks cambian.
+Mis stacks cambian.
+Las ciegas rotan.
+Las manos se guardan.
+Las estadísticas son reales.
+La sesión continúa de forma natural.
+```
+
+---

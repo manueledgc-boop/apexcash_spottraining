@@ -1,0 +1,301 @@
+:root {
+    --apex-bg: #08110d;
+    --apex-card: #111c16;
+    --apex-card-2: #16261d;
+    --apex-line: rgba(255,255,255,.1);
+    --apex-text: #f3fff8;
+    --apex-muted: #a8b9ad;
+    --apex-green: #26d07c;
+    --apex-gold: #f7c948;
+    --apex-red: #ff5f57;
+}
+
+.spot-page {
+    min-height: calc(100vh - 64px);
+    background: radial-gradient(circle at top left, #173a29 0, #08110d 42%, #050807 100%);
+    color: var(--apex-text);
+    padding: 28px;
+}
+
+.spot-header {
+    max-width: 1280px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.spot-kicker,
+.spot-module {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: .14em;
+    font-weight: 800;
+    color: var(--apex-green);
+    text-transform: uppercase;
+}
+
+.spot-header h1 {
+    margin: 8px 0 8px;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1;
+}
+
+.spot-header p {
+    margin: 0;
+    max-width: 720px;
+    color: var(--apex-muted);
+}
+
+.ghost-btn,
+.next-btn,
+.decision-btn {
+    border: 0;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.ghost-btn {
+    color: var(--apex-text);
+    background: rgba(255,255,255,.08);
+    border: 1px solid var(--apex-line);
+}
+
+.spot-layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 22px;
+}
+
+.spot-table-card,
+.spot-panel .spot-box {
+    background: rgba(17, 28, 22, .92);
+    border: 1px solid var(--apex-line);
+    box-shadow: 0 24px 70px rgba(0,0,0,.35);
+}
+
+.spot-table-card {
+    border-radius: 28px;
+    padding: 22px;
+}
+
+.spot-table {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-height: 440px;
+}
+
+.table-felt {
+    position: absolute;
+    inset: 4%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1e754b 0, #11603b 45%, #0b3d28 100%);
+    border: 18px solid #25170d;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 30px 60px rgba(0,0,0,.35);
+}
+
+.board-zone {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 220px;
+    text-align: center;
+    padding: 16px 22px;
+    border-radius: 20px;
+    background: rgba(0,0,0,.22);
+    border: 1px solid rgba(255,255,255,.16);
+}
+
+.board-zone span {
+    display: block;
+    font-size: 12px;
+    letter-spacing: .16em;
+    color: rgba(255,255,255,.72);
+}
+
+.board-zone strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+}
+
+.seat {
+    position: absolute;
+    width: 150px;
+    min-height: 82px;
+    border-radius: 18px;
+    background: rgba(3, 10, 7, .82);
+    border: 1px solid rgba(255,255,255,.16);
+    padding: 10px;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.seat.hero {
+    outline: 3px solid var(--apex-green);
+    box-shadow: 0 0 32px rgba(38,208,124,.35);
+}
+
+.seat.villain {
+    outline: 2px solid var(--apex-gold);
+}
+
+.seat .pos {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--apex-gold);
+}
+
+.seat .name {
+    font-size: 15px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+.seat .stack {
+    font-size: 12px;
+    color: var(--apex-muted);
+    margin-top: 4px;
+}
+
+.seat-utg { left: 26%; top: 20%; }
+.seat-hj { left: 50%; top: 14%; }
+.seat-co { left: 74%; top: 20%; }
+.seat-btn { left: 82%; top: 70%; }
+.seat-sb { left: 50%; top: 86%; }
+.seat-bb { left: 18%; top: 70%; }
+
+.hero-cards {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.card {
+    width: 74px;
+    height: 104px;
+    border-radius: 12px;
+    background: #fff;
+    color: #111;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    font-weight: 900;
+    box-shadow: 0 18px 35px rgba(0,0,0,.35);
+}
+
+.card.red { color: #d71920; }
+
+.spot-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.spot-box {
+    border-radius: 22px;
+    padding: 18px;
+}
+
+.spot-box h2,
+.spot-box h3 {
+    margin: 8px 0 10px;
+}
+
+.spot-meta {
+    color: var(--apex-muted);
+    margin: 0;
+}
+
+.actions-box ol {
+    padding-left: 20px;
+    margin: 0;
+    color: var(--apex-muted);
+    line-height: 1.65;
+}
+
+.decision-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.decision-btn {
+    color: #06100b;
+    background: var(--apex-green);
+}
+
+.decision-btn.secondary { background: #e8edf0; }
+.decision-btn.danger { background: var(--apex-red); color: #fff; }
+
+.next-btn {
+    width: 100%;
+    margin-top: 14px;
+    background: var(--apex-gold);
+    color: #1a1204;
+}
+
+.feedback {
+    margin-top: 14px;
+    border-radius: 16px;
+    padding: 14px;
+    background: rgba(255,255,255,.08);
+    color: var(--apex-text);
+    border: 1px solid var(--apex-line);
+}
+
+.feedback.correct { border-color: rgba(38,208,124,.6); }
+.feedback.wrong { border-color: rgba(255,95,87,.7); }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.summary-grid div {
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.07);
+}
+
+.summary-grid span {
+    display: block;
+    font-size: 12px;
+    color: var(--apex-muted);
+}
+
+.summary-grid strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 24px;
+}
+
+@media (max-width: 980px) {
+    .spot-layout { grid-template-columns: 1fr; }
+    .spot-header { align-items: start; flex-direction: column; }
+}
+
+@media (orientation: portrait) and (max-width: 760px) {
+    .spot-page::before {
+        content: 'Gira el móvil a horizontal para entrenar con la mesa completa.';
+        position: fixed;
+        inset: 0;
+        z-index: 99;
+        display: grid;
+        place-items: center;
+        padding: 28px;
+        text-align: center;
+        background: #08110d;
+        color: white;
+        font-size: 24px;
+        font-weight: 900;
+    }
+}

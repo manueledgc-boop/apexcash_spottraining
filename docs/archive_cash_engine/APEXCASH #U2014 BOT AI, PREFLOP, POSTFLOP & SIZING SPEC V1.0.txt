@@ -1,0 +1,924 @@
+# APEXCASH — BOT AI, PREFLOP, POSTFLOP & SIZING SPEC V1.0
+
+## Documento técnico de comportamiento de bots
+
+---
+
+# 1. Principio general
+
+Los bots no deben jugar aleatoriamente.
+
+Deben simular perfiles realistas de cash 6-Max.
+
+La base estratégica se inspira en fundamentos estándar de escuelas modernas de cash games.
+
+No se busca GTO perfecto en V1.
+
+Se busca población realista:
+
+```text
+Recreacionales cometen errores
+Nits foldean demasiado
+Calling stations pagan demasiado
+TAG juega sólido
+Reg sólido juega bastante bien
+```
+
+---
+
+# 2. Servicios
+
+## PreflopStrategyService
+
+Decide:
+
+```text
+open raise
+call open
+3bet
+call 3bet
+4bet
+fold
+squeeze
+all-in
+```
+
+---
+
+## PostflopStrategyService
+
+Decide:
+
+```text
+check
+bet
+call
+raise
+fold
+all-in
+```
+
+---
+
+## PokerSizingService
+
+Decide:
+
+```text
+tamaño de open
+tamaño de 3bet
+tamaño de 4bet
+squeeze
+cbet
+turn barrel
+river bet
+overbet
+all-in
+```
+
+---
+
+## PokerBoardAnalysisService
+
+Informa:
+
+```text
+made hand
+draws
+board texture
+strength_score
+paired board
+monotone board
+flush possible
+straight possible
+```
+
+---
+
+# 3. Perfiles de bots
+
+## Recreacional Pasivo
+
+Características:
+
+```text
+VPIP alto
+PFR bajo
+Mucho call
+Poca agresión
+Pocas 3bets
+Paga proyectos mal
+Bluff bajo
+```
+
+Objetivo aproximado:
+
+```text
+VPIP 35-45
+PFR 8-15
+3Bet 2-4
+```
+
+---
+
+## Recreacional Agresivo
+
+```text
+VPIP alto
+PFR medio-alto
+3bet errática
+bluffs malos
+overplays
+```
+
+Objetivo:
+
+```text
+VPIP 35-50
+PFR 20-30
+3Bet 6-10
+```
+
+---
+
+## Calling Station
+
+```text
+VPIP alto
+PFR bajo
+Fold bajo
+Call excesivo
+Casi no bluffea
+```
+
+Objetivo:
+
+```text
+VPIP 40-55
+PFR 5-12
+3Bet 1-3
+Fold vs CBet bajo
+```
+
+---
+
+## Nit
+
+```text
+VPIP bajo
+PFR bajo
+3Bet value-heavy
+Foldea demasiado
+Pocos bluffs
+```
+
+Objetivo:
+
+```text
+VPIP 14-18
+PFR 11-15
+3Bet 3-5
+```
+
+---
+
+## TAG
+
+```text
+Juego sólido
+Rangos correctos
+Agresión razonable
+Pocos errores graves
+```
+
+Objetivo:
+
+```text
+VPIP 22-26
+PFR 18-22
+3Bet 6-8
+```
+
+---
+
+## Regular Sólido
+
+```text
+Preflop estricto
+Buen sizing
+Defensa razonable
+CBet coherente
+Agresión selectiva
+```
+
+Objetivo:
+
+```text
+VPIP 24-28
+PFR 20-24
+3Bet 8-10
+```
+
+---
+
+# 4. Rangos open raise base
+
+Estos rangos son para TAG / Regular Sólido.
+
+Otros perfiles ajustan desde esta base.
+
+## UTG
+
+Aproximado 15%.
+
+```text
+22+
+A2s+
+KTs+
+QTs+
+JTs
+T9s
+98s
+AJo+
+KQo
+```
+
+## HJ
+
+Aproximado 18-20%.
+
+```text
+22+
+A2s+
+K9s+
+Q9s+
+J9s+
+T9s
+98s
+87s
+ATo+
+KJo+
+QJo
+```
+
+## CO
+
+Aproximado 27-30%.
+
+```text
+22+
+A2s+
+K7s+
+Q8s+
+J8s+
+T8s+
+97s+
+86s+
+75s+
+A8o+
+KTo+
+QTo+
+JTo
+```
+
+## BTN
+
+Aproximado 42-48%.
+
+```text
+22+
+Any suited Ace
+K2s+
+Q5s+
+J7s+
+T7s+
+96s+
+85s+
+75s+
+65s
+54s
+A2o+
+K8o+
+Q9o+
+J9o+
+T9o
+```
+
+## SB
+
+Aproximado 35-45%.
+
+```text
+22+
+A2s+
+K2s+
+Q5s+
+J7s+
+T7s+
+97s+
+86s+
+75s+
+65s
+A2o+
+K9o+
+Q9o+
+J9o+
+T9o
+```
+
+---
+
+# 5. Ajustes por perfil preflop
+
+## Nit
+
+```text
+Reducir open ranges 20-30%
+3bet solo valor
+Casi no call OOP
+Fold BB alto
+```
+
+## Calling Station
+
+```text
+Más limp/call
+Menos open raise
+Menos 3bet
+Call demasiado vs open
+Defiende demasiadas manos suited
+```
+
+## Recreacional Pasivo
+
+```text
+Más limp
+Más call
+Pocas raises
+Fold bajo en BB
+```
+
+## Recreacional Agresivo
+
+```text
+Open demasiado amplio
+3bet más alto pero desequilibrado
+4bet bluff ocasional absurdo
+Overplay broadways y Ax
+```
+
+## TAG
+
+```text
+Usa rangos base
+Ajustes mínimos
+```
+
+## Regular Sólido
+
+```text
+Usa rangos base
+Mejor defensa BB
+Más 3bet selectivo
+Mejor selección de blockers
+```
+
+---
+
+# 6. Facing open
+
+## TAG / Reg sólido
+
+Contra open:
+
+```text
+3bet por valor
+3bet con blockers
+call con manos jugables IP
+fold basura
+```
+
+Preferencias:
+
+```text
+IP puede pagar más
+OOP 3bet o fold más frecuente
+SB casi raise/fold
+BB defiende más amplio
+```
+
+---
+
+# 7. 3Bet base
+
+## Valor fuerte
+
+```text
+QQ+
+AK
+```
+
+## Valor medio / mezcla
+
+```text
+JJ
+TT
+AQs
+AQo
+AJs
+KQs
+```
+
+## Bluff con blockers
+
+```text
+A5s-A2s
+KTs-K9s
+QTs
+JTs
+```
+
+Frecuencia por perfil:
+
+```text
+Nit: 3-5%
+TAG: 6-8%
+Reg sólido: 8-10%
+Recreacional agresivo: 6-12%, menos coherente
+Calling station: 1-3%
+```
+
+---
+
+# 8. 4Bet
+
+## Valor estándar
+
+```text
+KK+
+AK
+```
+
+## Reg sólido añade mezcla
+
+```text
+QQ
+AQs ocasional
+A5s-A4s bluff ocasional
+```
+
+## Nit
+
+```text
+KK+
+AK muy selectivo
+```
+
+## Recreacional
+
+```text
+puede 4bet jam demasiado con JJ/AQ
+```
+
+---
+
+# 9. Blind defense
+
+## BB vs BTN
+
+TAG / Reg sólido defiende amplio.
+
+Defensa aproximada:
+
+```text
+Call: suited connectors, suited gappers, broadways, pares bajos/medios, Ax suited
+3Bet: valor + blockers
+Fold: offsuit basura
+```
+
+## SB
+
+SB juega más raise/fold.
+
+Pocos calls.
+
+---
+
+# 10. Sizing preflop
+
+## Open raise
+
+```text
+UTG/HJ/CO/BTN = 2.5 BB
+SB = 3 BB
+```
+
+Recreacional puede usar:
+
+```text
+2 BB
+3 BB
+4 BB
+limp
+```
+
+## 3Bet
+
+```text
+IP = 3x open
+OOP = 4x open
+```
+
+## Squeeze
+
+```text
+4.5x open + 1x por caller
+```
+
+## 4Bet
+
+```text
+IP = 2.2x 3bet
+OOP = 2.4x 3bet
+```
+
+## All-in
+
+Permitido si:
+
+```text
+SPR bajo
+stack efectivo corto
+raise/call deja comprometido
+```
+
+---
+
+# 11. Postflop: inputs obligatorios
+
+PostflopStrategyService debe recibir:
+
+```text
+street
+position
+is_in_position
+preflop_aggressor
+board_texture
+made_hand
+draws
+strength_score
+spr
+pot_units
+amount_to_call_units
+effective_stack_units
+players_remaining
+bot_profile
+difficulty
+```
+
+---
+
+# 12. Board texture
+
+## Dry
+
+Ejemplos:
+
+```text
+A72 rainbow
+K83 rainbow
+Q62 rainbow
+```
+
+## Medium
+
+```text
+KJ4 rainbow
+T82 two-tone
+Q95 rainbow
+```
+
+## Wet
+
+```text
+JT9 two-tone
+987 two-tone
+QJ8 two-tone
+```
+
+## Very wet
+
+```text
+T98 monotone
+J97 two-tone
+876 two-tone
+```
+
+---
+
+# 13. CBet flop
+
+## Reg sólido / TAG
+
+CBet alto en boards secos.
+
+```text
+Dry: 60-75%
+Medium: 45-60%
+Wet: 35-50%
+Very wet: 25-40%
+```
+
+Sizing:
+
+```text
+Dry: 25-33%
+Medium: 33-50%
+Wet: 50-75%
+Very wet: 66-100%
+```
+
+---
+
+## Nit
+
+```text
+CBet más value-heavy
+Bluff bajo
+Check más manos medias
+```
+
+---
+
+## Calling Station
+
+```text
+Si es agresor, apuesta poco
+Si enfrenta apuesta, paga demasiado
+```
+
+---
+
+## Recreacional Agresivo
+
+```text
+CBet demasiado
+Bluff malo
+Sizing irregular
+```
+
+---
+
+# 14. Turn strategy
+
+Variables:
+
+```text
+mejoró la mano
+cambió textura
+completó draw
+fold equity
+SPR
+posición
+```
+
+## Reg sólido
+
+Barrel turn:
+
+```text
+valor fuerte
+buenos draws
+overcards + blockers
+cartas favorables a su rango
+```
+
+Check:
+
+```text
+showdown value medio
+malas cartas
+sin equity
+```
+
+Sizing:
+
+```text
+50-75% estándar
+75-125% polarizado
+```
+
+---
+
+# 15. River strategy
+
+River se divide en:
+
+```text
+value
+bluff
+check
+bluffcatch
+fold
+```
+
+## Value
+
+Apostar:
+
+```text
+top pair buen kicker en spots favorables
+overpair
+dobles+
+sets+
+straights+
+flushes+
+```
+
+## Bluff
+
+Solo con:
+
+```text
+blockers
+missed draws adecuados
+rango percibido fuerte
+línea coherente
+```
+
+## Calling Station
+
+```text
+paga demasiado river
+bluffea poco
+```
+
+## Nit
+
+```text
+foldea demasiado
+apuesta muy value-heavy
+```
+
+## Reg sólido
+
+```text
+elige bluffs con blockers
+foldea bluffcatchers malos
+value thin razonable
+```
+
+---
+
+# 16. Sizing postflop
+
+## Flop
+
+```text
+25-33% boards secos
+33-50% boards medios
+50-75% boards húmedos
+66-100% boards muy húmedos
+```
+
+## Turn
+
+```text
+50-66% estándar
+75% value/protection
+100-125% polarizado
+```
+
+## River
+
+```text
+50-66% thin value
+75-100% value fuerte
+125-150% polarizado/overbet
+All-in con SPR bajo
+```
+
+---
+
+# 17. All-in postflop
+
+Permitido si:
+
+```text
+SPR <= 1.5
+mano fuerte
+draw fuerte con fold equity
+river value polarizado
+```
+
+Recreacionales pueden hacerlo mal.
+
+Regs deben hacerlo con lógica.
+
+---
+
+# 18. Errores intencionales por perfil
+
+## Recreacional Pasivo
+
+```text
+call demasiado
+slowplay incorrecto
+minbet
+no protege
+```
+
+## Recreacional Agresivo
+
+```text
+bluff sin blockers
+overbet random
+raise draws malos
+all-in ligero
+```
+
+## Calling Station
+
+```text
+call down con tercera pareja
+no foldea proyectos malos
+paga river de más
+```
+
+## Nit
+
+```text
+foldea demasiado vs presión
+pierde value
+no bluffea suficiente
+```
+
+## TAG
+
+```text
+errores pequeños
+líneas estándar
+```
+
+## Reg Sólido
+
+```text
+pocos errores
+estrategia coherente
+```
+
+---
+
+# 19. Orden de implementación bots
+
+## Fase 1
+
+Open raise por posición.
+
+## Fase 2
+
+Facing open.
+
+## Fase 3
+
+3Bet / call / fold.
+
+## Fase 4
+
+Facing 3Bet.
+
+## Fase 5
+
+Blind defense.
+
+## Fase 6
+
+CBet flop.
+
+## Fase 7
+
+Turn strategy.
+
+## Fase 8
+
+River strategy.
+
+## Fase 9
+
+Sizings avanzados.
+
+## Fase 10
+
+Explotación por perfil.
+
+---
+
+# 20. Regla final
+
+El preflop de los regs debe ser estricto.
+
+Si los regs tienen mal preflop, ApexCash entrenará mal al usuario.
+
+El objetivo no es que todos los bots jueguen perfecto.
+
+El objetivo es que cada perfil juegue de forma coherente con lo que representa.

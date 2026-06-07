@@ -1,0 +1,1284 @@
+# APEXCASH — IMPLEMENTATION LOCKDOWN SPEC V1.2
+
+## Documento llave en mano complementario para programador
+
+---
+
+# 1. Objetivo
+
+Este documento completa la especificación técnica de ApexCash.
+
+Define:
+
+* pantallas;
+* migraciones Laravel;
+* servicios;
+* endpoints;
+* errores API;
+* estados de UI;
+* seguridad;
+* cierre de Cash Session;
+* seeders;
+* tests;
+* checklist por fases;
+* criterio final de terminado.
+
+Este documento debe usarse junto con:
+
+```text
+APEXCASH — MASTER SPEC V1.2
+APEXCASH — TECHNICAL IMPLEMENTATION SPEC V1.2
+APEXCASH — BOT AI, PREFLOP, POSTFLOP & SIZING SPEC V1.0
+```
+
+---
+
+# 2. Pantallas obligatorias
+
+## 2.1 Dashboard
+
+Ruta sugerida:
+
+```text
+/dashboard
+```
+
+Objetivo:
+
+Centro principal cuando el usuario no está jugando.
+
+Debe mostrar:
+
+```text
+Bankroll actual
+Manos totales
+Profit total
+bb/100 global
+VPIP
+PFR
+3Bet
+Últimas sesiones
+```
+
+Botones:
+
+```text
+Jugar Cash
+Historial de manos
+Estadísticas
+Cerrar sesión usuario
+```
+
+Reglas:
+
+```text
+Si bankroll < 50 BB:
+    mostrar botón Depositar 100 BB
+
+Si bankroll >= 50 BB:
+    mostrar botón Jugar Cash
+```
+
+---
+
+## 2.2 Pantalla depósito
+
+Ruta sugerida:
+
+```text
+/cash/deposit
+```
+
+Mostrar:
+
+```text
+No tienes bankroll suficiente para jugar.
+Depósito ficticio de entrenamiento: 100 BB
+```
+
+Botón:
+
+```text
+Depositar 100 BB
+```
+
+Acción:
+
+```text
+training_bankroll_units += 200
+```
+
+Después redirige a:
+
+```text
+/cash
+```
+
+---
+
+## 2.3 Lobby Cash
+
+Ruta sugerida:
+
+```text
+/cash
+```
+
+Debe mostrar:
+
+```text
+Bankroll disponible
+Selector mesa: Normal / Difícil
+Selector buy-in: 50-100 BB
+Botón Entrar mesa
+```
+
+Reglas:
+
+```text
+buy-in mínimo = 50 BB
+buy-in máximo = min(100 BB, bankroll disponible en BB)
+```
+
+Si bankroll < 50 BB:
+
+```text
+redirigir a depósito
+```
+
+---
+
+## 2.4 Mesa Cash
+
+Ruta sugerida:
+
+```text
+/cash/table
+```
+
+Layout:
+
+```text
+75% mesa
+25% panel derecho
+```
+
+Panel derecho ocultable.
+
+Debe contener:
+
+```text
+últimas 10 manos
+stats rápidas
+```
+
+Stats rápidas:
+
+```text
+Mesa
+Hands
+VPIP
+PFR
+3Bet
+bb/100
+```
+
+---
+
+## 2.5 Historial completo
+
+Ruta sugerida:
+
+```text
+/cash/history
+```
+
+Al entrar:
+
+```text
+finalizar Cash Session activa
+guardar todo
+devolver stack Hero al bankroll
+```
+
+Debe mostrar:
+
+```text
+todas las manos
+filtros por sesión
+detalle de mano
+acciones
+board
+showdown
+cartas completas
+rake
+side pots
+```
+
+---
+
+## 2.6 Estadísticas completas
+
+Ruta sugerida:
+
+```text
+/cash/stats
+```
+
+Al entrar:
+
+```text
+finalizar Cash Session activa
+guardar todo
+```
+
+Debe mostrar:
+
+```text
+stats globales
+stats por sesión
+stats por posición
+profit
+rake
+bb/100
+VPIP/PFR/3Bet
+WTSD/WSD/WWSF
+```
+
+---
+
+# 3. Migraciones Laravel obligatorias
+
+## 3.1 user_bankrolls
+
+Campos:
+
+```php
+id: unsignedBigInteger auto
+user_id: foreignId constrained cascadeOnDelete
+training_bankroll_units: integer default 0
+created_at
+updated_at
+```
+
+Índices:
+
+```text
+user_id unique
+```
+
+---
+
+## 3.2 cash_sessions
+
+Campos:
+
+```php
+id
+user_id foreignId
+difficulty string 20
+buyin_units integer
+starting_bankroll_units integer
+ending_bankroll_units integer nullable
+hero_start_stack_units integer
+hero_end_stack_units integer nullable
+hands_count integer default 0
+profit_units integer default 0
+rake_units integer default 0
+status string 30
+started_at timestamp nullable
+ended_at timestamp nullable
+created_at
+updated_at
+```
+
+Estados válidos:
+
+```text
+active
+finished
+hero_busted
+abandoned
+error_closed
+```
+
+Índices:
+
+```text
+user_id
+status
+started_at
+```
+
+---
+
+## 3.3 cash_table_players
+
+Campos:
+
+```php
+id
+cash_session_id foreignId
+seat_id tinyInteger unsigned
+name string 60
+type string 20
+is_hero boolean default false
+bot_profile string 50 nullable
+starting_stack_units integer
+current_stack_units integer
+hands_played integer default 0
+status string 30
+rejoin_after_hand integer nullable
+created_at
+updated_at
+```
+
+Estados:
+
+```text
+active
+busted
+waiting_replacement
+replaced
+```
+
+Índices:
+
+```text
+cash_session_id
+seat_id
+status
+```
+
+Restricción recomendada:
+
+```text
+unique(cash_session_id, seat_id)
+```
+
+---
+
+## 3.4 hands
+
+Campos:
+
+```php
+id
+cash_session_id foreignId
+hand_number integer
+dealer_seat tinyInteger unsigned
+small_blind_seat tinyInteger unsigned
+big_blind_seat tinyInteger unsigned
+street_final string 20
+ended_by string 30
+showdown boolean default false
+board_json json nullable
+pot_units integer default 0
+rake_units integer default 0
+winner_seat_ids_json json nullable
+raw_state_json longText
+safe_state_json longText nullable
+started_at timestamp nullable
+ended_at timestamp nullable
+created_at
+updated_at
+```
+
+Índices:
+
+```text
+cash_session_id
+hand_number
+showdown
+ended_by
+```
+
+Restricción:
+
+```text
+unique(cash_session_id, hand_number)
+```
+
+---
+
+## 3.5 hand_players
+
+Campos:
+
+```php
+id
+hand_id foreignId
+seat_id tinyInteger unsigned
+name string 60
+type string 20
+is_hero boolean default false
+bot_profile string 50 nullable
+position string 10
+cards_json json
+cards_revealed boolean default false
+stack_start_units integer
+stack_end_units integer
+profit_units integer
+contributed_units integer default 0
+folded boolean default false
+all_in boolean default false
+went_to_showdown boolean default false
+won_hand boolean default false
+hand_rank string 80 nullable
+created_at
+updated_at
+```
+
+Índices:
+
+```text
+hand_id
+seat_id
+position
+is_hero
+went_to_showdown
+won_hand
+```
+
+---
+
+## 3.6 hand_actions
+
+Campos:
+
+```php
+id
+hand_id foreignId
+street string 20
+action_order integer
+seat_id tinyInteger unsigned
+position string 10 nullable
+action string 30
+amount_units integer default 0
+bet_to_units integer default 0
+pot_after_units integer default 0
+stack_after_units integer default 0
+is_aggressive boolean default false
+is_all_in boolean default false
+created_at
+updated_at
+```
+
+Índices:
+
+```text
+hand_id
+street
+seat_id
+action
+action_order
+```
+
+---
+
+## 3.7 hand_pots
+
+Campos:
+
+```php
+id
+hand_id foreignId
+pot_index integer
+pot_type string 20
+amount_units integer
+rake_units integer default 0
+net_amount_units integer
+contributor_seat_ids_json json
+eligible_seat_ids_json json
+winner_seat_ids_json json nullable
+created_at
+updated_at
+```
+
+Índices:
+
+```text
+hand_id
+pot_index
+pot_type
+```
+
+---
+
+## 3.8 stat_summaries
+
+Campos:
+
+```php
+id
+user_id foreignId
+cash_session_id foreignId nullable
+scope string 30
+hands integer default 0
+vpip decimal(6,2) default 0
+pfr decimal(6,2) default 0
+vpip_pfr_gap decimal(6,2) default 0
+three_bet decimal(6,2) default 0
+fold_to_three_bet decimal(6,2) default 0
+four_bet decimal(6,2) default 0
+fold_to_four_bet decimal(6,2) default 0
+ats decimal(6,2) default 0
+fold_bb_vs_steal decimal(6,2) default 0
+fold_sb_vs_steal decimal(6,2) default 0
+squeeze decimal(6,2) default 0
+cbet_flop decimal(6,2) default 0
+fold_vs_flop_cbet decimal(6,2) default 0
+cbet_turn decimal(6,2) default 0
+fold_vs_turn_cbet decimal(6,2) default 0
+wtsd decimal(6,2) default 0
+wsd decimal(6,2) default 0
+wwsf decimal(6,2) default 0
+profit_units integer default 0
+bb_100 decimal(8,2) default 0
+rake_units integer default 0
+created_at
+updated_at
+```
+
+Nota:
+
+```text
+stat_summaries no es fuente de verdad.
+Se puede recalcular desde hands, hand_players, hand_actions y hand_pots.
+```
+
+---
+
+# 4. Servicios Laravel obligatorios
+
+## 4.1 CashSessionService
+
+Responsable de:
+
+```text
+crear Cash Session
+validar bankroll
+descontar buy-in
+finalizar sesión
+devolver stack Hero al bankroll
+cerrar sesión por bust
+cerrar sesión por abandono
+```
+
+Métodos mínimos:
+
+```php
+startSession(User $user, string $difficulty, int $buyinUnits): CashSession
+endSession(CashSession $session, string $reason = 'finished'): void
+handleHeroBusted(CashSession $session): void
+getActiveSession(User $user): ?CashSession
+```
+
+---
+
+## 4.2 CashTableService
+
+Responsable de:
+
+```text
+crear mesa
+crear bots iniciales
+mantener jugadores persistentes
+reemplazar bots busteds
+actualizar stacks
+validar mínimo de jugadores activos
+```
+
+Métodos:
+
+```php
+createTable(CashSession $session): array
+getTablePlayers(CashSession $session): array
+updateFromFinishedHand(CashSession $session, array $hand): void
+replaceBustedBotsIfDue(CashSession $session, int $handNumber): void
+```
+
+---
+
+## 4.3 PokerEngineService
+
+Responsable de:
+
+```text
+iniciar mano
+aplicar acciones
+avanzar streets
+cerrar mano
+side pots
+rake
+showdown
+```
+
+No debe contener:
+
+```text
+rangos preflop avanzados
+estrategia postflop avanzada
+lógica visual
+consultas directas de UI
+```
+
+---
+
+## 4.4 PokerHandEvaluatorService
+
+Responsable de:
+
+```text
+integrar si2k63
+evaluar 7 cartas
+crear combinaciones de 5
+determinar ganadores
+resolver empates
+```
+
+---
+
+## 4.5 PokerBoardAnalysisService
+
+Responsable de detectar:
+
+```text
+top pair
+second pair
+weak pair
+overpair
+set
+trips
+two pair
+straight
+flush
+full house
+flush draw
+OESD
+gutshot
+board dry/medium/wet/very_wet
+board paired
+board monotone
+board two-tone
+```
+
+---
+
+## 4.6 SafeHandPresenter
+
+Responsable de transformar el estado interno en payload seguro para frontend.
+
+Regla:
+
+```text
+Nunca enviar cartas ocultas de bots.
+```
+
+Métodos:
+
+```php
+toFrontend(array $hand): array
+toHistory(array $hand): array
+```
+
+---
+
+## 4.7 PokerStatsEngineService
+
+Responsable de calcular estadísticas desde datos reales.
+
+Fuente:
+
+```text
+hands
+hand_players
+hand_actions
+hand_pots
+```
+
+---
+
+## 4.8 PokerHistoryService
+
+Responsable de:
+
+```text
+últimas 10 manos
+historial completo
+formato Winamax
+detalle de mano
+```
+
+---
+
+## 4.9 BotFactoryService
+
+Responsable de:
+
+```text
+crear bots iniciales
+crear bots nuevos
+asignar nick
+asignar perfil
+asignar stack
+respetar dificultad
+```
+
+---
+
+## 4.10 PreflopStrategyService
+
+Responsable de:
+
+```text
+open raise
+call open
+3bet
+call 3bet
+4bet
+fold
+squeeze
+blind defense
+```
+
+---
+
+## 4.11 PostflopStrategyService
+
+Responsable de:
+
+```text
+check
+bet
+call
+raise
+fold
+all-in
+barrels
+bluffs
+value bets
+```
+
+---
+
+## 4.12 PokerSizingService
+
+Responsable de:
+
+```text
+open size
+3bet size
+4bet size
+squeeze size
+flop size
+turn size
+river size
+overbet
+all-in threshold
+```
+
+---
+
+# 5. Endpoints y errores
+
+## 5.1 Formato estándar success
+
+```json
+{
+  "success": true,
+  "data": {}
+}
+```
+
+---
+
+## 5.2 Formato estándar error
+
+```json
+{
+  "success": false,
+  "code": "INSUFFICIENT_BANKROLL",
+  "message": "Bankroll insuficiente para entrar a mesa."
+}
+```
+
+---
+
+## 5.3 Códigos de error
+
+```text
+INSUFFICIENT_BANKROLL
+INVALID_BUYIN
+NO_ACTIVE_SESSION
+SESSION_ALREADY_ACTIVE
+SESSION_NOT_FOUND
+HAND_NOT_FOUND
+HAND_ALREADY_FINISHED
+NOT_HERO_TURN
+INVALID_ACTION
+INVALID_AMOUNT
+PLAYER_NOT_FOUND
+BOT_LOOP_GUARD
+HERO_BUSTED
+TABLE_NOT_READY
+SERVER_ERROR
+```
+
+---
+
+## 5.4 POST /cash/session/start
+
+Entrada:
+
+```json
+{
+  "difficulty": "normal",
+  "buyin_units": 150
+}
+```
+
+Validaciones:
+
+```text
+difficulty in normal, hard
+buyin_units >= 100
+buyin_units <= 200
+bankroll >= buyin_units
+no active cash session
+```
+
+Acciones:
+
+```text
+crear cash_session
+descontar buy-in
+crear cash_table_players
+crear bots iniciales
+```
+
+Salida:
+
+```json
+{
+  "success": true,
+  "data": {
+    "cash_session_id": 1,
+    "redirect": "/cash/table"
+  }
+}
+```
+
+---
+
+## 5.5 POST /cash/session/end
+
+Entrada:
+
+```json
+{
+  "reason": "finished"
+}
+```
+
+Acciones:
+
+```text
+si hay mano terminada no guardada, guardar
+devolver stack Hero al bankroll
+marcar cash_session como finished/abandoned/hero_busted
+limpiar estado activo
+```
+
+---
+
+## 5.6 POST /cash/hand/start
+
+Acciones:
+
+```text
+validar sesión activa
+validar Hero stack > 0
+validar mínimo 2 jugadores activos
+reemplazar bots si corresponde
+crear mano
+devolver safeHand
+```
+
+---
+
+## 5.7 POST /cash/action
+
+Entrada:
+
+```json
+{
+  "seat_id": 0,
+  "action": "CALL",
+  "amount_units": 4
+}
+```
+
+Validaciones:
+
+```text
+sesión activa
+mano activa
+turno de Hero
+acción válida
+amount válido
+```
+
+Salida:
+
+```json
+{
+  "success": true,
+  "data": {
+    "hand": {}
+  }
+}
+```
+
+El hand devuelto siempre debe ser safeHand.
+
+---
+
+## 5.8 POST /cash/bot-step
+
+Acciones:
+
+```text
+ejecutar bots hasta Hero o hand_over
+devolver safeHand
+```
+
+---
+
+## 5.9 GET /cash/session/stats
+
+Devuelve:
+
+```json
+{
+  "success": true,
+  "data": {
+    "table": "Difícil",
+    "hands": 120,
+    "vpip": 24.5,
+    "pfr": 20.1,
+    "three_bet": 8.2,
+    "bb_100": 6.4
+  }
+}
+```
+
+---
+
+## 5.10 GET /cash/session/last-hands
+
+Devuelve últimas 10 manos formato panel.
+
+---
+
+# 6. Estados de UI
+
+## 6.1 Sin bankroll
+
+Mostrar depósito.
+
+No permitir entrar a mesa.
+
+---
+
+## 6.2 Cash Session activa
+
+Si usuario intenta ir a Dashboard, Historial o Estadísticas:
+
+```text
+Mostrar modal:
+¿Desea finalizar la sesión actual?
+[Cancelar]
+[Finalizar sesión]
+```
+
+---
+
+## 6.3 Hero busted
+
+Mostrar:
+
+```text
+Has perdido tu stack de la mesa.
+```
+
+Si bankroll >= 50 BB:
+
+```text
+Volver al Lobby Cash
+```
+
+Si bankroll < 50 BB:
+
+```text
+Depositar 100 BB
+```
+
+---
+
+## 6.4 Error API
+
+Mostrar mensaje discreto.
+
+No romper layout.
+
+Ejemplo:
+
+```text
+No se pudo procesar la acción. Inténtalo de nuevo.
+```
+
+---
+
+## 6.5 Pérdida de conexión
+
+Mostrar:
+
+```text
+Reconectando...
+```
+
+Si no se recupera:
+
+```text
+Finalizar Cash Session como abandoned en próximo request válido.
+```
+
+---
+
+# 7. Cierre por pestaña/navegador
+
+Usar:
+
+```js
+navigator.sendBeacon('/cash/session/end')
+```
+
+También:
+
+```js
+beforeunload
+visibilitychange
+```
+
+Fallback backend:
+
+```text
+Si existe cash_session active antigua al entrar nuevamente:
+    cerrarla como abandoned
+    devolver stack registrado de Hero si existe
+```
+
+---
+
+# 8. Seguridad
+
+Reglas obligatorias:
+
+```text
+Frontend nunca decide ganador.
+Frontend nunca decide stack final.
+Frontend nunca calcula rake final.
+Frontend nunca recibe cartas ocultas.
+Frontend nunca puede actuar por bots.
+Backend valida turno.
+Backend valida acción.
+Backend valida amount.
+Backend es única fuente de verdad.
+```
+
+---
+
+# 9. Seeders y factories
+
+Crear seeders para:
+
+```text
+Usuario con bankroll 500 BB
+Usuario sin bankroll
+Cash Session fake
+Mesa con bots fake
+100 manos fake
+Stats fake
+```
+
+Objetivo:
+
+```text
+probar dashboard
+probar historial
+probar estadísticas
+probar UI sin jugar manualmente
+```
+
+---
+
+# 10. Tests técnicos obligatorios
+
+## 10.1 Unit tests
+
+```text
+PokerHandEvaluatorServiceTest
+PokerBoardAnalysisServiceTest
+SidePotBuilderTest
+RakeCalculatorTest
+PokerStatsEngineServiceTest
+SafeHandPresenterTest
+BotFactoryServiceTest
+PokerSizingServiceTest
+```
+
+---
+
+## 10.2 Feature tests
+
+```text
+StartCashSessionTest
+EndCashSessionTest
+StartHandTest
+HeroActionTest
+BotStepTest
+HeroBustedTest
+BotReplacementTest
+LastHandsTest
+StatsEndpointTest
+```
+
+---
+
+## 10.3 Browser tests básicos
+
+```text
+Usuario deposita
+Usuario entra mesa
+Hero ve cartas
+Bots ocultos
+Hero actúa
+Panel muestra historial
+Salir devuelve bankroll
+```
+
+---
+
+# 11. Checklist por commits
+
+## Commit 1
+
+Migraciones y modelos.
+
+## Commit 2
+
+UserBankroll y depósito.
+
+## Commit 3
+
+CashSessionService.
+
+## Commit 4
+
+CashTableService y BotFactoryService.
+
+## Commit 5
+
+PokerEngineService básico.
+
+## Commit 6
+
+Acciones Hero y bot-step.
+
+## Commit 7
+
+PokerHandEvaluatorService.
+
+## Commit 8
+
+Side pots y rake.
+
+## Commit 9
+
+Guardado DB completo.
+
+## Commit 10
+
+PokerStatsEngineService.
+
+## Commit 11
+
+SafeHandPresenter.
+
+## Commit 12
+
+Panel derecho.
+
+## Commit 13
+
+Historial completo.
+
+## Commit 14
+
+Estadísticas completas.
+
+## Commit 15
+
+Animaciones y sonidos.
+
+## Commit 16
+
+PreflopStrategyService.
+
+## Commit 17
+
+PostflopStrategyService.
+
+## Commit 18
+
+PokerSizingService.
+
+---
+
+# 12. Criterio final de terminado
+
+No se considera terminado hasta que:
+
+```text
+1. Hero puede depositar.
+2. Hero puede entrar con 50-100 BB.
+3. Buy-in se descuenta.
+4. Mesa tiene Hero + bots.
+5. Bots tienen 50-250 BB iniciales.
+6. Bots persisten entre manos.
+7. Stacks persisten.
+8. Hero puede jugar mano completa.
+9. Showdown funciona.
+10. Side pots funcionan.
+11. Rake funciona.
+12. No flop no drop funciona.
+13. Bot busted se reemplaza tras 1 mano.
+14. Hero busted redirige correctamente.
+15. Salir devuelve stack al bankroll.
+16. Mano se guarda completa.
+17. Stats salen de datos reales.
+18. Panel muestra últimas 10 manos.
+19. Frontend no recibe cartas ocultas.
+20. Historial completo muestra detalle.
+21. Estadísticas completas funcionan.
+22. 100 manos seguidas se juegan sin romperse.
+```
+
+---
+
+# 13. Regla final
+
+Si una funcionalidad no cumple este documento, no está terminada.
+
+Si una decisión no está en este documento, no se inventa en código: se documenta primero y luego se implementa.
