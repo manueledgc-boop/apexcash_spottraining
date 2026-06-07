@@ -60,6 +60,9 @@
                     <h3>Tu decisión</h3>
                     <div class="decision-buttons" id="decisionButtons"></div>
                     <div class="feedback" id="feedbackBox" hidden></div>
+                    <div class="grade-box" id="gradeBox" hidden></div>
+                    <div class="frequency-box" id="frequencyBox" hidden></div>
+                    <div class="ev-box" id="evBox" hidden></div>
                     <button type="button" class="next-btn" id="nextSpotBtn">Siguiente spot →</button>
                 </div>
 
@@ -70,6 +73,16 @@
                         <div><span>Aciertos</span><strong id="summaryCorrect">0</strong></div>
                         <div><span>Fallos</span><strong id="summaryWrong">0</strong></div>
                         <div><span>Precisión</span><strong id="summaryAccuracy">0%</strong></div>
+                    </div>
+
+                    <div class="leaks-box">
+                        <h4>Tus leaks actuales</h4>
+                        <div id="leaksList"></div>
+
+                        <button type="button" id="practiceLeakBtn" class="ghost-btn">
+                            Practicar peor leak
+                        </button>
+                    </div>
                     </div>
                 </div>
             </aside>
