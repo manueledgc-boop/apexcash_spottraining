@@ -299,3 +299,77 @@
         font-weight: 900;
     }
 }
+
+/* ========================================
+   MODULE FILTER
+======================================== */
+
+.module-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.module-filter button {
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.05);
+    color: var(--apex-text);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+.module-filter button:hover {
+    background: rgba(38,208,124,.15);
+}
+
+.module-filter button.is-active {
+    background: rgba(38,208,124,.25);
+    border-color: rgba(38,208,124,.60);
+}
+
+/* ========================================
+   FEEDBACK BLOCKS
+======================================== */
+
+.grade-box,
+.frequency-box,
+.ev-box {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--apex-line);
+}
+
+.grade-box strong,
+.frequency-box strong,
+.ev-box strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 18px;
+}
+
+/* ========================================
+   LEAKS
+======================================== */
+
+.leaks-box {
+    margin-top: 16px;
+}
+
+.leaks-box h4 {
+    margin-bottom: 10px;
+}
+
+.leak-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}

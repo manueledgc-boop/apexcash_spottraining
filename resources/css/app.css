@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========================================
+   MODULE FILTER
+======================================== */
+
+.module-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+}
+
+.module-filter button {
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.05);
+    color: #dbeafe;
+    border-radius: 999px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all .15s ease;
+}
+
+.module-filter button:hover {
+    background: rgba(59,130,246,.20);
+}
+
+.module-filter button.is-active {
+    background: rgba(34,197,94,.25);
+    border-color: rgba(34,197,94,.55);
+    color: #fff;
+}
+
+/* ========================================
+   LEAKS
+======================================== */
+
+.leaks-box {
+    margin-top: 16px;
+}
+
+.leaks-box h4 {
+    margin-bottom: 10px;
+}
+
+.leak-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.ghost-btn {
+    margin-top: 12px;
+    width: 100%;
+}

@@ -49,6 +49,13 @@
                     <span class="spot-module" id="spotModule">--</span>
                     <h2 id="spotTitle">Cargando spot...</h2>
                     <p class="spot-meta" id="spotMeta">--</p>
+                    <div class="module-filter" id="moduleFilter">
+                        <button type="button" data-module="">Todos</button>
+                        <button type="button" data-module="open_raise">Open Raise</button>
+                        <button type="button" data-module="bb_vs_btn">BB vs BTN</button>
+                        <button type="button" data-module="btn_vs_3bet">BTN vs 3Bet</button>
+                        <button type="button" data-module="threebet_vs_open">3Bet vs Open</button>
+                    </div>
                 </div>
 
                 <div class="spot-box actions-box">
@@ -82,7 +89,6 @@
                         <button type="button" id="practiceLeakBtn" class="ghost-btn">
                             Practicar peor leak
                         </button>
-                    </div>
                     </div>
                 </div>
             </aside>

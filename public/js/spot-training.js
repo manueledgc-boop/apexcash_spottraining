@@ -2,6 +2,8 @@
     const state = {
         spot: window.ApexSpotTraining.initialSpot,
         summary: window.ApexSpotTraining.initialSummary,
+        currentModule: null,
+        leaks: [],
     };
 
     const els = {
@@ -12,12 +14,18 @@
         actions: document.getElementById('spotActions'),
         buttons: document.getElementById('decisionButtons'),
         feedback: document.getElementById('feedbackBox'),
+        gradeBox: document.getElementById('gradeBox'),
+        frequencyBox: document.getElementById('frequencyBox'),
+        evBox: document.getElementById('evBox'),
         next: document.getElementById('nextSpotBtn'),
         heroCards: document.getElementById('heroCards'),
         summaryTotal: document.getElementById('summaryTotal'),
         summaryCorrect: document.getElementById('summaryCorrect'),
         summaryWrong: document.getElementById('summaryWrong'),
         summaryAccuracy: document.getElementById('summaryAccuracy'),
+        leaksList: document.getElementById('leaksList'),
+        practiceLeakBtn: document.getElementById('practiceLeakBtn'),
+        moduleFilter: document.getElementById('moduleFilter'),
     };
 
     function cardHtml(card) {
@@ -43,29 +51,90 @@
     }
 
     function renderSummary(summary) {
+        summary = summary || {};
         els.summaryTotal.textContent = summary.total ?? 0;
         els.summaryCorrect.textContent = summary.correct ?? 0;
         els.summaryWrong.textContent = summary.wrong ?? 0;
         els.summaryAccuracy.textContent = `${summary.accuracy ?? 0}%`;
     }
 
+    function clearFeedback() {
+        els.feedback.hidden = true;
+        els.feedback.className = 'feedback';
+        els.feedback.innerHTML = '';
+
+        [els.gradeBox, els.frequencyBox, els.evBox].forEach((box) => {
+            if (!box) return;
+            box.hidden = true;
+            box.innerHTML = '';
+        });
+    }
+
     function renderSpot() {
         const spot = state.spot;
+        if (!spot) return;
+
         els.module.textContent = spot.module_label;
         els.title.textContent = spot.title;
         els.meta.textContent = `Hero ${spot.hero_position} · Villano ${spot.villain_position || 'sin villano directo'} · Stacks ${spot.stacks.hero_bb} BB`;
         els.pot.textContent = `Pot: ${spot.pot_bb} BB`;
         els.actions.innerHTML = spot.actions.map((action) => `<li>${action}</li>`).join('');
         els.heroCards.innerHTML = spot.hero_cards.map(cardHtml).join('');
-        els.feedback.hidden = true;
-        els.feedback.className = 'feedback';
-        els.feedback.innerHTML = '';
+        clearFeedback();
         els.buttons.innerHTML = spot.options.map((option) => {
             const cls = option === 'FOLD' ? 'danger' : (option === 'CALL' ? 'secondary' : '');
             return `<button type="button" class="decision-btn ${cls}" data-answer="${option}">${option}</button>`;
         }).join('');
         renderSeats(spot);
         renderSummary(state.summary || {});
+        renderLeaks(state.leaks || []);
+    }
+
+    function renderDecisionDetails(data) {
+        if (els.gradeBox) {
+            els.gradeBox.hidden = false;
+            els.gradeBox.className = `grade-box grade-${data.grade || 'unknown'}`;
+            els.gradeBox.innerHTML = `
+                <span>Calidad de decisión</span>
+                <strong>${String(data.grade || 'unknown').toUpperCase()}</strong>
+            `;
+        }
+
+        if (els.frequencyBox) {
+            els.frequencyBox.hidden = false;
+            els.frequencyBox.innerHTML = `
+                <span>Frecuencia GTO simplificada</span>
+                <strong>${data.selected_action || '-'}: ${data.frequency ?? '-'}%</strong>
+            `;
+        }
+
+        if (els.evBox) {
+            els.evBox.hidden = false;
+            els.evBox.innerHTML = `
+                <span>EV relativo</span>
+                <strong>${data.ev_score ?? 0}/100</strong>
+            `;
+        }
+    }
+
+    function renderLeaks(leaks) {
+        if (!els.leaksList) return;
+        els.leaksList.innerHTML = '';
+
+        if (!Array.isArray(leaks) || leaks.length === 0) {
+            els.leaksList.innerHTML = `<p class="spot-meta">Aún no hay datos suficientes.</p>`;
+            return;
+        }
+
+        leaks.forEach((leak) => {
+            const row = document.createElement('div');
+            row.className = 'leak-row';
+            row.innerHTML = `
+                <span>${leak.module_label}</span>
+                <strong>${leak.accuracy}%</strong>
+            `;
+            els.leaksList.appendChild(row);
+        });
     }
 
     async function answerSpot(answer) {
@@ -78,31 +147,50 @@
             },
             body: JSON.stringify({ answer }),
         });
+
         const data = await response.json();
+
         if (!data.success) {
             els.feedback.hidden = false;
             els.feedback.textContent = data.message || 'No se pudo evaluar el spot.';
             return;
         }
+
         state.summary = data.summary;
+        state.leaks = data.leaks || [];
+
         els.feedback.hidden = false;
-        els.feedback.classList.add(data.correct ? 'correct' : 'wrong');
+        els.feedback.className = `feedback ${data.correct ? 'correct' : 'wrong'}`;
         els.feedback.innerHTML = `
             <strong>${data.title}</strong><br>
             Mejor acción: <strong>${data.correct_action}</strong><br><br>
             ${data.explanation}
         `;
+
+        renderDecisionDetails(data);
         renderSummary(state.summary);
+        renderLeaks(state.leaks);
     }
 
-    async function nextSpot() {
-        const response = await fetch(window.ApexSpotTraining.nextUrl, {
+    async function nextSpot(module = null) {
+        let url = window.ApexSpotTraining.nextUrl;
+        if (module) {
+            url += `?module=${encodeURIComponent(module)}`;
+        }
+
+        const response = await fetch(url, {
             headers: { 'Accept': 'application/json' },
         });
+
         const data = await response.json();
         state.spot = data.spot;
-        state.summary = data.summary;
+        state.summary = data.summary || state.summary;
         renderSpot();
+    }
+
+    function getWorstLeakModule() {
+        if (!Array.isArray(state.leaks) || state.leaks.length === 0) return null;
+        return state.leaks[0]?.module || null;
     }
 
     els.buttons.addEventListener('click', (event) => {
@@ -111,7 +199,27 @@
         answerSpot(button.dataset.answer);
     });
 
-    els.next.addEventListener('click', nextSpot);
+    els.next.addEventListener('click', () => {
+        nextSpot(state.currentModule);
+    });
+
+    els.practiceLeakBtn?.addEventListener('click', () => {
+        const module = getWorstLeakModule();
+        if (!module) return;
+        state.currentModule = module;
+        nextSpot(module);
+    });
+
+    els.moduleFilter?.querySelectorAll('button').forEach((button) => {
+        button.addEventListener('click', () => {
+            const module = button.dataset.module || null;
+            state.currentModule = module;
+
+            els.moduleFilter.querySelectorAll('button').forEach((btn) => btn.classList.remove('is-active'));
+            button.classList.add('is-active');
+            nextSpot(module);
+        });
+    });
 
     renderSpot();
 })();
