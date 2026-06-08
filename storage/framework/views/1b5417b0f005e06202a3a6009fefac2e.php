@@ -1,12 +1,21 @@
-<x-app-layout>
-    <link href="{{ asset('assets/css/spot-training.css') }}" rel="stylesheet">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+    <link href="<?php echo e(asset('assets/css/spot-training.css')); ?>" rel="stylesheet">
     <script>
         window.ApexSpotTraining = {
-            initialSpot: @json($initialSpot),
-            initialSummary: @json($summary),
-            nextUrl: @json(route('spot-training.next')),
-            answerUrl: @json(route('spot-training.answer')),
-            csrf: @json(csrf_token()),
+            initialSpot: <?php echo json_encode($initialSpot, 15, 512) ?>,
+            initialSummary: <?php echo json_encode($summary, 15, 512) ?>,
+            nextUrl: <?php echo json_encode(route('spot-training.next'), 15, 512) ?>,
+            answerUrl: <?php echo json_encode(route('spot-training.answer'), 15, 512) ?>,
+            csrf: <?php echo json_encode(csrf_token(), 15, 512) ?>,
         };
     </script>
 
@@ -17,8 +26,8 @@
                 <h1>Entrenador de decisiones preflop</h1>
                 <p>Practica spots concretos, recibe feedback inmediato y repite hasta que la decisión correcta sea automática.</p>
             </div>
-            <form method="POST" action="{{ route('spot-training.reset') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('spot-training.reset')); ?>">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="ghost-btn">Reiniciar práctica</button>
             </form>
         </section>
@@ -97,5 +106,15 @@
         </section>
     </main>
 
-    <script src="{{ asset('js/spot-training.js') }}"></script>
-</x-app-layout>
+    <script src="<?php echo e(asset('js/spot-training.js')); ?>"></script>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\laragon\www\apexcash\resources\views/spot-training/index.blade.php ENDPATH**/ ?>

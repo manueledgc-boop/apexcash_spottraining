@@ -3,8 +3,10 @@
 namespace App\SpotTraining;
 
 use App\SpotTraining\Modules\BbVsBtnSpots;
+use App\SpotTraining\Modules\BbVsSbSpots;
 use App\SpotTraining\Modules\BtnVs3BetSpots;
 use App\SpotTraining\Modules\OpenRaiseSpots;
+use App\SpotTraining\Modules\SbVsBtnSpots;
 use App\SpotTraining\Modules\ThreeBetVsOpenSpots;
 
 class SpotRepository
@@ -16,6 +18,8 @@ class SpotRepository
             OpenRaiseSpots::all(),
             BbVsBtnSpots::all(),
             ThreeBetVsOpenSpots::all(),
+            SbVsBtnSpots::all(),
+            BbVsSbSpots::all(),
         );
     }
 

@@ -195,6 +195,8 @@ class SpotTrainingService
             'open_raise' => 'Open Raise',
             'bb_vs_btn' => 'BB vs BTN',
             'threebet_vs_open' => '3Bet vs Open',
+            'sb_vs_btn' => 'SB vs BTN',
+            'bb_vs_sb' => 'BB vs SB',
             default => $module,
         };
     }
