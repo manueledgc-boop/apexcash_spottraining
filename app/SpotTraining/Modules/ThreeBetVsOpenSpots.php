@@ -21,6 +21,7 @@ class ThreeBetVsOpenSpots
         $freq = $spot['freq'];
 
         return [
+            'id' => self::spotId($hero, $villain, $spot['cards']),
             'module' => 'threebet_vs_open',
             'module_label' => '3Bet vs Open',
             'title' => "{$hero} enfrenta open {$villain}",
@@ -35,6 +36,15 @@ class ThreeBetVsOpenSpots
             'explanation' => $spot['why'],
             'solver_note' => "GTO simplificado: FOLD {$freq['FOLD']}%, CALL {$freq['CALL']}%, 3BET {$freq['3BET']}%.",
             'action_grades' => self::grades($best, $freq, $spot['ev'], $spot['feedback']),
+            'answers' => [
+                'gto' => [
+                    'correct_action' => $best,
+                    'explanation' => $spot['why'],
+                    'solver_note' => "GTO simplificado: FOLD {$freq['FOLD']}%, CALL {$freq['CALL']}%, 3BET {$freq['3BET']}%.",
+                    'action_grades' => self::grades($best, $freq, $spot['ev'], $spot['feedback']),
+                ],
+            ],
+            'confidence' => self::confidenceFromFrequency($freq),
             'table_players' => self::defaultPlayers($hero, $villain),
         ];
     }
@@ -146,4 +156,20 @@ class ThreeBetVsOpenSpots
 
         return $ev;
     }
+
+    protected static function spotId(string $hero, string $villain, array $cards): string
+    {
+        return 'threebet_vs_open_' . strtolower($hero) . '_vs_' . strtolower($villain) . '_' . self::cardsKey($cards);
+    }
+
+    protected static function cardsKey(array $cards): string
+    {
+        return strtolower((string) preg_replace('/[^a-zA-Z0-9]+/', '', implode('', $cards)));
+    }
+
+    protected static function confidenceFromFrequency(array $frequency): int
+    {
+        return max(60, min(95, max(array_map('intval', $frequency ?: [80]))));
+    }
+
 }

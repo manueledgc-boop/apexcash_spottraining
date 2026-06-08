@@ -19,6 +19,7 @@ class SbVsBtnSpots
         $freq = $spot['freq'];
 
         return [
+            'id' => self::spotId($spot['cards']),
             'module' => 'sb_vs_btn',
             'module_label' => 'SB vs BTN',
             'title' => 'SB enfrenta open BTN',
@@ -33,6 +34,15 @@ class SbVsBtnSpots
             'explanation' => $spot['why'],
             'solver_note' => "GTO simplificado: FOLD {$freq['FOLD']}%, CALL {$freq['CALL']}%, 3BET {$freq['3BET']}%.",
             'action_grades' => self::grades($best, $freq, $spot['ev'], $spot['feedback']),
+            'answers' => [
+                'gto' => [
+                    'correct_action' => $best,
+                    'explanation' => $spot['why'],
+                    'solver_note' => "GTO simplificado: FOLD {$freq['FOLD']}%, CALL {$freq['CALL']}%, 3BET {$freq['3BET']}%.",
+                    'action_grades' => self::grades($best, $freq, $spot['ev'], $spot['feedback']),
+                ],
+            ],
+            'confidence' => self::confidenceFromFrequency($freq),
             'table_players' => self::defaultPlayers('SB', 'BTN'),
         ];
     }
@@ -105,4 +115,20 @@ class SbVsBtnSpots
 
         return $ev;
     }
+
+    protected static function spotId(array $cards): string
+    {
+        return 'sb_vs_btn_' . self::cardsKey($cards);
+    }
+
+    protected static function cardsKey(array $cards): string
+    {
+        return strtolower((string) preg_replace('/[^a-zA-Z0-9]+/', '', implode('', $cards)));
+    }
+
+    protected static function confidenceFromFrequency(array $frequency): int
+    {
+        return max(60, min(95, max(array_map('intval', $frequency ?: [80]))));
+    }
+
 }

@@ -27,6 +27,7 @@ class BbVsBtnSpots
         array $grades
     ): array {
         return [
+            'id' => self::spotId($heroCards),
             'module' => 'bb_vs_btn',
             'module_label' => 'BB vs BTN',
             'title' => 'Defensa BB contra open BTN',
@@ -48,6 +49,15 @@ class BbVsBtnSpots
             'explanation' => $explanation,
             'solver_note' => $solverNote,
             'action_grades' => $grades,
+            'answers' => [
+                'gto' => [
+                    'correct_action' => $correctAction,
+                    'explanation' => $explanation,
+                    'solver_note' => $solverNote,
+                    'action_grades' => $grades,
+                ],
+            ],
+            'confidence' => self::confidenceFromGrades($grades),
             'table_players' => self::defaultPlayers('BB', 'BTN'),
         ];
     }
@@ -406,4 +416,22 @@ class BbVsBtnSpots
             ])
         );
     }
+
+    protected static function spotId(array $cards): string
+    {
+        return 'bb_vs_btn_' . self::cardsKey($cards);
+    }
+
+    protected static function cardsKey(array $cards): string
+    {
+        return strtolower((string) preg_replace('/[^a-zA-Z0-9]+/', '', implode('', $cards)));
+    }
+
+    protected static function confidenceFromGrades(array $grades): int
+    {
+        $frequencies = array_map(fn (array $grade) => (int) ($grade['frequency'] ?? 0), $grades);
+
+        return max(60, min(95, max($frequencies ?: [80])));
+    }
+
 }

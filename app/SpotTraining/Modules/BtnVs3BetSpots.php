@@ -34,6 +34,7 @@ class BtnVs3BetSpots
             : ['UTG folds', 'HJ folds', 'CO folds', 'Hero BTN raises 2.5 BB', 'SB folds', 'BB 3bets 10 BB'];
 
         return [
+            'id' => self::spotId($villainPosition, $heroCards),
             'module' => 'btn_vs_3bet',
             'module_label' => 'BTN vs 3Bet',
             'title' => "BTN abre y {$villainPosition} hace 3Bet",
@@ -48,6 +49,15 @@ class BtnVs3BetSpots
             'explanation' => $explanation,
             'solver_note' => $solverNote,
             'action_grades' => $grades,
+            'answers' => [
+                'gto' => [
+                    'correct_action' => $correctAction,
+                    'explanation' => $explanation,
+                    'solver_note' => $solverNote,
+                    'action_grades' => $grades,
+                ],
+            ],
+            'confidence' => self::confidenceFromGrades($grades),
             'table_players' => self::defaultPlayers('BTN', $villainPosition),
         ];
     }
@@ -406,4 +416,22 @@ class BtnVs3BetSpots
             ])
         );
     }
+
+    protected static function spotId(string $villainPosition, array $cards): string
+    {
+        return 'btn_vs_3bet_' . strtolower($villainPosition) . '_' . self::cardsKey($cards);
+    }
+
+    protected static function cardsKey(array $cards): string
+    {
+        return strtolower((string) preg_replace('/[^a-zA-Z0-9]+/', '', implode('', $cards)));
+    }
+
+    protected static function confidenceFromGrades(array $grades): int
+    {
+        $frequencies = array_map(fn (array $grade) => (int) ($grade['frequency'] ?? 0), $grades);
+
+        return max(60, min(95, max($frequencies ?: [80])));
+    }
+
 }

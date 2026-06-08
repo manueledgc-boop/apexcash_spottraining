@@ -30,6 +30,7 @@ class OpenRaiseSpots
         array $actionGrades
     ): array {
         return [
+            'id' => self::spotId($heroPosition, $heroCards),
             'module' => 'open_raise',
             'module_label' => 'Open Raise',
             'title' => $title,
@@ -44,6 +45,15 @@ class OpenRaiseSpots
             'explanation' => $explanation,
             'solver_note' => $solverNote,
             'action_grades' => $actionGrades,
+            'answers' => [
+                'gto' => [
+                    'correct_action' => $correctAction,
+                    'explanation' => $explanation,
+                    'solver_note' => $solverNote,
+                    'action_grades' => $actionGrades,
+                ],
+            ],
+            'confidence' => self::confidenceFromGrades($actionGrades),
             'table_players' => self::defaultPlayers($heroPosition, null),
         ];
     }
@@ -125,4 +135,22 @@ class OpenRaiseSpots
     protected static function sbQ5s(): array { return self::openSpot('SB', ['Qs','5s'], 'RAISE', 70, 30, 'Q5s puede abrirse SB por suitedness y fold equity.'); }
     protected static function sbJ4o(): array { return self::openSpot('SB', ['Jh','4d'], 'FOLD', 35, 65, 'J4o es demasiado débil para abrir siempre desde SB.'); }
     protected static function sb72o(): array { return self::openSpot('SB', ['7c','2d'], 'FOLD', 8, 92, '72o es fold claro incluso en SB.'); }
+
+    protected static function spotId(string $position, array $cards): string
+    {
+        return 'open_raise_' . strtolower($position) . '_' . self::cardsKey($cards);
+    }
+
+    protected static function cardsKey(array $cards): string
+    {
+        return strtolower((string) preg_replace('/[^a-zA-Z0-9]+/', '', implode('', $cards)));
+    }
+
+    protected static function confidenceFromGrades(array $grades): int
+    {
+        $frequencies = array_map(fn (array $grade) => (int) ($grade['frequency'] ?? 0), $grades);
+
+        return max(60, min(95, max($frequencies ?: [80])));
+    }
+
 }

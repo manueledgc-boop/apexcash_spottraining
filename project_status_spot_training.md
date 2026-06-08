@@ -1,362 +1,366 @@
-# APEXCASH - PROJECT STATUS
-Fecha: 2026-06-07
+# PROJECT_STATUS_APEXCASH.md
+
+Fecha: 2026-06-09
 
 ---
 
-# RESUMEN EJECUTIVO
+# ESTADO GENERAL DEL PROYECTO
 
-Se tomó una decisión estratégica importante:
+ApexCash Spot Training se encuentra actualmente en una fase funcional estable.
 
-❌ Se abandona temporalmente la idea de construir una mesa cash totalmente jugable con persistencia completa, bankroll, sesiones, bots persistentes y estadísticas complejas.
+El sistema ya dispone de:
 
-Motivo:
+* Autenticación Laravel.
+* Dashboard de usuario.
+* Spot Training funcional.
+* Persistencia de resultados.
+* Persistencia de estadísticas.
+* Persistencia de leaks.
+* Sistema de XP.
+* Dashboard de progreso.
+* Learning Engine V1.
+* Arquitectura preparada para perfiles de entrenamiento futuros.
 
-- Complejidad extremadamente alta.
-- Coste de desarrollo muy elevado.
-- Riesgo de retrasar el producto durante meses.
-- El verdadero valor del proyecto está en el entrenamiento.
+Actualmente el sistema funciona correctamente sin errores conocidos críticos.
 
-Nueva visión:
+---
 
-✅ ApexCash se convierte en una plataforma especializada en Spot Training de Cash Games.
+# FUNCIONALIDADES IMPLEMENTADAS
+
+## Sistema de usuarios
+
+Implementado:
+
+* Registro
+* Login
+* Middleware Auth
+* Middleware Verified
+
+Estado:
+
+COMPLETADO
+
+---
+
+## Spot Training
+
+Implementado:
+
+* Open Raise
+* BTN vs 3Bet
+* BB vs BTN
+* BB vs SB
+* SB vs BTN
+* 3Bet vs Open
+
+Total aproximado:
+
+150 spots preflop.
+
+Estado:
+
+COMPLETADO
+
+---
+
+## Persistencia
+
+Tablas implementadas:
+
+training_sessions
+
+training_results
+
+user_training_stats
+
+user_leaks
+
+training_profiles
+
+Estado:
+
+COMPLETADO
+
+---
+
+## Dashboard
+
+Implementado:
+
+* Accuracy global
+* XP
+* Nivel
+* Leaks
+* Mejor módulo
+* Peor módulo
+* Historial de resultados
+
+Estado:
+
+COMPLETADO
+
+---
+
+## Learning Engine V1
+
+Implementado:
+
+TrainingRecommendationService
 
 Objetivo:
 
-Convertirse en la mejor herramienta de entrenamiento preflop y postflop para jugadores de cash games.
+* 60% spots del peor leak
+* 40% spots aleatorios
 
----
+Modo adicional:
 
-# ESTADO ACTUAL
+/spot-training?mode=leak
 
-## Backend
-
-Laravel 13 funcionando correctamente.
-
-Estado:
-
-- Login funcional
-- Registro funcional
-- Dashboard funcional
-- Spot Training funcional
-
-Migraciones:
-
-- Solo migraciones base Laravel
-- Sin tablas específicas de cash engine
-- Base de datos simplificada
-
----
-
-# ARQUITECTURA SPOT TRAINING
-
-Implementada arquitectura modular.
-
-Estructura:
-
-app/
-└── SpotTraining/
-    ├── SpotRepository.php
-    ├── Modules/
-    │   ├── OpenRaiseSpots.php
-    │   ├── BtnVs3BetSpots.php
-    │   ├── BbVsBtnSpots.php
-    │   └── ThreeBetVsOpenSpots.php
-    └── Concerns/
-        └── BuildsSpotPlayers.php
-
----
-
-# MÓDULOS IMPLEMENTADOS
-
-## 1. Open Raise
+Permite practicar únicamente el peor leak detectado.
 
 Estado:
 
-Expandido.
-
-Contenido:
-
-- UTG
-- HJ
-- CO
-- BTN
-- SB
-
-Total:
-
-25 spots
+COMPLETADO
 
 ---
 
-## 2. BTN vs 3Bet
+# CAMBIO DE ARQUITECTURA IMPORTANTE
 
-Estado:
+Se decidió preparar ApexCash para soportar múltiples perfiles de entrenamiento.
 
-Expandido.
+Antes:
 
-Contenido:
+correct_action
 
-- BTN vs SB 3Bet
-- BTN vs BB 3Bet
+action_grades
 
-Total:
+Ahora:
 
-25 spots
+answers['gto']
 
----
+confidence
 
-## 3. BB vs BTN
+spot id permanente
 
-Estado:
+Esto permite en el futuro soportar:
 
-Expandido.
+* GTO
+* Exploit NL2
+* Exploit NL10
+* Exploit NL25
+* Exploit NL50+
 
-Contenido:
-
-- Ax suited
-- Broadways
-- Pocket pairs
-- Suited connectors
-- Defensas marginales
-- Basura offsuit
-
-Total:
-
-25 spots
+sin reescribir el motor.
 
 ---
 
-## 4. 3Bet vs Open
+# VISION FUTURA
 
-Estado:
+Se identificó una oportunidad importante:
 
-Versión inicial.
+## MODO EXPLOIT
 
-Total:
+Problema observado:
 
-6 spots
+Muchos jugadores estudian GTO puro.
 
-Pendiente ampliar.
+Después intentan aplicar exactamente las mismas estrategias en:
 
----
+* NL2
+* NL5
+* NL10
 
-# SISTEMA DE EVALUACIÓN
+y pierden dinero porque la población real no juega GTO.
 
-Implementado.
+Ejemplos:
 
-Cada spot contiene:
+* KTs vs 4Bet
+* KJo vs 3Bet
+* ATo vs 3Bet
 
-- Acción correcta
-- Explicación
-- Solver note
-- Frecuencia GTO simplificada
-- EV relativo
-- Calidad de decisión
+En GTO pueden mezclarse.
 
-Calidades:
-
-- BEST
-- GOOD
-- MARGINAL
-- MISTAKE
-- BLUNDER
+En micro límites frecuentemente son folds rentables.
 
 ---
 
-# FRONTEND
+## Arquitectura prevista
 
-Estado general:
+Cada spot podrá almacenar:
 
-Muy estable.
+answers:
 
-Pantalla principal:
+gto
 
-- Mesa visual
-- Cartas Hero
-- Historial de acción
-- Botones decisión
-- Feedback
-- Frecuencia GTO
-- EV Score
-- Leaks
+exploit_micro
 
----
+exploit_nl10
 
-# FILTRO DE MÓDULOS
+exploit_nl25
 
-Implementado.
+exploit_nl50
 
-Disponibles:
+Ejemplo:
 
-- Todos
-- Open Raise
-- BB vs BTN
-- BTN vs 3Bet
-- 3Bet vs Open
+answers:
+
+gto:
+CALL
+
+exploit_micro:
+FOLD
+
+El motor decidirá qué respuesta evaluar según el perfil seleccionado.
 
 ---
 
-# SISTEMA DE LEAKS
+# OBJETIVO DIFERENCIAL DE APEXCASH
 
-Implementado V1.
+La mayoría de entrenadores actuales enseñan:
 
-Muestra:
+"¿Qué haría una IA perfecta?"
 
-- Precisión por módulo
-- Peores módulos
+ApexCash pretende enseñar:
 
-Incluye:
+"¿Cómo ganar dinero contra humanos reales?"
 
-- Botón practicar peor leak
+La visión futura es combinar:
 
-Pendiente:
-
-Persistencia real.
-
----
-
-# JAVASCRIPT
-
-Archivo principal:
-
-public/js/spot-training.js
-
-Responsabilidades:
-
-- Render spots
-- Evaluar respuestas
-- Actualizar feedback
-- Mostrar EV
-- Mostrar frecuencia
-- Mostrar leaks
-- Filtrar módulos
-
-Estado:
-
-Funcional.
+* Fundamentos GTO
+* Explotación de población
+* Adaptación por stake
+* Comparación GTO vs Exploit
 
 ---
 
-# CSS
+# ESTRUCTURA PREPARADA
 
-Archivo:
+Preparado:
 
-public/assets/css/spot-training.css
+training_profiles
 
-Estado:
+TrainingRecommendationService
 
-Estable.
+answers[]
 
-Contiene:
+confidence
 
-- Layout principal
-- Mesa
-- Panel lateral
-- Botones
-- Filtros
-- Feedback
-- Leaks
+spot id permanente
 
----
+Pendiente de completar:
 
-# SPOTS ACTUALES
+Migrar todos los spots existentes al nuevo formato answers['gto'].
 
-Open Raise:
-25
+Actualmente existe compatibilidad con:
 
-BTN vs 3Bet:
-25
+Formato antiguo
 
-BB vs BTN:
-25
+y
 
-3Bet vs Open:
-6
+Formato nuevo
 
-Total actual:
-81 spots
+simultáneamente.
 
 ---
 
-# PRIORIDAD PARA MAÑANA
+# PRIORIDADES SIGUIENTES
 
 ## FASE 1
 
-Expandir:
+Finalizar migración de todos los spots a:
 
-ThreeBetVsOpenSpots.php
+answers['gto']
 
-Objetivo:
+confidence
 
-25 spots
-
-Total esperado:
-
-100 spots preflop.
+spot_id permanente
 
 ---
 
 ## FASE 2
 
-Crear nuevos módulos:
+Anti repetición de spots
 
-SB vs BTN
-
-Objetivo:
-25 spots
-
-BB vs SB
-
-Objetivo:
-25 spots
+Evitar mostrar los últimos 10-20 spots recientes.
 
 ---
 
 ## FASE 3
 
-Llegar a:
+Modo Dominio
 
-150-200 spots preflop.
+Mostrar más frecuentemente módulos con accuracy baja.
 
----
-
-# VISIÓN A MEDIO PLAZO
-
-Preflop:
-
-- 300+ spots
-
-Postflop:
-
-- CBet IP
-- CBet OOP
-- BB vs BTN Flop
-- Turn Play
-- River Play
-- Bluff Catch
-- Overbet
-- Check Raise
+Mostrar menos frecuentemente módulos dominados.
 
 ---
 
-# VISIÓN FINAL
+## FASE 4
 
-ApexCash será una plataforma especializada exclusivamente en Spot Training.
+Alertas de Leak Crítico
 
-No pretende competir con:
+Ejemplo:
 
-- PokerTracker
-- Holdem Manager
-- Hand2Note
+BB vs BTN
 
-Tampoco pretende ser una sala de póker.
+Accuracy: 42%
 
-Objetivo:
+Mostrar recomendación automática de práctica.
 
-Ser el "Duolingo del Cash Game".
+---
 
-Entrenamiento rápido.
-Miles de spots.
-Corrección inmediata.
-Detección de leaks.
-Mejora acelerada mediante repetición.
+## FASE 5
+
+Rachas
+
+Ejemplo:
+
+🔥 10 correctas seguidas
+
+---
+
+## FASE 6
+
+Logros
+
+Medallas
+
+Desbloqueos
+
+Progresión avanzada
+
+---
+
+# ESTADO ACTUAL
+
+Backend:
+
+ESTABLE
+
+Base de datos:
+
+ESTABLE
+
+Dashboard:
+
+ESTABLE
+
+Persistencia:
+
+ESTABLE
+
+Spot Training:
+
+ESTABLE
+
+Learning Engine:
+
+FUNCIONAL
+
+Arquitectura futura GTO/Exploit:
+
+PREPARADA PARCIALMENTE
+
+Progreso global estimado:
+
+35% del sistema completo previsto para ApexCash Train.
