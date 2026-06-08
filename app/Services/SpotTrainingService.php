@@ -2,7 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\TrainingResult;
+use App\Models\TrainingSession;
+use App\Models\UserLeak;
+use App\Models\UserTrainingStat;
 use App\SpotTraining\SpotRepository;
+use Illuminate\Support\Facades\Auth;
 
 class SpotTrainingService
 {
@@ -53,18 +58,27 @@ class SpotTrainingService
 
         $actionGrades = $spot['action_grades'] ?? [];
         $grade = $actionGrades[$answer]['grade'] ?? 'mistake';
-
         $isCorrect = in_array($grade, ['best', 'good'], true);
+        $frequency = $actionGrades[$answer]['frequency'] ?? null;
+        $evScore = (int) ($actionGrades[$answer]['ev_score'] ?? 0);
+        $explanation = $actionGrades[$answer]['feedback'] ?? $spot['explanation'];
+        $xpEarned = $this->xpForGrade($grade);
 
-        session()->push('spot_training.results', [
+        $sessionResult = [
             'spot_id' => $spot['spot_id'] ?? null,
             'module' => $spot['module'],
+            'module_label' => $spot['module_label'],
             'selected_action' => $answer,
             'correct_action' => $correctAction,
             'grade' => $grade,
             'correct' => $isCorrect,
+            'xp_earned' => $xpEarned,
             'created_at' => now()->toDateTimeString(),
-        ]);
+        ];
+
+        session()->push('spot_training.results', $sessionResult);
+
+        $this->persistResult($spot, $answer, $correctAction, $grade, $isCorrect, $frequency, $evScore, $xpEarned, $explanation);
 
         return [
             'success' => true,
@@ -73,14 +87,16 @@ class SpotTrainingService
             'selected_action' => $answer,
             'correct_action' => $correctAction,
             'title' => $this->titleForGrade($grade),
-            'explanation' => $actionGrades[$answer]['feedback'] ?? $spot['explanation'],
+            'explanation' => $explanation,
             'main_explanation' => $spot['explanation'],
             'solver_note' => $spot['solver_note'] ?? null,
-            'frequency' => $actionGrades[$answer]['frequency'] ?? null,
-            'ev_score' => $actionGrades[$answer]['ev_score'] ?? 0,
+            'frequency' => $frequency,
+            'ev_score' => $evScore,
+            'xp_earned' => $xpEarned,
             'spot' => $this->publicSpot($spot),
             'summary' => $this->summary(),
             'leaks' => $this->leakSummary(),
+            'lifetime' => $this->lifetimeSummary(),
         ];
     }
 
@@ -89,13 +105,85 @@ class SpotTrainingService
         $results = session('spot_training.results', []);
         $total = count($results);
         $correct = count(array_filter($results, fn ($result) => (bool) ($result['correct'] ?? false)));
+        $xp = array_sum(array_map(fn ($result) => (int) ($result['xp_earned'] ?? 0), $results));
 
         return [
             'total' => $total,
             'correct' => $correct,
             'wrong' => max(0, $total - $correct),
             'accuracy' => $total > 0 ? round(($correct / $total) * 100, 1) : 0,
+            'xp' => $xp,
         ];
+    }
+
+    public function lifetimeSummary(): array
+    {
+        $userId = Auth::id();
+
+        if (! $userId) {
+            return [
+                'total' => 0,
+                'correct' => 0,
+                'wrong' => 0,
+                'accuracy' => 0,
+                'xp' => 0,
+                'level' => 1,
+            ];
+        }
+
+        $stat = UserTrainingStat::query()
+            ->where('user_id', $userId)
+            ->where('module', 'global')
+            ->first();
+
+        if (! $stat) {
+            return [
+                'total' => 0,
+                'correct' => 0,
+                'wrong' => 0,
+                'accuracy' => 0,
+                'xp' => 0,
+                'level' => 1,
+            ];
+        }
+
+        return [
+            'total' => (int) $stat->total_spots,
+            'correct' => (int) $stat->correct_spots,
+            'wrong' => (int) $stat->wrong_spots,
+            'accuracy' => (float) $stat->accuracy,
+            'xp' => (int) $stat->xp,
+            'level' => (int) $stat->level,
+        ];
+    }
+
+    public function persistentLeaks(): array
+    {
+        $userId = Auth::id();
+
+        if (! $userId) {
+            return [];
+        }
+
+        return UserLeak::query()
+            ->where('user_id', $userId)
+            ->where('total', '>=', 1)
+            ->orderByDesc('weakness_score')
+            ->orderBy('accuracy')
+            ->limit(6)
+            ->get()
+            ->map(fn (UserLeak $leak) => [
+                'module' => $leak->module,
+                'module_label' => $leak->module_label,
+                'total' => (int) $leak->total,
+                'correct' => (int) $leak->correct,
+                'accuracy' => (float) $leak->accuracy,
+                'mistake' => (int) $leak->mistakes,
+                'blunder' => (int) $leak->blunders,
+                'weakness_score' => (float) $leak->weakness_score,
+            ])
+            ->values()
+            ->all();
     }
 
     public function leakSummary(): array
@@ -103,7 +191,7 @@ class SpotTrainingService
         $results = session('spot_training.results', []);
 
         if (empty($results)) {
-            return [];
+            return $this->persistentLeaks();
         }
 
         $modules = [];
@@ -154,7 +242,168 @@ class SpotTrainingService
 
     public function reset(): void
     {
+        $trainingSessionId = session('spot_training.training_session_id');
+
+        if ($trainingSessionId) {
+            TrainingSession::query()
+                ->where('id', $trainingSessionId)
+                ->where('user_id', Auth::id())
+                ->update(['ended_at' => now()]);
+        }
+
         session()->forget('spot_training');
+    }
+
+    protected function persistResult(array $spot, string $answer, string $correctAction, string $grade, bool $isCorrect, ?int $frequency, int $evScore, int $xpEarned, string $explanation): void
+    {
+        $userId = Auth::id();
+
+        if (! $userId) {
+            return;
+        }
+
+        $trainingSession = $this->currentTrainingSession($spot['module']);
+
+        TrainingResult::create([
+            'user_id' => $userId,
+            'training_session_id' => $trainingSession->id,
+            'spot_id' => $spot['spot_id'] ?? null,
+            'module' => $spot['module'],
+            'module_label' => $spot['module_label'],
+            'title' => $spot['title'],
+            'hero_position' => $spot['hero_position'] ?? null,
+            'villain_position' => $spot['villain_position'] ?? null,
+            'hero_cards' => $spot['hero_cards'] ?? [],
+            'selected_action' => $answer,
+            'correct_action' => $correctAction,
+            'grade' => $grade,
+            'is_correct' => $isCorrect,
+            'frequency' => $frequency,
+            'ev_score' => $evScore,
+            'xp_earned' => $xpEarned,
+            'explanation' => $explanation,
+            'spot_snapshot' => $this->publicSpot($spot),
+        ]);
+
+        $this->updateTrainingSession($trainingSession, $isCorrect, $xpEarned);
+        $this->updateStat($userId, 'global', 'Global', $grade, $isCorrect, $xpEarned);
+        $this->updateStat($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect, $xpEarned);
+        $this->updateLeak($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect);
+    }
+
+    protected function currentTrainingSession(?string $module): TrainingSession
+    {
+        $userId = Auth::id();
+        $sessionId = session('spot_training.training_session_id');
+
+        if ($sessionId) {
+            $trainingSession = TrainingSession::query()
+                ->where('id', $sessionId)
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($trainingSession) {
+                return $trainingSession;
+            }
+        }
+
+        $trainingSession = TrainingSession::create([
+            'user_id' => $userId,
+            'mode' => 'preflop',
+            'module' => $module,
+            'started_at' => now(),
+        ]);
+
+        session(['spot_training.training_session_id' => $trainingSession->id]);
+
+        return $trainingSession;
+    }
+
+    protected function updateTrainingSession(TrainingSession $trainingSession, bool $isCorrect, int $xpEarned): void
+    {
+        $total = $trainingSession->total_spots + 1;
+        $correct = $trainingSession->correct_spots + ($isCorrect ? 1 : 0);
+        $wrong = $total - $correct;
+
+        $trainingSession->update([
+            'total_spots' => $total,
+            'correct_spots' => $correct,
+            'wrong_spots' => $wrong,
+            'accuracy' => round(($correct / max(1, $total)) * 100, 2),
+            'xp_earned' => $trainingSession->xp_earned + $xpEarned,
+            'ended_at' => now(),
+        ]);
+    }
+
+    protected function updateStat(int $userId, string $module, string $moduleLabel, string $grade, bool $isCorrect, int $xpEarned): void
+    {
+        $stat = UserTrainingStat::firstOrCreate(
+            ['user_id' => $userId, 'module' => $module],
+            ['module_label' => $moduleLabel]
+        );
+
+        $total = $stat->total_spots + 1;
+        $correct = $stat->correct_spots + ($isCorrect ? 1 : 0);
+        $wrong = $total - $correct;
+        $xp = $stat->xp + $xpEarned;
+
+        $stat->fill([
+            'module_label' => $moduleLabel,
+            'total_spots' => $total,
+            'correct_spots' => $correct,
+            'wrong_spots' => $wrong,
+            'best' => $stat->best + ($grade === 'best' ? 1 : 0),
+            'good' => $stat->good + ($grade === 'good' ? 1 : 0),
+            'marginal' => $stat->marginal + ($grade === 'marginal' ? 1 : 0),
+            'mistake' => $stat->mistake + ($grade === 'mistake' ? 1 : 0),
+            'blunder' => $stat->blunder + ($grade === 'blunder' ? 1 : 0),
+            'accuracy' => round(($correct / max(1, $total)) * 100, 2),
+            'xp' => $xp,
+            'level' => $this->levelForXp($xp),
+        ])->save();
+    }
+
+    protected function updateLeak(int $userId, string $module, string $moduleLabel, string $grade, bool $isCorrect): void
+    {
+        $leak = UserLeak::firstOrCreate(
+            ['user_id' => $userId, 'module' => $module],
+            ['module_label' => $moduleLabel]
+        );
+
+        $total = $leak->total + 1;
+        $correct = $leak->correct + ($isCorrect ? 1 : 0);
+        $mistakes = $leak->mistakes + ($grade === 'mistake' ? 1 : 0);
+        $blunders = $leak->blunders + ($grade === 'blunder' ? 1 : 0);
+        $accuracy = round(($correct / max(1, $total)) * 100, 2);
+        $weaknessScore = round((100 - $accuracy) + ($mistakes * 1.25) + ($blunders * 2.5), 2);
+
+        $leak->fill([
+            'module_label' => $moduleLabel,
+            'total' => $total,
+            'correct' => $correct,
+            'accuracy' => $accuracy,
+            'mistakes' => $mistakes,
+            'blunders' => $blunders,
+            'weakness_score' => $weaknessScore,
+            'last_mistake_at' => $isCorrect ? $leak->last_mistake_at : now(),
+        ])->save();
+    }
+
+    protected function xpForGrade(string $grade): int
+    {
+        return match ($grade) {
+            'best' => 12,
+            'good' => 9,
+            'marginal' => 4,
+            'mistake' => 1,
+            'blunder' => 0,
+            default => 0,
+        };
+    }
+
+    protected function levelForXp(int $xp): int
+    {
+        return max(1, (int) floor($xp / 250) + 1);
     }
 
     protected function titleForGrade(string $grade): string

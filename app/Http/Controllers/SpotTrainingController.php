@@ -10,11 +10,17 @@ use Illuminate\View\View;
 
 class SpotTrainingController extends Controller
 {
-    public function index(SpotTrainingService $service): View
+    public function index(Request $request, SpotTrainingService $service): View
     {
+        $module = $request->query('module');
+        $module = is_string($module) && $module !== '' ? $module : null;
+
         return view('spot-training.index', [
-            'initialSpot' => $service->currentSpot() ?? $service->nextSpot(),
+            'initialModule' => $module,
+            'initialSpot' => $module ? $service->nextSpot($module) : ($service->currentSpot() ?? $service->nextSpot()),
             'summary' => $service->summary(),
+            'leaks' => $service->leakSummary(),
+            'lifetime' => $service->lifetimeSummary(),
         ]);
     }
 
@@ -26,6 +32,8 @@ class SpotTrainingController extends Controller
             'success' => true,
             'spot' => $service->nextSpot(is_string($module) ? $module : null),
             'summary' => $service->summary(),
+            'leaks' => $service->leakSummary(),
+            'lifetime' => $service->lifetimeSummary(),
         ]);
     }
 

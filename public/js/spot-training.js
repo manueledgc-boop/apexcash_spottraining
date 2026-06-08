@@ -2,8 +2,9 @@
     const state = {
         spot: window.ApexSpotTraining.initialSpot,
         summary: window.ApexSpotTraining.initialSummary,
-        currentModule: null,
-        leaks: [],
+        currentModule: window.ApexSpotTraining.initialModule || null,
+        leaks: window.ApexSpotTraining.initialLeaks || [],
+        lifetime: window.ApexSpotTraining.lifetime || {},
     };
 
     const els = {
@@ -158,6 +159,7 @@
 
         state.summary = data.summary;
         state.leaks = data.leaks || [];
+        state.lifetime = data.lifetime || state.lifetime;
 
         els.feedback.hidden = false;
         els.feedback.className = `feedback ${data.correct ? 'correct' : 'wrong'}`;
@@ -185,6 +187,8 @@
         const data = await response.json();
         state.spot = data.spot;
         state.summary = data.summary || state.summary;
+        state.leaks = data.leaks || state.leaks;
+        state.lifetime = data.lifetime || state.lifetime;
         renderSpot();
     }
 
@@ -220,6 +224,12 @@
             nextSpot(module);
         });
     });
+
+    if (els.moduleFilter) {
+        const activeModule = state.currentModule || '';
+        const activeButton = els.moduleFilter.querySelector(`[data-module="${activeModule}"]`);
+        activeButton?.classList.add('is-active');
+    }
 
     renderSpot();
 })();

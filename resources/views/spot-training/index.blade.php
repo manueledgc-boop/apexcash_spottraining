@@ -4,6 +4,9 @@
         window.ApexSpotTraining = {
             initialSpot: @json($initialSpot),
             initialSummary: @json($summary),
+            initialLeaks: @json($leaks),
+            initialModule: @json($initialModule ?? null),
+            lifetime: @json($lifetime),
             nextUrl: @json(route('spot-training.next')),
             answerUrl: @json(route('spot-training.answer')),
             csrf: @json(csrf_token()),

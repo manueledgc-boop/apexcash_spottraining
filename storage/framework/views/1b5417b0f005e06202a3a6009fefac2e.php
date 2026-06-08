@@ -13,6 +13,9 @@
         window.ApexSpotTraining = {
             initialSpot: <?php echo json_encode($initialSpot, 15, 512) ?>,
             initialSummary: <?php echo json_encode($summary, 15, 512) ?>,
+            initialLeaks: <?php echo json_encode($leaks, 15, 512) ?>,
+            initialModule: <?php echo json_encode($initialModule ?? null, 15, 512) ?>,
+            lifetime: <?php echo json_encode($lifetime, 15, 512) ?>,
             nextUrl: <?php echo json_encode(route('spot-training.next'), 15, 512) ?>,
             answerUrl: <?php echo json_encode(route('spot-training.answer'), 15, 512) ?>,
             csrf: <?php echo json_encode(csrf_token(), 15, 512) ?>,
