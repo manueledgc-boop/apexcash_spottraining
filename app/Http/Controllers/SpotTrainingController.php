@@ -14,10 +14,13 @@ class SpotTrainingController extends Controller
     {
         $module = $request->query('module');
         $module = is_string($module) && $module !== '' ? $module : null;
+        $mode = $request->query('mode');
+        $mode = is_string($mode) && $mode !== '' ? $mode : 'normal';
 
         return view('spot-training.index', [
             'initialModule' => $module,
-            'initialSpot' => $module ? $service->nextSpot($module) : ($service->currentSpot() ?? $service->nextSpot()),
+            'initialMode' => $mode,
+            'initialSpot' => $module || $mode === 'leak' ? $service->nextSpot($module, $mode) : ($service->currentSpot() ?? $service->nextSpot()),
             'summary' => $service->summary(),
             'leaks' => $service->leakSummary(),
             'lifetime' => $service->lifetimeSummary(),
@@ -27,10 +30,14 @@ class SpotTrainingController extends Controller
     public function next(Request $request, SpotTrainingService $service): JsonResponse
     {
         $module = $request->query('module');
+        $mode = $request->query('mode');
 
         return response()->json([
             'success' => true,
-            'spot' => $service->nextSpot(is_string($module) ? $module : null),
+            'spot' => $service->nextSpot(
+                is_string($module) && $module !== '' ? $module : null,
+                is_string($mode) && $mode !== '' ? $mode : 'normal'
+            ),
             'summary' => $service->summary(),
             'leaks' => $service->leakSummary(),
             'lifetime' => $service->lifetimeSummary(),

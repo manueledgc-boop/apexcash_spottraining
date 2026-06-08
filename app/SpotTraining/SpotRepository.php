@@ -8,12 +8,13 @@ use App\SpotTraining\Modules\BtnVs3BetSpots;
 use App\SpotTraining\Modules\OpenRaiseSpots;
 use App\SpotTraining\Modules\SbVsBtnSpots;
 use App\SpotTraining\Modules\ThreeBetVsOpenSpots;
+use Illuminate\Support\Str;
 
 class SpotRepository
 {
     public function all(): array
     {
-        return array_merge(
+        $spots = array_merge(
             BtnVs3BetSpots::all(),
             OpenRaiseSpots::all(),
             BbVsBtnSpots::all(),
@@ -21,6 +22,11 @@ class SpotRepository
             SbVsBtnSpots::all(),
             BbVsSbSpots::all(),
         );
+
+        return array_values(array_map(
+            fn (array $spot) => $this->normalize($spot),
+            $spots
+        ));
     }
 
     public function byModule(string $module): array
@@ -29,5 +35,46 @@ class SpotRepository
             $this->all(),
             fn (array $spot) => $spot['module'] === $module
         ));
+    }
+
+    public function normalize(array $spot): array
+    {
+        $spot['id'] = $spot['id'] ?? $this->buildStableId($spot);
+        $spot['spot_id'] = $spot['spot_id'] ?? $spot['id'];
+        $spot['confidence'] = (int) ($spot['confidence'] ?? 80);
+        $spot['training_profile'] = $spot['training_profile'] ?? 'gto';
+
+        if (! isset($spot['answers']) || ! is_array($spot['answers'])) {
+            $spot['answers'] = [
+                'gto' => [
+                    'correct_action' => strtoupper((string) ($spot['correct_action'] ?? 'FOLD')),
+                    'explanation' => $spot['explanation'] ?? '',
+                    'solver_note' => $spot['solver_note'] ?? null,
+                    'action_grades' => $spot['action_grades'] ?? [],
+                ],
+            ];
+        }
+
+        // Backward compatibility for the current frontend/service.
+        $gto = $spot['answers']['gto'] ?? [];
+        $spot['correct_action'] = strtoupper((string) ($gto['correct_action'] ?? $spot['correct_action'] ?? 'FOLD'));
+        $spot['explanation'] = $gto['explanation'] ?? $spot['explanation'] ?? '';
+        $spot['solver_note'] = $gto['solver_note'] ?? $spot['solver_note'] ?? null;
+        $spot['action_grades'] = $gto['action_grades'] ?? $spot['action_grades'] ?? [];
+
+        return $spot;
+    }
+
+    protected function buildStableId(array $spot): string
+    {
+        $parts = [
+            $spot['module'] ?? 'spot',
+            $spot['hero_position'] ?? 'hero',
+            $spot['villain_position'] ?? 'na',
+            implode('', $spot['hero_cards'] ?? []),
+            $spot['title'] ?? 'untitled',
+        ];
+
+        return strtoupper(Str::slug(implode(' ', $parts), '_'));
     }
 }

@@ -6,6 +6,7 @@
             initialSummary: @json($summary),
             initialLeaks: @json($leaks),
             initialModule: @json($initialModule ?? null),
+            initialMode: @json($initialMode ?? 'normal'),
             lifetime: @json($lifetime),
             nextUrl: @json(route('spot-training.next')),
             answerUrl: @json(route('spot-training.answer')),

@@ -3,6 +3,7 @@
         spot: window.ApexSpotTraining.initialSpot,
         summary: window.ApexSpotTraining.initialSummary,
         currentModule: window.ApexSpotTraining.initialModule || null,
+        currentMode: window.ApexSpotTraining.initialMode || 'normal',
         leaks: window.ApexSpotTraining.initialLeaks || [],
         lifetime: window.ApexSpotTraining.lifetime || {},
     };
@@ -174,10 +175,21 @@
         renderLeaks(state.leaks);
     }
 
-    async function nextSpot(module = null) {
-        let url = window.ApexSpotTraining.nextUrl;
+    async function nextSpot(module = null, mode = state.currentMode || 'normal') {
+        const params = new URLSearchParams();
+
         if (module) {
-            url += `?module=${encodeURIComponent(module)}`;
+            params.set('module', module);
+        }
+
+        if (mode && mode !== 'normal') {
+            params.set('mode', mode);
+        }
+
+        let url = window.ApexSpotTraining.nextUrl;
+        const query = params.toString();
+        if (query) {
+            url += `?${query}`;
         }
 
         const response = await fetch(url, {
@@ -204,24 +216,26 @@
     });
 
     els.next.addEventListener('click', () => {
-        nextSpot(state.currentModule);
+        nextSpot(state.currentModule, state.currentMode);
     });
 
     els.practiceLeakBtn?.addEventListener('click', () => {
         const module = getWorstLeakModule();
         if (!module) return;
         state.currentModule = module;
-        nextSpot(module);
+        state.currentMode = 'normal';
+        nextSpot(module, state.currentMode);
     });
 
     els.moduleFilter?.querySelectorAll('button').forEach((button) => {
         button.addEventListener('click', () => {
             const module = button.dataset.module || null;
             state.currentModule = module;
+            state.currentMode = 'normal';
 
             els.moduleFilter.querySelectorAll('button').forEach((btn) => btn.classList.remove('is-active'));
             button.classList.add('is-active');
-            nextSpot(module);
+            nextSpot(module, state.currentMode);
         });
     });
 

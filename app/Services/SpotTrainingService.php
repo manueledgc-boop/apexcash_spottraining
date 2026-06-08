@@ -12,22 +12,17 @@ use Illuminate\Support\Facades\Auth;
 class SpotTrainingService
 {
     public function __construct(
-        protected SpotRepository $spots
+        protected SpotRepository $spots,
+        protected TrainingRecommendationService $recommendations
     ) {
     }
 
-    public function nextSpot(?string $module = null): array
+    public function nextSpot(?string $module = null, string $mode = 'normal', string $profile = 'gto'): array
     {
-        $spots = $module
-            ? $this->spots->byModule($module)
-            : $this->spots->all();
-
-        if (empty($spots)) {
-            $spots = $this->spots->all();
-        }
-
-        $spot = $spots[array_rand($spots)];
-        $spot['spot_id'] = uniqid('spot_', true);
+        $spot = $this->recommendations->nextSpot($module, $mode);
+        $spot = $this->spots->normalize($spot);
+        $spot['training_profile'] = $this->resolveTrainingProfile($profile);
+        $spot['spot_id'] = $spot['id'];
 
         session(['spot_training.current_spot' => $spot]);
 
@@ -54,20 +49,23 @@ class SpotTrainingService
         }
 
         $answer = strtoupper(trim($answer));
-        $correctAction = strtoupper($spot['correct_action']);
+        $profile = $this->resolveTrainingProfile((string) ($spot['training_profile'] ?? 'gto'));
+        $profileAnswer = $this->answerProfile($spot, $profile);
+        $correctAction = strtoupper($profileAnswer['correct_action']);
 
-        $actionGrades = $spot['action_grades'] ?? [];
+        $actionGrades = $profileAnswer['action_grades'] ?? [];
         $grade = $actionGrades[$answer]['grade'] ?? 'mistake';
         $isCorrect = in_array($grade, ['best', 'good'], true);
         $frequency = $actionGrades[$answer]['frequency'] ?? null;
         $evScore = (int) ($actionGrades[$answer]['ev_score'] ?? 0);
-        $explanation = $actionGrades[$answer]['feedback'] ?? $spot['explanation'];
+        $explanation = $actionGrades[$answer]['feedback'] ?? ($profileAnswer['explanation'] ?? $spot['explanation']);
         $xpEarned = $this->xpForGrade($grade);
 
         $sessionResult = [
-            'spot_id' => $spot['spot_id'] ?? null,
+            'spot_id' => $spot['id'] ?? $spot['spot_id'] ?? null,
             'module' => $spot['module'],
             'module_label' => $spot['module_label'],
+            'training_profile' => $profile,
             'selected_action' => $answer,
             'correct_action' => $correctAction,
             'grade' => $grade,
@@ -88,8 +86,8 @@ class SpotTrainingService
             'correct_action' => $correctAction,
             'title' => $this->titleForGrade($grade),
             'explanation' => $explanation,
-            'main_explanation' => $spot['explanation'],
-            'solver_note' => $spot['solver_note'] ?? null,
+            'main_explanation' => $profileAnswer['explanation'] ?? $spot['explanation'],
+            'solver_note' => $profileAnswer['solver_note'] ?? $spot['solver_note'] ?? null,
             'frequency' => $frequency,
             'ev_score' => $evScore,
             'xp_earned' => $xpEarned,
@@ -267,7 +265,7 @@ class SpotTrainingService
         TrainingResult::create([
             'user_id' => $userId,
             'training_session_id' => $trainingSession->id,
-            'spot_id' => $spot['spot_id'] ?? null,
+            'spot_id' => $spot['id'] ?? $spot['spot_id'] ?? null,
             'module' => $spot['module'],
             'module_label' => $spot['module_label'],
             'title' => $spot['title'],
@@ -282,7 +280,11 @@ class SpotTrainingService
             'ev_score' => $evScore,
             'xp_earned' => $xpEarned,
             'explanation' => $explanation,
-            'spot_snapshot' => $this->publicSpot($spot),
+            'spot_snapshot' => array_merge($this->publicSpot($spot), [
+                'answers' => $spot['answers'] ?? [],
+                'confidence' => $spot['confidence'] ?? null,
+                'training_profile' => $spot['training_profile'] ?? 'gto',
+            ]),
         ]);
 
         $this->updateTrainingSession($trainingSession, $isCorrect, $xpEarned);
@@ -421,7 +423,7 @@ class SpotTrainingService
     protected function publicSpot(array $spot): array
     {
         return [
-            'spot_id' => $spot['spot_id'] ?? null,
+            'spot_id' => $spot['id'] ?? $spot['spot_id'] ?? null,
             'module' => $spot['module'],
             'module_label' => $spot['module_label'],
             'title' => $spot['title'],
@@ -434,6 +436,31 @@ class SpotTrainingService
             'options' => $spot['options'],
             'table_players' => $spot['table_players'],
             'difficulty' => $spot['difficulty'] ?? 'GTO simplificado',
+            'confidence' => $spot['confidence'] ?? 80,
+            'training_profile' => $spot['training_profile'] ?? 'gto',
+        ];
+    }
+
+    protected function resolveTrainingProfile(string $profile): string
+    {
+        // For now only GTO is active. This keeps the architecture ready for
+        // exploit_micro without changing current behaviour.
+        return $profile === 'gto' ? 'gto' : 'gto';
+    }
+
+    protected function answerProfile(array $spot, string $profile): array
+    {
+        $answers = $spot['answers'] ?? [];
+
+        if (isset($answers[$profile]) && is_array($answers[$profile])) {
+            return $answers[$profile];
+        }
+
+        return $answers['gto'] ?? [
+            'correct_action' => $spot['correct_action'] ?? 'FOLD',
+            'explanation' => $spot['explanation'] ?? '',
+            'solver_note' => $spot['solver_note'] ?? null,
+            'action_grades' => $spot['action_grades'] ?? [],
         ];
     }
 
