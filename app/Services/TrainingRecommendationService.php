@@ -33,16 +33,12 @@ class TrainingRecommendationService
             }
         }
 
-        if ($this->shouldTrainWeakness()) {
-            $worstLeak = $this->worstLeakModule();
+        $recommendedModule = $this->recommendedModule();
 
-            if ($worstLeak) {
-                $weakSpots = $this->spots->byModule($worstLeak);
-
-                if (! empty($weakSpots)) {
-                    return $this->pickAndRemember($weakSpots);
-                }
-            }
+        if ($recommendedModule) {
+            return $this->pickAndRemember(
+                $this->spots->byModule($recommendedModule)
+            );
         }
 
         return $this->pickAndRemember(
@@ -66,9 +62,49 @@ class TrainingRecommendationService
             ->value('module');
     }
 
-    protected function shouldTrainWeakness(): bool
+    protected function recommendedModule(): ?string
     {
-        return random_int(1, 100) <= 60;
+        $userId = Auth::id();
+
+        if (! $userId) {
+            return null;
+        }
+
+        $leaks = UserLeak::query()
+            ->where('user_id', $userId)
+            ->where('total', '>=', 3)
+            ->get();
+
+        if ($leaks->isEmpty()) {
+            return null;
+        }
+
+        $weightedModules = [];
+
+        foreach ($leaks as $leak) {
+            $accuracy = (float) $leak->accuracy;
+            $weakness = (float) $leak->weakness_score;
+
+            if ($accuracy < 60) {
+                $weight = 5;
+            } elseif ($accuracy < 80) {
+                $weight = 3;
+            } else {
+                $weight = 1;
+            }
+
+            $score = max(1, (int) round($weight + $weakness));
+
+            for ($i = 0; $i < $score; $i++) {
+                $weightedModules[] = $leak->module;
+            }
+        }
+
+        if (empty($weightedModules)) {
+            return null;
+        }
+
+        return $weightedModules[array_rand($weightedModules)];
     }
 
     protected function pickAndRemember(array $spots): array

@@ -30,6 +30,27 @@
             </div>
         </section>
 
+        @if ($criticalLeak)
+        @php
+            $criticalErrors = max(0, (int) $criticalLeak->total - (int) $criticalLeak->correct);
+        @endphp
+
+        <section class="critical-leak-panel">
+            <div>
+                <span>🚨 LEAK CRÍTICO DETECTADO</span>
+                <h2>{{ $criticalLeak->module_label }}</h2>
+                <p>
+                    Accuracy {{ number_format((float) $criticalLeak->accuracy, 1) }}%.
+                    Has fallado {{ $criticalErrors }} de {{ $criticalLeak->total }} spots en este módulo.
+                </p>
+            </div>
+
+            <a href="{{ route('spot-training.index', ['module' => $criticalLeak->module]) }}">
+                Practicar ahora
+            </a>
+        </section>
+    @endif
+
         <section class="progress-panel">
             <div>
                 <span>Nivel {{ $level }}</span>
@@ -98,30 +119,93 @@
             </article>
 
             <article class="dashboard-card table-card">
-                <span>Últimos resultados</span>
-                <h2>Actividad reciente</h2>
-                @forelse ($recentResults as $result)
-                    <div class="metric-row">
-                        <span>{{ $result->module_label }} · {{ $result->selected_action }}</span>
-                        <strong class="grade-pill grade-{{ $result->grade }}">{{ strtoupper($result->grade) }}</strong>
-                    </div>
+                <span>Peores spots</span>
+                <h2>Errores concretos</h2>
+
+                @forelse ($worstSpots as $spot)
+                    <a class="metric-row" href="{{ route('spot-training.index', ['spot_id' => $spot->spot_id]) }}">
+                        <span>
+                            {{ $spot->hero_cards ?: 'Spot' }}
+                            ·
+                            {{ $spot->concept_label ?: ($spot->spot_title ?: $spot->spot_id) }}
+                        </span>
+
+                        <strong>
+                            {{ number_format((float) $spot->accuracy, 1) }}%
+                            ·
+                            {{ $spot->wrong }} errores
+                        </strong>
+                    </a>
                 @empty
-                    <p>Todavía no has respondido spots.</p>
+                    <p>Necesitas responder más spots para detectar errores concretos.</p>
                 @endforelse
             </article>
+
+            
         </section>
 
         <section class="dashboard-grid two-cols">
             <article class="dashboard-card table-card">
                 <span>Estadísticas por módulo</span>
                 <h2>Resumen técnico</h2>
+
                 @forelse ($moduleStats->take(8) as $stat)
+                    @php
+                        $acc = (float) $stat->accuracy;
+
+                        if ($acc >= 85) {
+                            $badgeClass = 'mastery-dominated';
+                            $badgeLabel = '🔥 Dominado';
+                        } elseif ($acc >= 60) {
+                            $badgeClass = 'mastery-progress';
+                            $badgeLabel = '⚡ En progreso';
+                        } else {
+                            $badgeClass = 'mastery-weak';
+                            $badgeLabel = '🚨 Necesita trabajo';
+                        }
+                    @endphp
+
                     <div class="metric-row">
-                        <span>{{ $stat->module_label }}</span>
-                        <strong>{{ number_format((float) $stat->accuracy, 1) }}% · {{ $stat->total_spots }} spots</strong>
+                        <div>
+                            <span>{{ $stat->module_label }}</span>
+                            <div class="mastery-badge {{ $badgeClass }}">
+                                {{ $badgeLabel }}
+                            </div>
+                        </div>
+
+                        <strong>
+                            {{ number_format((float) $stat->accuracy, 1) }}%
+                            ·
+                            {{ $stat->total_spots }} spots
+                        </strong>
                     </div>
                 @empty
                     <p>Cuando empieces a entrenar aparecerá aquí la precisión por módulo.</p>
+                @endforelse
+            </article>
+
+            <article class="dashboard-card table-card">
+                <span>Concept leaks</span>
+                <h2>Patrones débiles</h2>
+
+                @forelse ($conceptLeaks as $concept)
+                    <div class="metric-row">
+                        <span>
+                            {{ $concept->concept_label ?: $concept->concept }}
+
+                            @if ($concept->family_label)
+                                <small>{{ $concept->family_label }}</small>
+                            @endif
+                        </span>
+
+                        <strong>
+                            {{ number_format((float) $concept->accuracy, 1) }}%
+                            ·
+                            {{ $concept->wrong }} errores
+                        </strong>
+                    </div>
+                @empty
+                    <p>Necesitas más respuestas con taxonomía para detectar patrones.</p>
                 @endforelse
             </article>
 
@@ -130,6 +214,19 @@
                 <h2>Postflop Trainer</h2>
                 <p>Después de estabilizar el dashboard, el siguiente salto será BB vs BTN Flop: c-bets, check-call, check-raise, folds y boards por textura.</p>
             </article>
+
+            <article class="dashboard-card table-card">
+                <span>Últimos resultados</span>
+                    <h2>Actividad reciente</h2>
+                    @forelse ($recentResults as $result)
+                        <div class="metric-row">
+                            <span>{{ $result->module_label }} · {{ $result->selected_action }}</span>
+                            <strong class="grade-pill grade-{{ $result->grade }}">{{ strtoupper($result->grade) }}</strong>
+                        </div>
+                    @empty
+                        <p>Todavía no has respondido spots.</p>
+                    @endforelse
+                </article>
         </section>
     </main>
 </x-app-layout>

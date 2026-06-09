@@ -39,6 +39,27 @@
             </div>
         </section>
 
+        <?php if($criticalLeak): ?>
+        <?php
+            $criticalErrors = max(0, (int) $criticalLeak->total - (int) $criticalLeak->correct);
+        ?>
+
+        <section class="critical-leak-panel">
+            <div>
+                <span>🚨 LEAK CRÍTICO DETECTADO</span>
+                <h2><?php echo e($criticalLeak->module_label); ?></h2>
+                <p>
+                    Accuracy <?php echo e(number_format((float) $criticalLeak->accuracy, 1)); ?>%.
+                    Has fallado <?php echo e($criticalErrors); ?> de <?php echo e($criticalLeak->total); ?> spots en este módulo.
+                </p>
+            </div>
+
+            <a href="<?php echo e(route('spot-training.index', ['module' => $criticalLeak->module])); ?>">
+                Practicar ahora
+            </a>
+        </section>
+    <?php endif; ?>
+
         <section class="progress-panel">
             <div>
                 <span>Nivel <?php echo e($level); ?></span>
@@ -107,30 +128,97 @@
             </article>
 
             <article class="dashboard-card table-card">
-                <span>Últimos resultados</span>
-                <h2>Actividad reciente</h2>
-                <?php $__empty_1 = true; $__currentLoopData = $recentResults; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <div class="metric-row">
-                        <span><?php echo e($result->module_label); ?> · <?php echo e($result->selected_action); ?></span>
-                        <strong class="grade-pill grade-<?php echo e($result->grade); ?>"><?php echo e(strtoupper($result->grade)); ?></strong>
-                    </div>
+                <span>Peores spots</span>
+                <h2>Errores concretos</h2>
+
+                <?php $__empty_1 = true; $__currentLoopData = $worstSpots; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $spot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <a class="metric-row" href="<?php echo e(route('spot-training.index', ['spot_id' => $spot->spot_id])); ?>">
+                        <span>
+                            <?php echo e($spot->hero_cards ?: 'Spot'); ?>
+
+                            ·
+                            <?php echo e($spot->concept_label ?: ($spot->spot_title ?: $spot->spot_id)); ?>
+
+                        </span>
+
+                        <strong>
+                            <?php echo e(number_format((float) $spot->accuracy, 1)); ?>%
+                            ·
+                            <?php echo e($spot->wrong); ?> errores
+                        </strong>
+                    </a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                    <p>Todavía no has respondido spots.</p>
+                    <p>Necesitas responder más spots para detectar errores concretos.</p>
                 <?php endif; ?>
             </article>
+
+            
         </section>
 
         <section class="dashboard-grid two-cols">
             <article class="dashboard-card table-card">
                 <span>Estadísticas por módulo</span>
                 <h2>Resumen técnico</h2>
+
                 <?php $__empty_1 = true; $__currentLoopData = $moduleStats->take(8); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php
+                        $acc = (float) $stat->accuracy;
+
+                        if ($acc >= 85) {
+                            $badgeClass = 'mastery-dominated';
+                            $badgeLabel = '🔥 Dominado';
+                        } elseif ($acc >= 60) {
+                            $badgeClass = 'mastery-progress';
+                            $badgeLabel = '⚡ En progreso';
+                        } else {
+                            $badgeClass = 'mastery-weak';
+                            $badgeLabel = '🚨 Necesita trabajo';
+                        }
+                    ?>
+
                     <div class="metric-row">
-                        <span><?php echo e($stat->module_label); ?></span>
-                        <strong><?php echo e(number_format((float) $stat->accuracy, 1)); ?>% · <?php echo e($stat->total_spots); ?> spots</strong>
+                        <div>
+                            <span><?php echo e($stat->module_label); ?></span>
+                            <div class="mastery-badge <?php echo e($badgeClass); ?>">
+                                <?php echo e($badgeLabel); ?>
+
+                            </div>
+                        </div>
+
+                        <strong>
+                            <?php echo e(number_format((float) $stat->accuracy, 1)); ?>%
+                            ·
+                            <?php echo e($stat->total_spots); ?> spots
+                        </strong>
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <p>Cuando empieces a entrenar aparecerá aquí la precisión por módulo.</p>
+                <?php endif; ?>
+            </article>
+
+            <article class="dashboard-card table-card">
+                <span>Concept leaks</span>
+                <h2>Patrones débiles</h2>
+
+                <?php $__empty_1 = true; $__currentLoopData = $conceptLeaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $concept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <div class="metric-row">
+                        <span>
+                            <?php echo e($concept->concept_label ?: $concept->concept); ?>
+
+
+                            <?php if($concept->family_label): ?>
+                                <small><?php echo e($concept->family_label); ?></small>
+                            <?php endif; ?>
+                        </span>
+
+                        <strong>
+                            <?php echo e(number_format((float) $concept->accuracy, 1)); ?>%
+                            ·
+                            <?php echo e($concept->wrong); ?> errores
+                        </strong>
+                    </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <p>Necesitas más respuestas con taxonomía para detectar patrones.</p>
                 <?php endif; ?>
             </article>
 
@@ -139,6 +227,19 @@
                 <h2>Postflop Trainer</h2>
                 <p>Después de estabilizar el dashboard, el siguiente salto será BB vs BTN Flop: c-bets, check-call, check-raise, folds y boards por textura.</p>
             </article>
+
+            <article class="dashboard-card table-card">
+                <span>Últimos resultados</span>
+                    <h2>Actividad reciente</h2>
+                    <?php $__empty_1 = true; $__currentLoopData = $recentResults; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="metric-row">
+                            <span><?php echo e($result->module_label); ?> · <?php echo e($result->selected_action); ?></span>
+                            <strong class="grade-pill grade-<?php echo e($result->grade); ?>"><?php echo e(strtoupper($result->grade)); ?></strong>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <p>Todavía no has respondido spots.</p>
+                    <?php endif; ?>
+                </article>
         </section>
     </main>
  <?php echo $__env->renderComponent(); ?>

@@ -24,12 +24,20 @@ class BbVsBtnSpots
         string $correctAction,
         string $explanation,
         string $solverNote,
-        array $grades
+        array $grades,
+        string $concept,
+        string $conceptLabel
     ): array {
         return [
             'id' => self::spotId($heroCards),
             'module' => 'bb_vs_btn',
             'module_label' => 'BB vs BTN',
+
+            'family' => 'bb_vs_btn_defense',
+            'family_label' => 'Defensa BB vs BTN',
+            'concept' => $concept,
+            'concept_label' => $conceptLabel,
+
             'title' => 'Defensa BB contra open BTN',
             'hero_position' => 'BB',
             'hero_cards' => $heroCards,
@@ -101,7 +109,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight. BB tiene buen precio y T9s defiende claramente.',
                 'CALL'=>'Correcto. T9s realiza equity muy bien y conecta muchos boards.',
                 '3BET'=>'Aceptable como mezcla, pero no conviertas todos los suited connectors en 3Bet.',
-            ])
+            ]),
+            'suited_connectors',
+            'Suited connectors'
         );
     }
 
@@ -114,7 +124,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador. Puede existir contra open grande o rival tight.',
                 'CALL'=>'Correcto. KTo entra en la defensa estándar BB vs BTN.',
                 '3BET'=>'No es buen 3Bet estándar: puede quedar dominada por mejores Kx.',
-            ])
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
         );
     }
 
@@ -127,7 +139,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight. A2s es demasiado jugable.',
                 'CALL'=>'Correcto. A2s realiza bien equity pagando.',
                 '3BET'=>'Buena mezcla como bluff por blocker al As.',
-            ])
+            ]),
+            'ax_suited',
+            'Ases suited'
         );
     }
 
@@ -140,7 +154,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto. Q7o es fold estándar BB vs BTN.',
                 'CALL'=>'Demasiado loose como base. La mano realiza mal equity.',
                 '3BET'=>'Blunder. Sin blockers ni jugabilidad para 3Bet bluff.',
-            ])
+            ]),
+            'trash_offsuit',
+            'Basura offsuit'
         );
     }
 
@@ -153,7 +169,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador. Puede existir contra size grande, pero estándar es call.',
                 'CALL'=>'Correcto. 44 tiene suficiente valor para defender pagando.',
                 '3BET'=>'No es buen 3Bet: no bloquea premiums.',
-            ])
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
         );
     }
 
@@ -166,7 +184,9 @@ class BbVsBtnSpots
                 'FOLD'=>'No es grave. Es una mano de borde.',
                 'CALL'=>'Correcto. Defensa fina pero aceptable por precio.',
                 '3BET'=>'No es el mejor bluff; hay mejores blockers.',
-            ])
+            ]),
+            'broadway_suited',
+            'Broadways suited'
         );
     }
 
@@ -179,7 +199,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. A5s defiende bien por precio.',
                 '3BET'=>'Muy buena mezcla como bluff por blocker al As.',
-            ])
+            ]),
+            'ax_suited',
+            'Ases suited'
         );
     }
 
@@ -192,7 +214,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador. Contra open 2.5x se defiende bastante.',
                 'CALL'=>'Correcto. A9o tiene equity suficiente contra BTN.',
                 '3BET'=>'No es principal; se domina al recibir call.',
-            ])
+            ]),
+            'ax_offsuit_medium',
+            'Ax offsuit medios'
         );
     }
 
@@ -205,7 +229,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. K9s realiza bien equity.',
                 '3BET'=>'Aceptable como mezcla baja-media.',
-            ])
+            ]),
+            'broadway_suited',
+            'Broadways suited'
         );
     }
 
@@ -218,7 +244,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador. Puede existir contra size grande.',
                 'CALL'=>'Correcto como defensa estándar contra BTN.',
                 '3BET'=>'No es buen 3Bet principal.',
-            ])
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
         );
     }
 
@@ -231,7 +259,9 @@ class BbVsBtnSpots
                 'FOLD'=>'No es horrible, pero algo conservador.',
                 'CALL'=>'Correcto. JTo entra cerca del borde de defensa.',
                 '3BET'=>'Demasiado ambicioso como estándar.',
-            ])
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
         );
     }
 
@@ -244,7 +274,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Algo tight.',
                 'CALL'=>'Correcto. Mano muy jugable contra BTN.',
                 '3BET'=>'No es principal; mejores suited hands pueden bluffear.',
-            ])
+            ]),
+            'suited_connectors',
+            'Suited connectors'
         );
     }
 
@@ -257,7 +289,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador; aceptable contra size grande.',
                 'CALL'=>'Correcto. Set value suficiente.',
                 '3BET'=>'Mala idea: sin blockers.',
-            ])
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
         );
     }
 
@@ -270,7 +304,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Defensa clara.',
                 '3BET'=>'No es principal, pero puede mezclarse muy poco.',
-            ])
+            ]),
+            'medium_pairs',
+            'Pocket pairs medios'
         );
     }
 
@@ -283,7 +319,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Aceptable contra size grande, pero algo conservador.',
                 'CALL'=>'Correcto. Defensa fina con suited king.',
                 '3BET'=>'Mezcla baja; no principal.',
-            ])
+            ]),
+            'broadway_suited',
+            'Broadways suited'
         );
     }
 
@@ -296,7 +334,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto. Es una suited queen muy débil.',
                 'CALL'=>'Puede existir a baja frecuencia, pero es thin.',
                 '3BET'=>'Demasiado débil para 3Bet bluff.',
-            ])
+            ]),
+            'weak_suited_broadway',
+            'Broadways suited débiles'
         );
     }
 
@@ -309,7 +349,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto. Fold estándar.',
                 'CALL'=>'Demasiado loose.',
                 '3BET'=>'Blunder. Sin blockers ni jugabilidad.',
-            ])
+            ]),
+            'trash_offsuit',
+            'Basura offsuit'
         );
     }
 
@@ -322,7 +364,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Defensa muy sólida.',
                 '3BET'=>'Buena mezcla por blocker al As.',
-            ])
+            ]),
+            'ax_suited',
+            'Ases suited'
         );
     }
 
@@ -335,7 +379,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. KQo defiende claramente.',
                 '3BET'=>'Buena mezcla lineal, pero no automática.',
-            ])
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
         );
     }
 
@@ -348,7 +394,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto como base sólida.',
                 'CALL'=>'Aceptable contra BTN muy amplio, pero no obligatorio.',
                 '3BET'=>'Demasiado débil como bluff.',
-            ])
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
         );
     }
 
@@ -361,7 +409,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto como estrategia base.',
                 'CALL'=>'Marginal; puede existir contra size pequeño.',
                 '3BET'=>'No es buen 3Bet bluff.',
-            ])
+            ]),
+            'weak_suited_connector',
+            'Suited connectors débiles'
         );
     }
 
@@ -374,7 +424,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Conservador, pero no grave.',
                 'CALL'=>'Correcto si BTN abre 2.5x y no es muy tight.',
                 '3BET'=>'No tiene blockers ni suficiente calidad para 3Bet.',
-            ])
+            ]),
+            'offsuit_connectors',
+            'Conectores offsuit'
         );
     }
 
@@ -387,7 +439,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Excelente realización de equity por precio.',
                 '3BET'=>'Puede existir a baja frecuencia, pero call es principal.',
-            ])
+            ]),
+            'suited_connectors',
+            'Suited connectors'
         );
     }
 
@@ -400,7 +454,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Correcto. Fold automático.',
                 'CALL'=>'Blunder. No hay suficiente equity ni jugabilidad.',
                 '3BET'=>'Blunder total. No hay blockers ni equity.',
-            ])
+            ]),
+            'trash_offsuit',
+            'Basura offsuit'
         );
     }
 
@@ -413,7 +469,9 @@ class BbVsBtnSpots
                 'FOLD'=>'Algo tight contra BTN 2.5x.',
                 'CALL'=>'Correcto. ATo defiende con suficiente equity.',
                 '3BET'=>'No es principal; cuidado con dominación.',
-            ])
+            ]),
+            'ax_offsuit_medium',
+            'Ax offsuit medios'
         );
     }
 
@@ -433,5 +491,4 @@ class BbVsBtnSpots
 
         return max(60, min(95, max($frequencies ?: [80])));
     }
-
 }

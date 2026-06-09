@@ -8,6 +8,7 @@ use App\Models\UserLeak;
 use App\Models\UserTrainingStat;
 use App\SpotTraining\SpotRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserSpotStat;
 
 class SpotTrainingService
 {
@@ -17,8 +18,21 @@ class SpotTrainingService
     ) {
     }
 
-    public function nextSpot(?string $module = null, string $mode = 'normal', string $profile = 'gto'): array
+    public function nextSpot(?string $module = null, string $mode = 'normal', string $profile = 'gto', ?string $spotId = null): array
     {
+        if ($spotId) {
+            $spot = $this->spots->findById($spotId);
+
+            if ($spot) {
+                $spot = $this->spots->normalize($spot);
+                $spot['training_profile'] = $this->resolveTrainingProfile($profile);
+                $spot['spot_id'] = $spot['id'];
+
+                session(['spot_training.current_spot' => $spot]);
+
+                return $this->publicSpot($spot);
+            }
+        }
         $spot = $this->recommendations->nextSpot($module, $mode);
         $spot = $this->spots->normalize($spot);
         $spot['training_profile'] = $this->resolveTrainingProfile($profile);
@@ -291,6 +305,7 @@ class SpotTrainingService
         $this->updateStat($userId, 'global', 'Global', $grade, $isCorrect, $xpEarned);
         $this->updateStat($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect, $xpEarned);
         $this->updateLeak($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect);
+        $this->updateSpotStat($userId, $spot, $grade, $isCorrect);
     }
 
     protected function currentTrainingSession(?string $module): TrainingSession
@@ -364,7 +379,6 @@ class SpotTrainingService
             'level' => $this->levelForXp($xp),
         ])->save();
     }
-
     protected function updateLeak(int $userId, string $module, string $moduleLabel, string $grade, bool $isCorrect): void
     {
         $leak = UserLeak::firstOrCreate(
@@ -388,6 +402,56 @@ class SpotTrainingService
             'blunders' => $blunders,
             'weakness_score' => $weaknessScore,
             'last_mistake_at' => $isCorrect ? $leak->last_mistake_at : now(),
+        ])->save();
+    }
+
+    protected function updateSpotStat(
+        int $userId,
+        array $spot,
+        string $grade,
+        bool $isCorrect
+    ): void {
+        $spotId = $spot['id'] ?? $spot['spot_id'] ?? null;
+
+        if (! $spotId) {
+            return;
+        }
+
+        $stat = UserSpotStat::firstOrCreate(
+            [
+                'user_id' => $userId,
+                'spot_id' => $spotId,
+            ],
+            [
+                'module' => $spot['module'],
+            ]
+        );
+
+        $total = $stat->total + 1;
+        $correct = $stat->correct + ($isCorrect ? 1 : 0);
+        $wrong = $total - $correct;
+
+        $stat->fill([
+            'module' => $spot['module'],
+
+            'family' => $spot['family'] ?? null,
+            'family_label' => $spot['family_label'] ?? null,
+            'concept' => $spot['concept'] ?? null,
+            'concept_label' => $spot['concept_label'] ?? null,
+
+            'spot_title' => $spot['title'] ?? null,
+
+            'hero_cards' => is_array($spot['hero_cards'] ?? null)
+                ? implode('', $spot['hero_cards'])
+                : ($spot['hero_cards'] ?? null),
+
+            'total' => $total,
+            'correct' => $correct,
+            'wrong' => $wrong,
+            'accuracy' => round(($correct / max(1, $total)) * 100, 2),
+
+            'last_seen_at' => now(),
+            'last_wrong_at' => $isCorrect ? $stat->last_wrong_at : now(),
         ])->save();
     }
 
@@ -426,6 +490,12 @@ class SpotTrainingService
             'spot_id' => $spot['id'] ?? $spot['spot_id'] ?? null,
             'module' => $spot['module'],
             'module_label' => $spot['module_label'],
+
+            'family' => $spot['family'] ?? null,
+            'family_label' => $spot['family_label'] ?? null,
+            'concept' => $spot['concept'] ?? null,
+            'concept_label' => $spot['concept_label'] ?? null,
+
             'title' => $spot['title'],
             'hero_position' => $spot['hero_position'],
             'hero_cards' => $spot['hero_cards'],

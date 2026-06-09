@@ -312,3 +312,89 @@
         white-space: normal;
     }
 }
+
+.critical-leak-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 1.6rem;
+    border-radius: 1.6rem;
+    background:
+        linear-gradient(145deg, rgba(248, 113, 113, 0.22), rgba(15, 23, 42, 0.92));
+    border: 1px solid rgba(248, 113, 113, 0.42);
+    box-shadow: 0 1.5rem 4rem rgba(248, 113, 113, 0.12);
+}
+
+.critical-leak-panel span {
+    color: #fca5a5;
+    font-size: 0.8rem;
+    font-weight: 950;
+    letter-spacing: 0.08em;
+}
+
+.critical-leak-panel h2 {
+    margin: 0.5rem 0;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+.critical-leak-panel p {
+    margin: 0;
+    color: #fecaca;
+    line-height: 1.6;
+}
+
+.critical-leak-panel a {
+    min-height: 3.2rem;
+    padding: 0 1.3rem;
+    border-radius: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: #fff7ed;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+    .critical-leak-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .critical-leak-panel a {
+        width: 100%;
+    }
+}
+
+.mastery-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 950;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.mastery-dominated {
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #bbf7d0;
+}
+
+.mastery-progress {
+    background: rgba(250, 204, 21, 0.16);
+    border: 1px solid rgba(250, 204, 21, 0.35);
+    color: #fef08a;
+}
+
+.mastery-weak {
+    background: rgba(248, 113, 113, 0.16);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    color: #fecaca;
+}

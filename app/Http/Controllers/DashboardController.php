@@ -7,6 +7,7 @@ use App\Models\TrainingSession;
 use App\Models\UserLeak;
 use App\Models\UserTrainingStat;
 use Illuminate\View\View;
+use App\Models\UserSpotStat;
 
 class DashboardController extends Controller
 {
@@ -44,6 +45,14 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $criticalLeak = UserLeak::query()
+            ->where('user_id', $userId)
+            ->where('total', '>=', 5)
+            ->where('accuracy', '<', 65)
+            ->orderByDesc('weakness_score')
+            ->orderBy('accuracy')
+            ->first();
+
         $recentResults = TrainingResult::query()
             ->where('user_id', $userId)
             ->latest()
@@ -56,14 +65,44 @@ class DashboardController extends Controller
             ->limit(4)
             ->get();
 
+        $worstSpots = UserSpotStat::query()
+            ->where('user_id', $userId)
+            ->where('total', '>=', 2)
+            ->orderBy('accuracy')
+            ->orderByDesc('wrong')
+            ->limit(5)
+            ->get();
+
+        $conceptLeaks = UserSpotStat::query()
+            ->where('user_id', $userId)
+            ->whereNotNull('concept')
+            ->where('total', '>=', 2)
+            ->selectRaw('
+                concept,
+                concept_label,
+                family_label,
+                SUM(total) as total,
+                SUM(correct) as correct,
+                SUM(wrong) as wrong,
+                ROUND((SUM(correct) / NULLIF(SUM(total), 0)) * 100, 2) as accuracy
+            ')
+            ->groupBy('concept', 'concept_label', 'family_label')
+            ->orderBy('accuracy')
+            ->orderByDesc('wrong')
+            ->limit(5)
+            ->get();
+
         return view('dashboard', compact(
             'global',
             'moduleStats',
             'bestModule',
             'worstModule',
             'leaks',
+            'criticalLeak',
             'recentResults',
-            'recentSessions'
+            'recentSessions',
+            'worstSpots',
+            'conceptLeaks'
         ));
     }
 }

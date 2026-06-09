@@ -77,4 +77,17 @@ class SpotRepository
 
         return strtoupper(Str::slug(implode(' ', $parts), '_'));
     }
+
+    public function findById(string $spotId): ?array
+    {
+        foreach ($this->all() as $spot) {
+            $currentId = $spot['id'] ?? $spot['spot_id'] ?? null;
+
+            if ($currentId === $spotId) {
+                return $spot;
+            }
+        }
+
+        return null;
+    }
 }
