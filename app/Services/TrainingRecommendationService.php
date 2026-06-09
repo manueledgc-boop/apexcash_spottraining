@@ -8,31 +8,28 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingRecommendationService
 {
+    protected int $recentLimit = 15;
+
     public function __construct(
         protected SpotRepository $spots
     ) {
     }
 
-    /**
-     * Selects the next spot without changing the public UI contract.
-     *
-     * Modes:
-     * - normal: 60% weak-module recommendation, 40% random.
-     * - leak: 100% current worst leak.
-     *
-     * Explicit module filters always win over recommendations.
-     */
     public function nextSpot(?string $module = null, string $mode = 'normal'): array
     {
         if ($module) {
-            return $this->randomFrom($this->spots->byModule($module));
+            return $this->pickAndRemember(
+                $this->spots->byModule($module)
+            );
         }
 
         if ($mode === 'leak') {
             $worstLeak = $this->worstLeakModule();
 
             if ($worstLeak) {
-                return $this->randomFrom($this->spots->byModule($worstLeak));
+                return $this->pickAndRemember(
+                    $this->spots->byModule($worstLeak)
+                );
             }
         }
 
@@ -43,12 +40,14 @@ class TrainingRecommendationService
                 $weakSpots = $this->spots->byModule($worstLeak);
 
                 if (! empty($weakSpots)) {
-                    return $this->randomFrom($weakSpots);
+                    return $this->pickAndRemember($weakSpots);
                 }
             }
         }
 
-        return $this->randomFrom($this->spots->all());
+        return $this->pickAndRemember(
+            $this->spots->all()
+        );
     }
 
     public function worstLeakModule(): ?string
@@ -69,11 +68,19 @@ class TrainingRecommendationService
 
     protected function shouldTrainWeakness(): bool
     {
-        // 60% leak-focused, 40% broad random practice.
         return random_int(1, 100) <= 60;
     }
 
-    protected function randomFrom(array $spots): array
+    protected function pickAndRemember(array $spots): array
+    {
+        $spot = $this->randomFromWithoutRecent($spots);
+
+        $this->rememberSpot($spot);
+
+        return $spot;
+    }
+
+    protected function randomFromWithoutRecent(array $spots): array
     {
         if (empty($spots)) {
             $spots = $this->spots->all();
@@ -83,6 +90,44 @@ class TrainingRecommendationService
             throw new \RuntimeException('No hay spots disponibles para entrenamiento.');
         }
 
-        return $spots[array_rand($spots)];
+        $recentIds = session('spot_training.recent_spots', []);
+
+        $available = array_values(array_filter($spots, function (array $spot) use ($recentIds) {
+            $spotId = $this->spotId($spot);
+
+            return ! in_array($spotId, $recentIds, true);
+        }));
+
+        if (empty($available)) {
+            $available = $spots;
+        }
+
+        return $available[array_rand($available)];
+    }
+
+    protected function rememberSpot(array $spot): void
+    {
+        $spotId = $this->spotId($spot);
+
+        if (! $spotId) {
+            return;
+        }
+
+        $recent = session('spot_training.recent_spots', []);
+
+        $recent[] = $spotId;
+
+        $recent = array_values(array_unique($recent));
+
+        if (count($recent) > $this->recentLimit) {
+            $recent = array_slice($recent, -$this->recentLimit);
+        }
+
+        session(['spot_training.recent_spots' => $recent]);
+    }
+
+    protected function spotId(array $spot): ?string
+    {
+        return $spot['spot_id'] ?? $spot['id'] ?? null;
     }
 }
