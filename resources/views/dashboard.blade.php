@@ -189,7 +189,10 @@
                 <h2>Patrones débiles</h2>
 
                 @forelse ($conceptLeaks as $concept)
-                    <div class="metric-row">
+                    <a
+                        class="metric-row"
+                        href="{{ route('spot-training.index', ['concept' => $concept->concept]) }}"
+                    >
                         <span>
                             {{ $concept->concept_label ?: $concept->concept }}
 
@@ -203,7 +206,7 @@
                             ·
                             {{ $concept->wrong }} errores
                         </strong>
-                    </div>
+                    </a>
                 @empty
                     <p>Necesitas más respuestas con taxonomía para detectar patrones.</p>
                 @endforelse

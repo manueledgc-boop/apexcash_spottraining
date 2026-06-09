@@ -27,12 +27,20 @@ class OpenRaiseSpots
         string $correctAction,
         string $explanation,
         string $solverNote,
-        array $actionGrades
-    ): array {
+        array $actionGrades,
+        string $family,
+        string $familyLabel,
+        string $concept,
+        string $conceptLabel
+    ): array{
         return [
             'id' => self::spotId($heroPosition, $heroCards),
             'module' => 'open_raise',
             'module_label' => 'Open Raise',
+            'family' => $family,
+            'family_label' => $familyLabel,
+            'concept' => $concept,
+'concept_label' => $conceptLabel,
             'title' => $title,
             'hero_position' => $heroPosition,
             'hero_cards' => $heroCards,
@@ -58,8 +66,16 @@ class OpenRaiseSpots
         ];
     }
 
-    protected static function openSpot(string $pos, array $cards, string $correct, int $raiseFreq, int $foldFreq, string $why): array
-    {
+    protected static function openSpot(
+        string $pos,
+        array $cards,
+        string $correct,
+        int $raiseFreq,
+        int $foldFreq,
+        string $why,
+        string $concept,
+        string $conceptLabel
+    ): array {
         $actions = match ($pos) {
             'UTG' => ['Action on Hero UTG'],
             'HJ' => ['UTG folds', 'Action on Hero HJ'],
@@ -67,6 +83,20 @@ class OpenRaiseSpots
             'BTN' => ['UTG folds', 'HJ folds', 'CO folds', 'Action on Hero BTN'],
             'SB' => ['UTG folds', 'HJ folds', 'CO folds', 'BTN folds', 'Action on Hero SB'],
             default => ['Action on Hero'],
+        };
+
+        $family = match ($pos) {
+            'UTG', 'HJ' => 'early_position_open',
+            'CO', 'BTN' => 'late_position_open',
+            'SB' => 'sb_open',
+            default => 'open_raise',
+        };
+
+        $familyLabel = match ($pos) {
+            'UTG', 'HJ' => 'Open Raise Early Position',
+            'CO', 'BTN' => 'Open Raise Late Position',
+            'SB' => 'SB Open Raise',
+            default => 'Open Raise',
         };
 
         $isRaise = $correct === 'RAISE';
@@ -102,39 +132,42 @@ class OpenRaiseSpots
                     'ev_score' => 0,
                     'feedback' => 'Open limp no forma parte de la estrategia base de cash 6-max. Si la acción llega limpia: raise o fold.',
                 ],
-            ]
+            ],
+            $family,
+            $familyLabel,
+            $concept,
+            $conceptLabel
         );
     }
+    protected static function utgAJo(): array { return self::openSpot('UTG', ['Ah','Jd'], 'RAISE', 88, 12, 'AJo es apertura estándar UTG en 6-max, aunque cerca del borde inferior.', 'ax_offsuit', 'Ases offsuit'); }
+    protected static function utgQ9s(): array { return self::openSpot('UTG', ['Qd','9d'], 'FOLD', 4, 96, 'Q9s es demasiado loose UTG; queda dominada con frecuencia.', 'suited_connectors', 'Suited connectors'); }
+    protected static function utgATs(): array { return self::openSpot('UTG', ['As','Ts'], 'RAISE', 96, 4, 'ATs tiene blockers, jugabilidad suited y suficiente fuerza para abrir UTG.', 'ax_suited', 'Ases suited'); }
+    protected static function utgKQo(): array { return self::openSpot('UTG', ['Kh','Qc'], 'RAISE', 82, 18, 'KQo es apertura UTG frecuente en 6-max, aunque sensible a mesas muy agresivas.', 'broadway_premium', 'Broadways premium'); }
+    protected static function utgJ9s(): array { return self::openSpot('UTG', ['Jh','9h'], 'FOLD', 10, 90, 'J9s es demasiado loose UTG como base; demasiados jugadores quedan por hablar.', 'suited_connectors', 'Suited connectors'); }
 
-    protected static function utgAJo(): array { return self::openSpot('UTG', ['Ah','Jd'], 'RAISE', 88, 12, 'AJo es apertura estándar UTG en 6-max, aunque cerca del borde inferior.'); }
-    protected static function utgQ9s(): array { return self::openSpot('UTG', ['Qd','9d'], 'FOLD', 4, 96, 'Q9s es demasiado loose UTG; queda dominada con frecuencia.'); }
-    protected static function utgATs(): array { return self::openSpot('UTG', ['As','Ts'], 'RAISE', 96, 4, 'ATs tiene blockers, jugabilidad suited y suficiente fuerza para abrir UTG.'); }
-    protected static function utgKQo(): array { return self::openSpot('UTG', ['Kh','Qc'], 'RAISE', 82, 18, 'KQo es apertura UTG frecuente en 6-max, aunque sensible a mesas muy agresivas.'); }
-    protected static function utgJ9s(): array { return self::openSpot('UTG', ['Jh','9h'], 'FOLD', 10, 90, 'J9s es demasiado loose UTG como base; demasiados jugadores quedan por hablar.'); }
+    protected static function hjKJs(): array { return self::openSpot('HJ', ['Ks','Js'], 'RAISE', 98, 2, 'KJs es open claro desde HJ: suited broadway fuerte y jugable.', 'broadway_premium', 'Broadways premium'); }
+    protected static function hjA9s(): array { return self::openSpot('HJ', ['Ac','9c'], 'RAISE', 86, 14, 'A9s entra en el rango HJ por blocker y jugabilidad suited.', 'ax_suited', 'Ases suited'); }
+    protected static function hjQTo(): array { return self::openSpot('HJ', ['Qh','Td'], 'FOLD', 18, 82, 'QTo offsuit es floja desde HJ; se domina con facilidad.', 'broadway_weak', 'Broadways debiles'); }
+    protected static function hjPocket66(): array { return self::openSpot('HJ', ['6c','6d'], 'RAISE', 94, 6, '66 es apertura estándar desde HJ con valor de set y showdown.', 'small_pairs', 'Pocket pairs bajos'); }
+    protected static function hjT8s(): array { return self::openSpot('HJ', ['Ts','8s'], 'FOLD', 22, 78, 'T8s es atractiva, pero HJ sigue siendo demasiado temprano para abrirla siempre.', 'suited_connectors', 'Suited connectors'); }
 
-    protected static function hjKJs(): array { return self::openSpot('HJ', ['Ks','Js'], 'RAISE', 98, 2, 'KJs es open claro desde HJ: suited broadway fuerte y jugable.'); }
-    protected static function hjA9s(): array { return self::openSpot('HJ', ['Ac','9c'], 'RAISE', 86, 14, 'A9s entra en el rango HJ por blocker y jugabilidad suited.'); }
-    protected static function hjQTo(): array { return self::openSpot('HJ', ['Qh','Td'], 'FOLD', 18, 82, 'QTo offsuit es floja desde HJ; se domina con facilidad.'); }
-    protected static function hjPocket66(): array { return self::openSpot('HJ', ['6c','6d'], 'RAISE', 94, 6, '66 es apertura estándar desde HJ con valor de set y showdown.'); }
-    protected static function hjT8s(): array { return self::openSpot('HJ', ['Ts','8s'], 'FOLD', 22, 78, 'T8s es atractiva, pero HJ sigue siendo demasiado temprano para abrirla siempre.'); }
+    protected static function coKQs(): array { return self::openSpot('CO', ['Kh','Qh'], 'RAISE', 100, 0, 'KQs es open obligatorio desde CO.', 'broadway_premium', 'Broadways premium'); }
+    protected static function coA8o(): array { return self::openSpot('CO', ['Ah','8d'], 'FOLD', 35, 65, 'A8o es borderline; como base sólida CO no se abre siempre.', 'ax_offsuit', 'Ases offsuit'); }
+    protected static function coQ9s(): array { return self::openSpot('CO', ['Qs','9s'], 'RAISE', 74, 26, 'Q9s empieza a ser rentable desde CO por posición y jugabilidad suited.', 'suited_connectors', 'Suited connectors'); }
+    protected static function coPocket22(): array { return self::openSpot('CO', ['2c','2d'], 'RAISE', 88, 12, '22 puede abrirse CO por fold equity y set value.', 'small_pairs', 'Pocket pairs bajos'); }
+    protected static function coJ7s(): array { return self::openSpot('CO', ['Jh','7h'], 'FOLD', 28, 72, 'J7s sigue siendo demasiado débil CO como base.', 'weak_suited', 'Suited debiles'); }
 
-    protected static function coKQs(): array { return self::openSpot('CO', ['Kh','Qh'], 'RAISE', 100, 0, 'KQs es open obligatorio desde CO.'); }
-    protected static function coA8o(): array { return self::openSpot('CO', ['Ah','8d'], 'FOLD', 35, 65, 'A8o es borderline; como base sólida CO no se abre siempre.'); }
-    protected static function coQ9s(): array { return self::openSpot('CO', ['Qs','9s'], 'RAISE', 74, 26, 'Q9s empieza a ser rentable desde CO por posición y jugabilidad suited.'); }
-    protected static function coPocket22(): array { return self::openSpot('CO', ['2c','2d'], 'RAISE', 88, 12, '22 puede abrirse CO por fold equity y set value.'); }
-    protected static function coJ7s(): array { return self::openSpot('CO', ['Jh','7h'], 'FOLD', 28, 72, 'J7s sigue siendo demasiado débil CO como base.'); }
+    protected static function btnJ8s(): array { return self::openSpot('BTN', ['Jh','8h'], 'RAISE', 86, 14, 'J8s es apertura rentable desde BTN por posición y jugabilidad.', 'suited_connectors', 'Suited connectors'); }
+    protected static function btnK5s(): array { return self::openSpot('BTN', ['Ks','5s'], 'RAISE', 92, 8, 'K5s abre rentable BTN por blocker, posición y suitedness.', 'weak_suited', 'Suited debiles'); }
+    protected static function btnQ4o(): array { return self::openSpot('BTN', ['Qh','4d'], 'FOLD', 32, 68, 'Q4o es demasiado débil incluso BTN como base sólida.', 'broadway_weak', 'Broadways debiles'); }
+    protected static function btnT7s(): array { return self::openSpot('BTN', ['Tc','7c'], 'RAISE', 78, 22, 'T7s puede abrirse BTN por posición y jugabilidad suited.', 'suited_connectors', 'Suited connectors'); }
+    protected static function btnA2o(): array { return self::openSpot('BTN', ['As','2d'], 'RAISE', 84, 16, 'A2o abre BTN por blocker al As y fold equity.', 'ax_offsuit', 'Ases offsuit'); }
 
-    protected static function btnJ8s(): array { return self::openSpot('BTN', ['Jh','8h'], 'RAISE', 86, 14, 'J8s es apertura rentable desde BTN por posición y jugabilidad.'); }
-    protected static function btnK5s(): array { return self::openSpot('BTN', ['Ks','5s'], 'RAISE', 92, 8, 'K5s abre rentable BTN por blocker, posición y suitedness.'); }
-    protected static function btnQ4o(): array { return self::openSpot('BTN', ['Qh','4d'], 'FOLD', 32, 68, 'Q4o es demasiado débil incluso BTN como base sólida.'); }
-    protected static function btnT7s(): array { return self::openSpot('BTN', ['Tc','7c'], 'RAISE', 78, 22, 'T7s puede abrirse BTN por posición y jugabilidad suited.'); }
-    protected static function btnA2o(): array { return self::openSpot('BTN', ['As','2d'], 'RAISE', 84, 16, 'A2o abre BTN por blocker al As y fold equity.'); }
-
-    protected static function sbA7s(): array { return self::openSpot('SB', ['Ac','7c'], 'RAISE', 92, 8, 'A7s es open claro SB contra BB.'); }
-    protected static function sbK9o(): array { return self::openSpot('SB', ['Kh','9d'], 'RAISE', 76, 24, 'K9o puede abrirse SB porque solo queda BB y tiene blocker/valor alto.'); }
-    protected static function sbQ5s(): array { return self::openSpot('SB', ['Qs','5s'], 'RAISE', 70, 30, 'Q5s puede abrirse SB por suitedness y fold equity.'); }
-    protected static function sbJ4o(): array { return self::openSpot('SB', ['Jh','4d'], 'FOLD', 35, 65, 'J4o es demasiado débil para abrir siempre desde SB.'); }
-    protected static function sb72o(): array { return self::openSpot('SB', ['7c','2d'], 'FOLD', 8, 92, '72o es fold claro incluso en SB.'); }
+    protected static function sbA7s(): array { return self::openSpot('SB', ['Ac','7c'], 'RAISE', 92, 8, 'A7s es open claro SB contra BB.', 'ax_suited', 'Ases suited'); }
+    protected static function sbK9o(): array { return self::openSpot('SB', ['Kh','9d'], 'RAISE', 76, 24, 'K9o puede abrirse SB porque solo queda BB y tiene blocker/valor alto.', 'broadway_weak', 'Broadways debiles'); }
+    protected static function sbQ5s(): array { return self::openSpot('SB', ['Qs','5s'], 'RAISE', 70, 30, 'Q5s puede abrirse SB por suitedness y fold equity.', 'weak_suited', 'Suited debiles'); }
+    protected static function sbJ4o(): array { return self::openSpot('SB', ['Jh','4d'], 'FOLD', 35, 65, 'J4o es demasiado débil para abrir siempre desde SB.', 'broadway_weak', 'Broadways debiles'); }
+    protected static function sb72o(): array { return self::openSpot('SB', ['7c','2d'], 'FOLD', 8, 92, '72o es fold claro incluso en SB.', 'trash_offsuit', 'Basura offsuit'); }
 
     protected static function spotId(string $position, array $cards): string
     {

@@ -21,15 +21,24 @@ class SpotTrainingController extends Controller
         $spotId = $request->query('spot_id');
         $spotId = is_string($spotId) && $spotId !== '' ? $spotId : null;
 
+        $concept = $request->query('concept');
+        $concept = is_string($concept) && $concept !== '' ? $concept : null;
+
+        if ($concept) {
+            session(['spot_training.current_concept' => $concept]);
+        } elseif ($module || $spotId) {
+            session()->forget('spot_training.current_concept');
+        }
+
         return view('spot-training.index', [
             'initialModule' => $module,
             'initialMode' => $mode,
 
             'initialSpot' => $spotId
-                ? $service->nextSpot($module, $mode, 'gto', $spotId)
+                ? $service->nextSpot($module, $mode, 'gto', $spotId, $concept)
                 : (
-                    $module || $mode === 'leak'
-                        ? $service->nextSpot($module, $mode)
+                    $module || $mode === 'leak' || $concept
+                        ? $service->nextSpot($module, $mode, 'gto', null, $concept)
                         : ($service->currentSpot() ?? $service->nextSpot())
                 ),
 
@@ -44,15 +53,32 @@ class SpotTrainingController extends Controller
         $module = $request->query('module');
         $mode = $request->query('mode');
         $spotId = $request->query('spot_id');
+        $concept = $request->query('concept');
+
+        $module = is_string($module) && $module !== '' ? $module : null;
+        $mode = is_string($mode) && $mode !== '' ? $mode : 'normal';
+        $spotId = is_string($spotId) && $spotId !== '' ? $spotId : null;
+
+        $concept = is_string($concept) && $concept !== ''
+            ? $concept
+            : session('spot_training.current_concept');
+
+        if ($module) {
+            session()->forget('spot_training.current_concept');
+            $concept = null;
+        } elseif ($concept) {
+            session(['spot_training.current_concept' => $concept]);
+        }
 
         return response()->json([
             'success' => true,
 
             'spot' => $service->nextSpot(
-                is_string($module) && $module !== '' ? $module : null,
-                is_string($mode) && $mode !== '' ? $mode : 'normal',
+                $module,
+                $mode,
                 'gto',
-                is_string($spotId) && $spotId !== '' ? $spotId : null
+                $spotId,
+                $concept
             ),
 
             'summary' => $service->summary(),

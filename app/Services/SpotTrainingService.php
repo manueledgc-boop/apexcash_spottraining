@@ -18,7 +18,13 @@ class SpotTrainingService
     ) {
     }
 
-    public function nextSpot(?string $module = null, string $mode = 'normal', string $profile = 'gto', ?string $spotId = null): array
+    public function nextSpot(
+        ?string $module = null,
+        string $mode = 'normal',
+        string $profile = 'gto',
+        ?string $spotId = null,
+        ?string $concept = null
+    ): array
     {
         if ($spotId) {
             $spot = $this->spots->findById($spotId);
@@ -33,7 +39,11 @@ class SpotTrainingService
                 return $this->publicSpot($spot);
             }
         }
-        $spot = $this->recommendations->nextSpot($module, $mode);
+        $spot = $this->recommendations->nextSpot(
+            $module,
+            $mode,
+            $concept
+        );
         $spot = $this->spots->normalize($spot);
         $spot['training_profile'] = $this->resolveTrainingProfile($profile);
         $spot['spot_id'] = $spot['id'];

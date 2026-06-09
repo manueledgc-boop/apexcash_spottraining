@@ -1,9 +1,12 @@
 (function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
     const state = {
         spot: window.ApexSpotTraining.initialSpot,
         summary: window.ApexSpotTraining.initialSummary,
         currentModule: window.ApexSpotTraining.initialModule || null,
         currentMode: window.ApexSpotTraining.initialMode || 'normal',
+        currentConcept: urlParams.get('concept') || null,
         leaks: window.ApexSpotTraining.initialLeaks || [],
         lifetime: window.ApexSpotTraining.lifetime || {},
     };
@@ -175,7 +178,11 @@
         renderLeaks(state.leaks);
     }
 
-    async function nextSpot(module = null, mode = state.currentMode || 'normal') {
+    async function nextSpot(
+        module = null,
+        mode = state.currentMode || 'normal',
+        concept = state.currentConcept || null
+    ) {
         const params = new URLSearchParams();
 
         if (module) {
@@ -184,6 +191,10 @@
 
         if (mode && mode !== 'normal') {
             params.set('mode', mode);
+        }
+
+        if (concept) {
+            params.set('concept', concept);
         }
 
         let url = window.ApexSpotTraining.nextUrl;
@@ -198,6 +209,9 @@
 
         const data = await response.json();
         state.spot = data.spot;
+        if (concept) {
+            state.currentConcept = concept;
+        }
         state.summary = data.summary || state.summary;
         state.leaks = data.leaks || state.leaks;
         state.lifetime = data.lifetime || state.lifetime;
@@ -216,7 +230,11 @@
     });
 
     els.next.addEventListener('click', () => {
-        nextSpot(state.currentModule, state.currentMode);
+        nextSpot(
+            state.currentModule,
+            state.currentMode,
+            state.currentConcept
+        );
     });
 
     els.practiceLeakBtn?.addEventListener('click', () => {
@@ -224,7 +242,8 @@
         if (!module) return;
         state.currentModule = module;
         state.currentMode = 'normal';
-        nextSpot(module, state.currentMode);
+        state.currentConcept = null;
+        nextSpot(module, state.currentMode, null);
     });
 
     els.moduleFilter?.querySelectorAll('button').forEach((button) => {
@@ -232,6 +251,7 @@
             const module = button.dataset.module || null;
             state.currentModule = module;
             state.currentMode = 'normal';
+            state.currentConcept = null;
 
             els.moduleFilter.querySelectorAll('button').forEach((btn) => btn.classList.remove('is-active'));
             button.classList.add('is-active');

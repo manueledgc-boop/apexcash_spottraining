@@ -27,7 +27,9 @@ class BtnVs3BetSpots
         string $correctAction,
         string $explanation,
         string $solverNote,
-        array $grades
+        array $grades,
+        string $concept,
+        string $conceptLabel
     ): array {
         $actions = $villainPosition === 'SB'
             ? ['UTG folds', 'HJ folds', 'CO folds', 'Hero BTN raises 2.5 BB', 'SB 3bets 10 BB', 'BB folds']
@@ -37,6 +39,12 @@ class BtnVs3BetSpots
             'id' => self::spotId($villainPosition, $heroCards),
             'module' => 'btn_vs_3bet',
             'module_label' => 'BTN vs 3Bet',
+
+            'family' => 'btn_vs_3bet_response',
+            'family_label' => 'BTN vs 3Bet',
+            'concept' => $concept,
+            'concept_label' => $conceptLabel,
+
             'title' => "BTN abre y {$villainPosition} hace 3Bet",
             'hero_position' => 'BTN',
             'hero_cards' => $heroCards,
@@ -101,7 +109,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Blunder. AJs es demasiado fuerte para foldear.',
                 'CALL'=>'Correcto. Realiza equity muy bien IP.',
                 '4BET'=>'Aceptable como mezcla, no como automático.',
-            ])
+            ]),
+            'suited_broadway',
+            'Broadways suited'
         );
     }
 
@@ -114,7 +124,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight. Tiene blockers y equity.',
                 'CALL'=>'Marginal/mezcla. Suele rendir mejor como 4Bet.',
                 '4BET'=>'Correcto. Candidato natural de 4Bet bluff.',
-            ])
+            ]),
+            'ax_4bet_bluff',
+            '4Bet bluff con Ax suited'
         );
     }
 
@@ -127,7 +139,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Conservador. Puede existir contra rival muy tight.',
                 'CALL'=>'Correcto. Buena defensa IP.',
                 '4BET'=>'Error como estándar: suele quedar dominada cuando continúa la acción.',
-            ])
+            ]),
+            'offsuit_broadway',
+            'Broadways offsuit'
         );
     }
 
@@ -140,7 +154,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Blunder. AQo es demasiado fuerte para foldear BTN vs SB.',
                 'CALL'=>'Correcto. Mantienes dominadas y realizas equity IP.',
                 '4BET'=>'Buena mezcla, pero no debe ser siempre.',
-            ])
+            ]),
+            'value_continue',
+            'Continuación por valor'
         );
     }
 
@@ -153,7 +169,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Blunder absoluto. TT nunca se foldea aquí.',
                 'CALL'=>'Correcto. Defensa fuerte y estable.',
                 '4BET'=>'Buena mezcla, especialmente contra SB agresivo.',
-            ])
+            ]),
+            'premium_continue',
+            'Premium continue'
         );
     }
 
@@ -166,7 +184,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. KJs suited realiza muy bien equity.',
                 '4BET'=>'Aceptable como mezcla baja.',
-            ])
+            ]),
+            'suited_broadway',
+            'Broadways suited'
         );
     }
 
@@ -179,7 +199,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Tight como estándar.',
                 'CALL'=>'Correcto. Buena jugabilidad y equity realizable.',
                 '4BET'=>'No es principal; mezcla baja.',
-            ])
+            ]),
+            'suited_broadway',
+            'Broadways suited'
         );
     }
 
@@ -192,7 +214,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Correcto. A9o está dominada demasiadas veces.',
                 'CALL'=>'Demasiado loose como estándar.',
                 '4BET'=>'Mal candidato a 4Bet bluff.',
-            ])
+            ]),
+            'dominated_offsuit',
+            'Offsuit dominadas'
         );
     }
 
@@ -205,7 +229,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Conservador; no horrible.',
                 'CALL'=>'Correcto. Mano jugable IP.',
                 '4BET'=>'Demasiado ambicioso como estándar.',
-            ])
+            ]),
+            'borderline_suited',
+            'Suited marginales'
         );
     }
 
@@ -218,7 +244,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Puede existir contra nit, pero estándar es call.',
                 'CALL'=>'Correcto. Defensa rentable IP.',
                 '4BET'=>'Mal candidato: sin blockers.',
-            ])
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
         );
     }
 
@@ -231,7 +259,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Aceptable, pero no captura todo el fold equity.',
                 '4BET'=>'Correcto. Buen blocker y buena estructura de bluff.',
-            ])
+            ]),
+            'ax_4bet_bluff',
+            '4Bet bluff con Ax suited'
         );
     }
 
@@ -244,7 +274,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Algo tight.',
                 'CALL'=>'Correcto. K9s es defensa razonable IP.',
                 '4BET'=>'Mezcla baja; no principal.',
-            ])
+            ]),
+            'borderline_suited',
+            'Suited marginales'
         );
     }
 
@@ -257,7 +289,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Conservador; aceptable contra nit.',
                 'CALL'=>'Correcto como defensa IP contra SB.',
                 '4BET'=>'Mala 4Bet: dominada y sin buenos blockers.',
-            ])
+            ]),
+            'offsuit_broadway',
+            'Broadways offsuit'
         );
     }
 
@@ -270,7 +304,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Conservador; call es estándar.',
                 'CALL'=>'Correcto. Buen set value y showdown value.',
                 '4BET'=>'Mal candidato: sin blockers.',
-            ])
+            ]),
+            'medium_pairs',
+            'Pocket pairs medios'
         );
     }
 
@@ -283,7 +319,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Realiza muy bien equity.',
                 '4BET'=>'Mezcla baja aceptable.',
-            ])
+            ]),
+            'suited_broadway',
+            'Broadways suited'
         );
     }
 
@@ -296,7 +334,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Correcto. Fold estándar.',
                 'CALL'=>'Demasiado loose como base.',
                 '4BET'=>'Blunder. Mal candidato a bluff.',
-            ])
+            ]),
+            'dominated_offsuit',
+            'Offsuit dominadas'
         );
     }
 
@@ -309,7 +349,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Blunder absoluto.',
                 'CALL'=>'Correcto. Mantienes rango amplio y realizas equity.',
                 '4BET'=>'Muy buena mezcla por valor.',
-            ])
+            ]),
+            'premium_continue',
+            'Premium continue'
         );
     }
 
@@ -322,7 +364,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Defensa sólida.',
                 '4BET'=>'Muy buena mezcla por blocker.',
-            ])
+            ]),
+            'ax_4bet_bluff',
+            '4Bet bluff con Ax suited'
         );
     }
 
@@ -335,7 +379,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Blunder. Mano demasiado fuerte.',
                 'CALL'=>'Correcto. Defensa clara.',
                 '4BET'=>'Aceptable a baja frecuencia.',
-            ])
+            ]),
+            'medium_pairs',
+            'Pocket pairs medios'
         );
     }
 
@@ -348,7 +394,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Algo tight.',
                 'CALL'=>'Correcto. Buena jugabilidad.',
                 '4BET'=>'No es principal.',
-            ])
+            ]),
+            'suited_broadway',
+            'Broadways suited'
         );
     }
 
@@ -361,7 +409,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Correcto. Fold de baja varianza y sólido.',
                 'CALL'=>'Aceptable como mezcla, pero no obligatorio.',
                 '4BET'=>'Demasiado ambicioso.',
-            ])
+            ]),
+            'borderline_suited',
+            'Suited marginales'
         );
     }
 
@@ -374,7 +424,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Correcto como estrategia base.',
                 'CALL'=>'Puede existir contra rangos muy amplios, pero es delicado.',
                 '4BET'=>'Mal candidato como estándar.',
-            ])
+            ]),
+            'dominated_offsuit',
+            'Offsuit dominadas'
         );
     }
 
@@ -387,7 +439,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Conservador, pero no grave.',
                 'CALL'=>'Correcto. Set value suficiente IP.',
                 '4BET'=>'Mala idea: sin blockers.',
-            ])
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
         );
     }
 
@@ -400,7 +454,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Correcto como base sólida.',
                 'CALL'=>'Aceptable contra rangos muy amplios, pero delicado.',
                 '4BET'=>'No es buen bluff principal.',
-            ])
+            ]),
+            'dominated_offsuit',
+            'Offsuit dominadas'
         );
     }
 
@@ -413,7 +469,9 @@ class BtnVs3BetSpots
                 'FOLD'=>'Demasiado tight.',
                 'CALL'=>'Correcto. Muy buena jugabilidad.',
                 '4BET'=>'Mezcla baja, no línea principal.',
-            ])
+            ]),
+            'suited_connectors',
+            'Suited connectors'
         );
     }
 
@@ -433,5 +491,4 @@ class BtnVs3BetSpots
 
         return max(60, min(95, max($frequencies ?: [80])));
     }
-
 }

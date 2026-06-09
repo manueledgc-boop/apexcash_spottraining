@@ -15,8 +15,17 @@ class TrainingRecommendationService
     ) {
     }
 
-    public function nextSpot(?string $module = null, string $mode = 'normal'): array
-    {
+    public function nextSpot(
+        ?string $module = null,
+        string $mode = 'normal',
+        ?string $concept = null
+    ): array {
+        if ($concept) {
+            return $this->pickAndRemember(
+                $this->spots->byConcept($concept)
+            );
+        }
+
         if ($module) {
             return $this->pickAndRemember(
                 $this->spots->byModule($module)

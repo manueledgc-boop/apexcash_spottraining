@@ -90,4 +90,12 @@ class SpotRepository
 
         return null;
     }
+
+    public function byConcept(string $concept): array
+    {
+        return array_values(array_filter($this->all(), function (array $spot) use ($concept) {
+            return ($spot['concept'] ?? null) === $concept;
+        }));
+    }
+
 }
