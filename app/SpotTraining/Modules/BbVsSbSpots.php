@@ -56,6 +56,10 @@ class BbVsSbSpots
                 ],
             ],
             'confidence' => self::confidenceFromFrequency($freq),
+            'insights' => [
+                'low_stakes' => self::lowStakesInsight($spot['concept']),
+            ],
+
             'table_players' => self::defaultPlayers('BB', 'SB'),
         ];
     }
@@ -190,4 +194,44 @@ class BbVsSbSpots
     {
         return max(60, min(95, max(array_map('intval', $frequency ?: [80]))));
     }
+
+    protected static function lowStakesInsight(string $concept): string
+    {
+        return match ($concept) {
+
+            'ax_suited' =>
+                'En NL2-NL10 los Ax suited tienen mucho valor por su capacidad de ligar colores fuertes y proyectos con equity. Suelen funcionar mejor como call que como guerra constante de 3Bets.',
+
+            'ax_suited_3bet' =>
+                'Los Ax suited bajos son buenos candidatos a 3Bet porque bloquean manos premium del rival. Sin embargo, contra jugadores recreacionales que pagan demasiado, el call también puede ser muy rentable.',
+
+            'value_3bet' =>
+                'En NL2-NL10 muchos jugadores abren demasiadas manos desde SB y pagan demasiados 3Bets. Cuando tengas ventaja clara de fuerza, construir un bote grande suele ser la mejor decisión.',
+
+            'value_defense' =>
+                'Defender manos fuertes pagando tiene mucho valor porque muchos rivales siguen cometiendo errores postflop. No siempre es necesario inflar el bote inmediatamente.',
+
+            'small_pairs' =>
+                'Las parejas pequeñas funcionan muy bien en BB vs SB porque recibes un gran descuento preflop y muchos rivales pagan demasiado cuando conectas set.',
+
+            'suited_connectors' =>
+                'Los suited connectors ganan valor en BB vs SB porque juegas en posición y los rivales suelen cometer errores con top pair o proyectos dominados.',
+
+            'suited_broadway' =>
+                'Los broadways suited combinan cartas altas, proyectos fuertes y buena realización de equity. Son algunas de las defensas más cómodas contra aperturas amplias de SB.',
+
+            'weak_suited' =>
+                'Las manos suited débiles pueden defenderse gracias al precio y la posición, pero no deben sobrejugarse cuando conectan pares bajos o proyectos marginales.',
+
+            'marginal_offsuit' =>
+                'Muchas manos offsuit medias son defendibles BB vs SB por las excelentes pot odds. Aun así, evita sobrevalorar pares débiles cuando el rival muestra agresión fuerte.',
+
+            'trash_offsuit' =>
+                'Uno de los errores más comunes en NL2-NL10 es defender basura simplemente porque ya hay una ciega invertida. Algunas manos siguen siendo folds claros incluso contra SB.',
+
+            default =>
+                'En NL2-NL10 BB vs SB suele ser un spot muy rentable porque juegas en posición. La clave es defender amplio, pero sin convertir cualquier mano débil en una defensa automática.'
+        };
+    }
+
 }

@@ -55,6 +55,9 @@ class SbVsBtnSpots
                 ],
             ],
             'confidence' => self::confidenceFromFrequency($freq),
+            'insights' => [
+                    'low_stakes' => self::lowStakesInsight($spot['concept']),
+                ],
             'table_players' => self::defaultPlayers('SB', 'BTN'),
         ];
     }
@@ -188,5 +191,34 @@ class SbVsBtnSpots
     protected static function confidenceFromFrequency(array $frequency): int
     {
         return max(60, min(95, max(array_map('intval', $frequency ?: [80]))));
+    }
+
+    protected static function lowStakesInsight(string $concept): string
+    {
+        return match ($concept) {
+            'value_3bet' =>
+                'En NL2-NL10 los opens de BTN suelen contener demasiadas manos dominadas. Desde SB, las manos de valor deben jugarse agresivas para aislar al rival, negar equity a BB y construir bote. La mayoría del pool no castiga lo suficiente una estrategia lineal de 3Bet.',
+
+            'ax_bluff_3bet' =>
+                'Los Ax suited bajos funcionan bien como 3Bet bluff porque bloquean parte del rango fuerte de continuación y conservan equity cuando reciben call. Contra rivales que pagan demasiadas 3Bets y foldean poco preflop, reduce la frecuencia y prioriza valor.',
+
+            'kx_bluff_3bet' =>
+                'Los Kx suited pueden ser buenos bluffs selectivos por blocker y jugabilidad. En NL2-NL10 no deben usarse de forma automática: funcionan mejor contra BTN que abre amplio y foldea suficiente a 3Bet.',
+
+            'semi_bluff_suited' =>
+                'Estas manos suited tienen jugabilidad, pero desde SB sufren por jugar fuera de posición. En NL2-NL10 úsalas como 3Bet selectivo contra BTN amplio; contra jugadores que pagan demasiado, baja la frecuencia y evita inflar botes marginales.',
+
+            'dominated_offsuit' =>
+                'Una fuga común en NL2-NL10 es defender demasiadas offsuit dominadas desde SB. La falta de posición amplifica los errores postflop. Contra población estándar, foldear estas manos suele ahorrar más dinero que intentar jugar perfecto después del flop.',
+
+            'weak_suited_hands' =>
+                'Que una mano sea suited no significa que deba defenderse. En NL2-NL10 muchas suited débiles pierden dinero porque conectan proyectos dominados y juegan botes difíciles fuera de posición. Si no bloquea bien ni realiza equity, foldea más.',
+
+            'small_pairs_oop' =>
+                'Las parejas pequeñas pierden valor cuando juegan fuera de posición. Muchos jugadores sobreestiman el set mining desde SB sin contar que la mayoría de veces no conectarán set y tendrán que abandonar o adivinar postflop.',
+
+            default =>
+                'En NL2-NL10 la SB debe jugarse con disciplina: menos calls fuera de posición, más 3Bets claros por valor y bluffs selectivos con blockers. Evita defender manos que solo parecen bonitas pero realizan mal equity.',
+        };
     }
 }

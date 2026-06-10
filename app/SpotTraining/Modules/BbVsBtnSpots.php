@@ -66,6 +66,9 @@ class BbVsBtnSpots
                 ],
             ],
             'confidence' => self::confidenceFromGrades($grades),
+            'insights' => [
+                'low_stakes' => self::lowStakesInsight($concept),
+            ],
             'table_players' => self::defaultPlayers('BB', 'BTN'),
         ];
     }
@@ -490,5 +493,47 @@ class BbVsBtnSpots
         $frequencies = array_map(fn (array $grade) => (int) ($grade['frequency'] ?? 0), $grades);
 
         return max(60, min(95, max($frequencies ?: [80])));
+    }
+
+    protected static function lowStakesInsight(string $concept): string
+    {
+        return match ($concept) {
+
+            'suited_connectors' =>
+                'En NL2-NL10 los suited connectors suelen ganar más dinero jugando botes pequeños y medios que convirtiéndose en faroles agresivos preflop. Aprovecha la posición relativa y los errores postflop del rival.',
+
+            'broadway_offsuit' =>
+                'Muchos jugadores recreacionales abren demasiadas manos desde BTN. Defender broadways razonables suele ser rentable, pero evita sobrevalorar top pair con kickers medios.',
+
+            'ax_suited' =>
+                'Los Ax suited tienen valor adicional en límites bajos porque pueden ligar proyectos fuertes de color y escalera. También bloquean manos premium del rival.',
+
+            'ax_offsuit_medium' =>
+                'Los Ax offsuit medios suelen ser defensas rentables contra aperturas amplias de BTN, pero pueden quedar dominados cuando se forman botes grandes.',
+
+            'small_pairs' =>
+                'Las parejas pequeñas suelen funcionar bien como call porque muchos jugadores pagan demasiado cuando conectas set. Evita convertirlas en 3Bet bluff.',
+
+            'medium_pairs' =>
+                'Las parejas medias tienen suficiente showdown value para defender. En NL2-NL10 suelen ganar más dinero controlando el tamaño del bote que inflándolo sin necesidad.',
+
+            'broadway_suited' =>
+                'Los broadways suited combinan equity, proyectos fuertes y buena jugabilidad postflop. Son excelentes defensas contra jugadores que abren demasiado BTN.',
+
+            'offsuit_connectors' =>
+                'Los conectores offsuit son mucho más frágiles que sus versiones suited. Defiéndelos con moderación y evita perseguir proyectos marginales.',
+
+            'weak_suited_connector' =>
+                'Las manos suited débiles parecen bonitas, pero muchas generan situaciones complicadas postflop. Contra rivales pasivos pueden defenderse ocasionalmente; como estrategia base es mejor ser disciplinado.',
+
+            'weak_suited_broadway' =>
+                'Las broadways suited débiles generan top pairs dominadas con frecuencia. No sobreestimes el valor del color potencial.',
+
+            'trash_offsuit' =>
+                'Una de las mayores fugas de NL2-NL10 es defender basura offsuit solo porque ya hay una ciega invertida. Foldear estas manos ahorra muchas BB a largo plazo.',
+
+            default =>
+                'En NL2-NL10 suele ser más rentable defender manos con buena jugabilidad y castigar errores postflop que intentar reproducir frecuencias GTO exactas.'
+        };
     }
 }

@@ -31,6 +31,8 @@
         leaksList: document.getElementById('leaksList'),
         practiceLeakBtn: document.getElementById('practiceLeakBtn'),
         moduleFilter: document.getElementById('moduleFilter'),
+        decisionResultBox: document.getElementById('decisionResultBox'),
+        lowStakesInsightBox: document.getElementById('lowStakesInsightBox'),
     };
 
     function cardHtml(card) {
@@ -65,14 +67,26 @@
 
     function clearFeedback() {
         els.feedback.hidden = true;
+        els.feedback.style.display = 'none';
         els.feedback.className = 'feedback';
         els.feedback.innerHTML = '';
 
-        [els.gradeBox, els.frequencyBox, els.evBox].forEach((box) => {
+        [els.gradeBox, els.frequencyBox, els.evBox, els.lowStakesInsightBox].forEach((box) => {
             if (!box) return;
             box.hidden = true;
+            box.style.display = 'none';
             box.innerHTML = '';
         });
+
+        if (els.decisionResultBox) {
+            els.decisionResultBox.hidden = true;
+            els.decisionResultBox.style.display = 'none';
+        }
+
+        if (els.buttons) {
+            els.buttons.hidden = false;
+            els.buttons.style.display = '';
+        }
     }
 
     function renderSpot() {
@@ -90,6 +104,11 @@
             const cls = option === 'FOLD' ? 'danger' : (option === 'CALL' ? 'secondary' : '');
             return `<button type="button" class="decision-btn ${cls}" data-answer="${option}">${option}</button>`;
         }).join('');
+
+        els.buttons.querySelectorAll('button').forEach((btn) => {
+            btn.disabled = false;
+        });
+
         renderSeats(spot);
         renderSummary(state.summary || {});
         renderLeaks(state.leaks || []);
@@ -97,7 +116,8 @@
 
     function renderDecisionDetails(data) {
         if (els.gradeBox) {
-            els.gradeBox.hidden = false;
+            els.gradeBox.removeAttribute('hidden');
+            els.gradeBox.style.display = 'block';
             els.gradeBox.className = `grade-box grade-${data.grade || 'unknown'}`;
             els.gradeBox.innerHTML = `
                 <span>Calidad de decisión</span>
@@ -106,7 +126,8 @@
         }
 
         if (els.frequencyBox) {
-            els.frequencyBox.hidden = false;
+            els.frequencyBox.removeAttribute('hidden');
+            els.frequencyBox.style.display = 'block';
             els.frequencyBox.innerHTML = `
                 <span>Frecuencia GTO simplificada</span>
                 <strong>${data.selected_action || '-'}: ${data.frequency ?? '-'}%</strong>
@@ -114,7 +135,8 @@
         }
 
         if (els.evBox) {
-            els.evBox.hidden = false;
+            els.evBox.removeAttribute('hidden');
+            els.evBox.style.display = 'block';
             els.evBox.innerHTML = `
                 <span>EV relativo</span>
                 <strong>${data.ev_score ?? 0}/100</strong>
@@ -156,7 +178,14 @@
         const data = await response.json();
 
         if (!data.success) {
-            els.feedback.hidden = false;
+            if (els.decisionResultBox) {
+                els.decisionResultBox.removeAttribute('hidden');
+                els.decisionResultBox.style.display = 'block';
+            }
+
+            els.feedback.removeAttribute('hidden');
+            els.feedback.style.display = 'block';
+            els.feedback.className = 'feedback wrong';
             els.feedback.textContent = data.message || 'No se pudo evaluar el spot.';
             return;
         }
@@ -165,15 +194,34 @@
         state.leaks = data.leaks || [];
         state.lifetime = data.lifetime || state.lifetime;
 
-        els.feedback.hidden = false;
+        // Mostrar panel de resultado
+        if (els.decisionResultBox) {
+            els.decisionResultBox.removeAttribute('hidden');
+            els.decisionResultBox.style.display = 'block';
+        }
+
+        // Ocultar botones de acción
+        if (els.buttons) {
+            els.buttons.hidden = true;
+            els.buttons.style.display = 'none';
+        }
+
+        // Mostrar feedback principal
+        els.feedback.removeAttribute('hidden');
+        els.feedback.style.display = 'block';
         els.feedback.className = `feedback ${data.correct ? 'correct' : 'wrong'}`;
         els.feedback.innerHTML = `
             <strong>${data.title}</strong><br>
+            Tu decisión: <strong>${data.selected_action}</strong><br>
             Mejor acción: <strong>${data.correct_action}</strong><br><br>
             ${data.explanation}
         `;
 
+        // Mostrar cajas adicionales
         renderDecisionDetails(data);
+        renderInsights(data.spot || state.spot);
+
+        // Actualizar estadísticas
         renderSummary(state.summary);
         renderLeaks(state.leaks);
     }
@@ -199,6 +247,7 @@
 
         let url = window.ApexSpotTraining.nextUrl;
         const query = params.toString();
+
         if (query) {
             url += `?${query}`;
         }
@@ -208,14 +257,33 @@
         });
 
         const data = await response.json();
+
         state.spot = data.spot;
+
         if (concept) {
             state.currentConcept = concept;
         }
+
         state.summary = data.summary || state.summary;
         state.leaks = data.leaks || state.leaks;
         state.lifetime = data.lifetime || state.lifetime;
+
         renderSpot();
+    }
+
+    function renderInsights(spot) {
+        const insights = spot?.insights || {};
+
+        if (els.lowStakesInsightBox && insights.low_stakes) {
+            els.lowStakesInsightBox.removeAttribute('hidden');
+            els.lowStakesInsightBox.style.display = '';
+            els.lowStakesInsightBox.innerHTML = `
+                <div class="insight-card">
+                    <div class="insight-title">💰 Pool NL2-NL10</div>
+                    <p>${insights.low_stakes}</p>
+                </div>
+            `;
+        }
     }
 
     function getWorstLeakModule() {
@@ -226,6 +294,11 @@
     els.buttons.addEventListener('click', (event) => {
         const button = event.target.closest('[data-answer]');
         if (!button) return;
+
+        els.buttons.querySelectorAll('button').forEach((btn) => {
+            btn.disabled = true;
+        });
+
         answerSpot(button.dataset.answer);
     });
 

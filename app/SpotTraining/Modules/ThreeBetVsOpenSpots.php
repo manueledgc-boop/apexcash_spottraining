@@ -49,6 +49,17 @@ class ThreeBetVsOpenSpots
                 ],
             ],
             'confidence' => self::confidenceFromFrequency($freq),
+
+            'insights' => [
+                'low_stakes' => self::lowStakesInsight(
+                    $spot['concept'],
+                    $best,
+                    $hero,
+                    $villain,
+                    $spot['cards']
+                ),
+            ],
+
             'table_players' => self::defaultPlayers($hero, $villain),
         ];
     }
@@ -187,6 +198,40 @@ class ThreeBetVsOpenSpots
     protected static function confidenceFromFrequency(array $frequency): int
     {
         return max(60, min(95, max(array_map('intval', $frequency ?: [80]))));
+    }
+
+    protected static function lowStakesInsight(
+        string $concept,
+        string $best,
+        string $hero,
+        string $villain,
+        array $cards
+    ): string {
+        return match ($concept) {
+            'ax_3bet_bluff' =>
+                'En NL2-NL10 los Ax suited bajos funcionan mejor como 3Bet bluff contra rivales que abren amplio y foldean demasiado a 3Bet. Contra jugadores que pagan mucho o 4betean muy poco, baja la frecuencia y prefiere call o fold según posición.',
+
+            'value_3bet' =>
+                'En NL2-NL10 muchos rivales continúan contra 3Bet con rangos demasiado amplios y manos dominadas. Con manos de valor, prioriza construir bote y aislar al rival. Reduce el slowplay preflop salvo contra jugadores muy agresivos.',
+
+            'suited_broadway' =>
+                'En NL2-NL10 los broadways suited suelen tener más valor como call cuando tienes posición y el rival comete errores postflop. Usa el 3Bet con más cuidado: funciona mejor contra opens amplios y rivales que foldean demasiado.',
+
+            'pocket_pairs' =>
+                'En NL2-NL10 las pocket pairs medias y bajas ganan valor cuando puedes pagar con buenas odds y cobrar fuerte al ligar set. Evita convertirlas en 3Bet bluff sin blockers; contra tamaños grandes o rivales agresivos, reduce los calls marginales.',
+
+            'dominated_offsuit' =>
+                'En NL2-NL10 muchas pérdidas vienen de defender offsuit dominadas contra rangos fuertes. Manos como KJo, QJo o QTo parecen jugables, pero suelen acabar dominadas. Contra opens tight o 3Bets fuertes, foldear más es el ajuste rentable.',
+
+            'suited_connectors' =>
+                'En NL2-NL10 los suited connectors ganan valor cuando tienes posición, buen precio y rivales que pagan demasiado postflop. No los uses como 3Bet automático: sin fold equity real, inflar el bote reduce su ventaja.',
+
+            'blind_defense' =>
+                'En NL2-NL10 muchos rivales roban amplio desde late position, pero también pagan demasiado cuando reciben resistencia. Defiende ciegas con criterio: 3betea valor claro y bluffs con blockers; paga manos jugables cuando el precio sea bueno.',
+
+            default =>
+                'En NL2-NL10 el ajuste principal no es jugar más complicado, sino reducir defensas marginales contra rangos fuertes y aumentar valor contra rivales que pagan demasiado. La explotación debe depender del perfil, no de una regla fija.',
+        };
     }
 
 }

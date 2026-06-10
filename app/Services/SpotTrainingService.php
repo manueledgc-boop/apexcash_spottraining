@@ -518,6 +518,7 @@ class SpotTrainingService
             'difficulty' => $spot['difficulty'] ?? 'GTO simplificado',
             'confidence' => $spot['confidence'] ?? 80,
             'training_profile' => $spot['training_profile'] ?? 'gto',
+            'insights' => $spot['insights'] ?? ['gto' => null, 'low_stakes' => null,],
         ];
     }
 

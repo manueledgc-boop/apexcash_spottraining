@@ -40,7 +40,7 @@ class OpenRaiseSpots
             'family' => $family,
             'family_label' => $familyLabel,
             'concept' => $concept,
-'concept_label' => $conceptLabel,
+            'concept_label' => $conceptLabel,
             'title' => $title,
             'hero_position' => $heroPosition,
             'hero_cards' => $heroCards,
@@ -62,6 +62,9 @@ class OpenRaiseSpots
                 ],
             ],
             'confidence' => self::confidenceFromGrades($actionGrades),
+            'insights' => [
+                'low_stakes' => self::lowStakesInsight($concept),
+            ],
             'table_players' => self::defaultPlayers($heroPosition, null),
         ];
     }
@@ -184,6 +187,39 @@ class OpenRaiseSpots
         $frequencies = array_map(fn (array $grade) => (int) ($grade['frequency'] ?? 0), $grades);
 
         return max(60, min(95, max($frequencies ?: [80])));
+    }
+
+    protected static function lowStakesInsight(string $concept): string
+    {
+        return match ($concept) {
+
+            'ax_suited' =>
+                'Los Ax suited son muy rentables en NL2-NL10 porque pueden ganar botes grandes cuando ligan color y además bloquean manos premium. Son aperturas muy cómodas desde casi todas las posiciones adecuadas.',
+
+            'ax_offsuit' =>
+                'Los Ax offsuit aumentan mucho de valor en posiciones tardías. En posiciones tempranas hay que ser más selectivo porque pueden quedar dominados con facilidad.',
+
+            'broadway_premium' =>
+                'Las broadways fuertes suelen imprimir dinero en NL2-NL10 porque los rivales pagan demasiado con manos peores. Abrirlas agresivamente suele ser la mejor estrategia.',
+
+            'broadway_weak' =>
+                'Las broadways débiles parecen mejores de lo que realmente son. Muchas generan top pair dominadas y problemas postflop. No las abras demasiado desde posiciones tempranas.',
+
+            'small_pairs' =>
+                'Las parejas pequeñas funcionan muy bien en NL2-NL10 porque muchos rivales pagan demasiado cuando conectas set. Además generan folds preflop suficientes para ser aperturas rentables.',
+
+            'suited_connectors' =>
+                'Los suited connectors ganan valor porque los rivales suelen cometer errores postflop. Su rentabilidad aumenta mucho cuando tienes posición.',
+
+            'weak_suited' =>
+                'Las manos suited débiles pueden abrirse desde posiciones tardías, pero no deben sobrevalorarse. El hecho de ser suited no convierte automáticamente una mano mediocre en una buena apertura.',
+
+            'trash_offsuit' =>
+                'Uno de los errores más comunes en micro límites es abrir demasiada basura porque solo quedan pocos jugadores por hablar. Algunas manos siguen siendo folds claros incluso desde posiciones tardías.',
+
+            default =>
+                'En NL2-NL10 suele ser más rentable abrir rangos sólidos y aprovechar errores postflop que intentar abrir demasiadas manos marginales.'
+        };
     }
 
 }

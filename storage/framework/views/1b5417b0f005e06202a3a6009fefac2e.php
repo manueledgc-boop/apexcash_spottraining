@@ -9,6 +9,7 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
     <link href="<?php echo e(asset('assets/css/spot-training.css')); ?>" rel="stylesheet">
+
     <script>
         window.ApexSpotTraining = {
             initialSpot: <?php echo json_encode($initialSpot, 15, 512) ?>,
@@ -30,6 +31,7 @@
                 <h1>Entrenador de decisiones preflop</h1>
                 <p>Practica spots concretos, recibe feedback inmediato y repite hasta que la decisión correcta sea automática.</p>
             </div>
+
             <form method="POST" action="<?php echo e(route('spot-training.reset')); ?>">
                 <?php echo csrf_field(); ?>
                 <button type="submit" class="ghost-btn">Reiniciar práctica</button>
@@ -55,6 +57,20 @@
                 </div>
 
                 <div class="hero-cards" id="heroCards"></div>
+                <br>
+
+                <div class="table-actions-area">
+                    <div class="decision-buttons" id="decisionButtons"></div>
+
+                    <button type="button" class="next-btn" id="nextSpotBtn">
+                        Siguiente spot →
+                    </button>
+
+                    <div class="table-insights-area">
+                        <br>
+                        <div class="insight-box low-stakes" id="lowStakesInsightBox" hidden></div>
+                    </div>
+                </div>
             </div>
 
             <aside class="spot-panel">
@@ -62,6 +78,7 @@
                     <span class="spot-module" id="spotModule">--</span>
                     <h2 id="spotTitle">Cargando spot...</h2>
                     <p class="spot-meta" id="spotMeta">--</p>
+
                     <div class="module-filter" id="moduleFilter">
                         <button type="button" data-module="">Todos</button>
                         <button type="button" data-module="open_raise">Open Raise</button>
@@ -78,18 +95,16 @@
                     <ol id="spotActions"></ol>
                 </div>
 
-                <div class="spot-box decision-box">
-                    <h3>Tu decisión</h3>
-                    <div class="decision-buttons" id="decisionButtons"></div>
+                <div class="spot-box decision-box" id="decisionResultBox" hidden>
                     <div class="feedback" id="feedbackBox" hidden></div>
                     <div class="grade-box" id="gradeBox" hidden></div>
                     <div class="frequency-box" id="frequencyBox" hidden></div>
                     <div class="ev-box" id="evBox" hidden></div>
-                    <button type="button" class="next-btn" id="nextSpotBtn">Siguiente spot →</button>
                 </div>
 
                 <div class="spot-box summary-box">
                     <h3>Sesión actual</h3>
+
                     <div class="summary-grid">
                         <div><span>Total</span><strong id="summaryTotal">0</strong></div>
                         <div><span>Aciertos</span><strong id="summaryCorrect">0</strong></div>
@@ -120,5 +135,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\laragon\www\apexcash\resources\views/spot-training/index.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\laragon\www\apexcash\resources\views/spot-training/index.blade.php ENDPATH**/ ?>

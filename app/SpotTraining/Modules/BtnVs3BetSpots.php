@@ -65,8 +65,55 @@ class BtnVs3BetSpots
                     'action_grades' => $grades,
                 ],
             ],
+            'insights' => self::insightsFor($concept, $villainPosition, $correctAction),
             'confidence' => self::confidenceFromGrades($grades),
             'table_players' => self::defaultPlayers('BTN', $villainPosition),
+        ];
+    }
+
+    protected static function insightsFor(string $concept, string $villainPosition, string $correctAction): array
+    {
+        $villainText = $villainPosition === 'SB'
+            ? 'Cuando la 3Bet viene de SB, el rival está fuera de posición y normalmente puede tener más bluffs que BB.'
+            : 'Cuando la 3Bet viene de BB, el rango suele estar más polarizado y muchas veces contiene valor fuerte junto a algunos bluffs seleccionados.';
+
+        $lowStakes = match ($concept) {
+            'ax_4bet_bluff' =>
+                "{$villainText} En NL2-NL10 los Ax suited bajos funcionan mejor como 4Bet bluff contra rivales que 3betean amplio y foldean demasiado a 4Bet. Contra jugadores tight o calling stations, baja la frecuencia: pagar en posición o foldear puede ser mejor que forzar el bluff.",
+
+            'value_continue' =>
+                "{$villainText} En NL2-NL10 manos como AQo y similares no deben foldearse automáticamente, pero tampoco hace falta convertirlas siempre en 4Bet. Contra rivales que 3betean fuerte y pagan mucho, prioriza líneas de valor. Contra nits, reduce los calls marginales.",
+
+            'premium_continue' =>
+                "{$villainText} En NL2-NL10 la prioridad con manos premium es no perder valor. Si el rival paga demasiado 4Bets, aumenta el valor preflop. Si el rival farolea mucho postflop, pagar puede mantener sus errores dentro.",
+
+            'suited_broadway' =>
+                "{$villainText} En NL2-NL10 los broadways suited suelen rendir muy bien pagando en posición porque conservan dominación, blockers y jugabilidad. Evita convertirlos en 4Bet bluff automático si el rival no foldea suficiente.",
+
+            'offsuit_broadway' =>
+                "{$villainText} En NL2-NL10 los broadways offsuit pierden mucho valor cuando el rival 3betea tight. Manos como KQo o QJo pueden parecer fuertes, pero se dominan con facilidad. Paga más contra agresivos amplios y foldea más contra rangos cerrados.",
+
+            'medium_pairs' =>
+                "{$villainText} En NL2-NL10 las parejas medias funcionan mejor como call en posición cuando el tamaño permite realizar equity. No las conviertas en 4Bet bluff: no bloquean premiums y suelen aislarse contra rangos fuertes.",
+
+            'small_pairs' =>
+                "{$villainText} En NL2-NL10 las parejas pequeñas dependen mucho de implied odds. Pagar puede ser rentable contra rivales que se stackean demasiado con overpairs, pero contra tamaños grandes o rivales agresivos postflop el call se vuelve marginal.",
+
+            'borderline_suited' =>
+                "{$villainText} En NL2-NL10 las suited marginales no deben defenderse por orgullo. Si el rival presiona poco postflop y el precio es bueno, pagar puede ser viable; contra 3Bets fuertes o sizings grandes, foldear evita errores caros.",
+
+            'dominated_offsuit' =>
+                "{$villainText} En NL2-NL10 una fuga común es pagar demasiadas manos offsuit dominadas en 3Bet pots. Contra rangos tight, foldear manos como ATo, KJo o QJo suele ahorrar más dinero que intentar jugar perfecto postflop.",
+
+            'suited_connectors' =>
+                "{$villainText} En NL2-NL10 los suited connectors tienen valor cuando puedes jugar en posición y el rival comete errores postflop. Evita 4betearlos sin fold equity real; su rentabilidad viene de realizar equity, no de inflar el bote preflop.",
+
+            default =>
+                "{$villainText} En NL2-NL10 el ajuste principal es simple: paga más en posición contra rivales amplios y pasivos, foldea más contra 3Bets tight, y reserva los 4Bet bluffs para jugadores que realmente foldean."
+        };
+
+        return [
+            'low_stakes' => $lowStakes,
         ];
     }
 
