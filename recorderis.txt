@@ -1,500 +1,648 @@
-# APEXCASH - FILOSOFÍA DE ENTRENAMIENTO Y VISIÓN DEL PRODUCTO
+# APEXCash — Plan de implementación Postflop V1
 
-## El problema que queremos resolver
+## 1. Objetivo de Postflop V1
 
-La mayoría de herramientas modernas de póker enseñan teoría GTO.
+Postflop V1 será la continuación natural del sistema Preflop V1. El objetivo no es crear todavía un solver completo ni un motor postflop perfecto, sino construir un entrenador práctico de spots postflop que enseñe al usuario a tomar mejores decisiones en flop, turn y river usando dos capas:
 
-Esto es útil.
+1. **Explicación GTO simplificada**
+2. **Ajuste práctico Pool NL2-NL10**
 
-Pero existe un problema:
+El sistema debe mantener la misma filosofía que ya quedó funcionando en Preflop V1:
 
-La mayoría de jugadores de NL2, NL5, NL10 y NL25 no juegan contra rivales GTO.
-
-Juegan contra personas que:
-
-* Pagan demasiado.
-* Foldean poco.
-* Bluffean poco.
-* Sobrevaloran manos medias.
-* Cometen errores repetitivos.
-
-Por tanto, existe una diferencia importante entre:
-
-* Saber qué haría un solver.
-* Saber cómo ganar dinero contra el pool real.
-
-ApexCash nace para cerrar esa brecha.
+* Una decisión por spot.
+* Feedback inmediato.
+* Panel derecho con resultado, frecuencia, EV relativo y explicación.
+* Bloque inferior con ajuste Pool NL2-NL10.
+* Sistema de leaks por módulo.
+* Filtros por módulo.
+* Flujo simple: responder → ocultar botones → mostrar resultado → siguiente spot.
 
 ---
 
-# La filosofía ApexCash
+## 2. Principio clave
 
-ApexCash no es una escuela de teoría.
+Postflop V1 no debe intentar jugar una mano completa todavía.
 
-ApexCash es un gimnasio de entrenamiento práctico.
+No vamos a crear un árbol completo flop-turn-river con todas las ramas posibles.
 
-Su objetivo principal es ayudar al usuario a ganar dinero en los límites que realmente juega.
+La V1 será un sistema de **spots postflop aislados**, igual que preflop:
 
-Especialmente:
+```text
+Situación concreta
+Board concreto
+Rangos aproximados
+Acción previa
+Hero debe decidir
+Feedback
+Siguiente spot
+```
 
-* NL2
-* NL5
-* NL10
-* NL25
-
----
-
-# Los dos mundos
-
-Cada spot de ApexCash debe mostrar dos perspectivas.
-
-## Mundo 1: GTO
-
-¿Qué haría una estrategia equilibrada?
-
-Ejemplo:
-
-BTN vs BB
-
-ATo
-
-GTO:
-
-* Call 60%
-* 3Bet 40%
-
-Explicación:
-
-ATo tiene suficiente equity y bloqueadores para mezclarse entre call y 3Bet.
+Esto permite avanzar rápido sin romper la arquitectura actual.
 
 ---
 
-## Mundo 2: Exploit
+## 3. Estructura general del spot postflop
 
-¿Qué hace el pool real?
-
-Ejemplo:
-
-BTN vs BB
-
-ATo
-
-Exploit NL2:
-
-* 3Bet alta frecuencia.
-
-Motivo:
-
-El jugador medio de NL2 foldea demasiado frente a 3Bets y continúa con rangos dominados.
-
-La desviación genera más beneficio que la línea puramente equilibrada.
-
----
-
-# Lo importante
-
-ApexCash no debe enseñar únicamente qué hacer.
-
-Debe enseñar:
-
-1. Qué haría GTO.
-2. Qué hace el rival promedio.
-3. Por qué nos desviamos.
-4. Cuándo debemos volver a GTO.
-
-El objetivo es desarrollar comprensión.
-
-No memorización.
-
----
-
-# Cómo debe responder ApexCash
-
-Ejemplo de feedback futuro:
-
-Acción seleccionada: CALL
-
-Resultado GTO:
-
-Correcto.
-
-Frecuencia GTO:
-
-62%
-
-Explicación:
-
-AJs realiza muy bien su equity en posición.
-
----
-
-Resultado Exploit NL2:
-
-4Bet preferido.
-
-Motivo:
-
-La población foldea demasiado a las 4Bets y continúa con rangos demasiado fuertes.
-
-Contra este tipo de rivales, la línea exploitativa genera más EV.
-
----
-
-# Qué queremos evitar
-
-No queremos crear jugadores que memoricen tablas.
-
-No queremos crear jugadores que repitan frecuencias sin entenderlas.
-
-No queremos convertir ApexCash en un clon de un solver.
-
----
-
-# Qué queremos crear
-
-Queremos crear jugadores capaces de responder:
-
-¿Por qué hago esto?
-
-¿Qué error está cometiendo mi rival?
-
-¿Cómo puedo castigarlo?
-
-¿Cuándo debo desviarme?
-
-¿Cuándo debo volver a la teoría?
-
----
-
-# Evolución futura
-
-Nivel 1
-
-GTO Trainer.
-
-Nivel 2
-
-GTO + Exploit NL2.
-
-Nivel 3
-
-GTO + Exploit por límite.
-
-* NL2
-* NL5
-* NL10
-* NL25
-* NL50
-* NL100+
-
-Nivel 4
-
-Entrenamiento adaptativo.
-
-ApexCash detecta:
-
-* Leaks del usuario.
-* Leaks de la población.
-* Diferencias entre teoría y realidad.
-
-Y genera entrenamiento personalizado.
-
----
-
-# Frase guía del proyecto
-
-ApexCash no enseña a parecer un solver.
-
-ApexCash enseña a ganar en los límites que realmente juegas.
-
-
-# APEXCASH - DOBLE PERSPECTIVA DE APRENDIZAJE (GTO + LÍMITES BAJOS)
-
-## Fecha
-
-Pendiente de implementación
-
-Prioridad: ALTA
-
----
-
-# Objetivo
-
-Añadir una segunda capa educativa a todos los spots de ApexCash.
-
-Actualmente los spots muestran:
-
-* Acción correcta
-* Explicación
-* Feedback
-
-Queremos evolucionar el sistema para mostrar simultáneamente:
-
-1. Perspectiva GTO
-2. Perspectiva Límites Bajos (NL2-NL10)
-
----
-
-# Filosofía
-
-ApexCash no pretende enseñar únicamente teoría.
-
-Tampoco pretende enseñar únicamente exploits.
-
-ApexCash pretende enseñar:
-
-* Qué haría una estrategia equilibrada.
-* Qué suele funcionar mejor contra la población real.
-* Por qué existe la diferencia.
-
----
-
-# Regla Principal
-
-NO habrá modos.
-
-NO habrá perfiles.
-
-NO habrá botones para elegir.
-
-Cada spot mostrará siempre ambas perspectivas.
-
----
-
-# Estructura futura de un spot
-
-Ejemplo:
+Cada spot debe tener estos campos mínimos:
 
 ```php
-'insights' => [
-    'gto' => 'Explicación teórica.',
-    'low_stakes' => 'Explicación práctica para NL2-NL10.',
+[
+    'id' => 'cbet_ip_ako_k72r',
+    'module' => 'cbet_ip',
+    'module_label' => 'CBet IP',
+
+    'street' => 'flop',
+    'board' => ['Kh', '7c', '2d'],
+
+    'hero_position' => 'BTN',
+    'villain_position' => 'BB',
+
+    'hero_cards' => ['Ah', 'Kd'],
+
+    'pot_bb' => 6.5,
+    'effective_stack_bb' => 97.5,
+
+    'actions' => [
+        'BTN raises 2.5 BB',
+        'BB calls',
+        'Flop: Kh 7c 2d',
+        'BB checks',
+        'Action on Hero BTN',
+    ],
+
+    'options' => ['CHECK', 'BET_33', 'BET_75'],
+
+    'correct_action' => 'BET_33',
+
+    'explanation' => '...',
+    'solver_note' => '...',
+    'action_grades' => [...],
+
+    'insights' => [
+        'low_stakes' => '...',
+    ],
+
+    'table_players' => ...
 ]
 ```
 
 ---
 
-# Flujo de aprendizaje
+## 4. Módulos de Postflop V1
 
-Usuario responde.
+La primera versión debe tener módulos concretos y controlados.
 
-↓
+### Módulo 1 — CBet IP
 
-ApexCash evalúa.
+Hero fue agresor preflop y juega en posición.
 
-↓
+Ejemplos:
 
-Se muestra:
+* BTN vs BB
+* CO vs BB
+* BTN vs SB
 
-Resultado
+Tipos de boards:
 
-↓
+* A-high secos
+* K-high secos
+* Boards bajos secos
+* Boards conectados
+* Boards monotono
+* Boards emparejados
 
-Perspectiva GTO
+Objetivo del módulo:
 
-↓
+Enseñar cuándo apostar pequeño, cuándo checkear back y cuándo apostar grande.
 
-Perspectiva Límites Bajos
+Opciones iniciales:
 
----
-
-# Ejemplo
-
-Spot:
-
-AJo BTN vs SB 3Bet
-
-Respuesta usuario:
-
-CALL
-
-Resultado:
-
-CORRECTO
+```php
+['CHECK', 'BET_33', 'BET_75']
+```
 
 ---
 
-Perspectiva GTO
+### Módulo 2 — CBet OOP
 
-AJo realiza bien su equity en posición y puede continuar mediante call a frecuencia elevada.
+Hero fue agresor preflop pero juega fuera de posición.
 
----
+Ejemplos:
 
-Perspectiva Límites Bajos
+* SB 3Bet vs BTN
+* BB 3Bet vs BTN
+* UTG open vs BTN call
 
-En NL2-NL10 muchos jugadores tienen rangos de 3Bet más fuertes y menos bluffs.
+Objetivo:
 
-Contra rivales muy tight se puede aumentar la frecuencia de fold.
+Enseñar que fuera de posición no se puede apostar automáticamente todos los boards.
 
-Contra regulares que sobre foldean a 4Bet se puede introducir una estrategia más agresiva.
+Opciones:
 
----
-
-# Beneficios
-
-## Beneficio 1
-
-No se duplica contenido.
-
-Los mismos spots sirven para enseñar:
-
-* teoría
-* adaptación
+```php
+['CHECK', 'BET_33', 'BET_75']
+```
 
 ---
 
-## Beneficio 2
+### Módulo 3 — BB vs CBet
 
-No se crean dos productos diferentes.
+Hero defendió BB y enfrenta c-bet.
 
-ApexCash sigue siendo una única experiencia.
+Ejemplos:
+
+```text
+BTN open
+BB call
+Flop
+BB check
+BTN bets
+Action on Hero
+```
+
+Objetivo:
+
+Enseñar cuándo foldear, pagar o check-raisear.
+
+Opciones:
+
+```php
+['FOLD', 'CALL', 'RAISE']
+```
 
 ---
 
-## Beneficio 3
+### Módulo 4 — Turn Barrel
 
-El usuario aprende a pensar.
+Hero apostó flop y llega el turn.
 
-No memoriza.
+Objetivo:
 
-Comprende:
+Enseñar cuándo seguir apostando, cuándo rendirse y cuándo controlar bote.
 
-* qué haría GTO
-* qué hace la población
-* cuándo desviarse
+Opciones:
+
+```php
+['CHECK', 'BET_50', 'BET_75']
+```
 
 ---
 
-# Implementación Técnica
+### Módulo 5 — River Value Bet
 
-## Fase 1
+Hero llega al river con mano de valor.
 
-Modificar estructura de spots.
+Objetivo:
+
+Enseñar a apostar por valor contra el pool NL2-NL10, donde muchos jugadores pagan demasiado.
+
+Opciones:
+
+```php
+['CHECK', 'BET_50', 'BET_75']
+```
+
+---
+
+### Módulo 6 — River Bluff Catch
+
+Hero enfrenta apuesta river.
+
+Objetivo:
+
+Enseñar cuándo pagar y cuándo foldear, especialmente porque en NL2-NL10 el pool farolea menos de lo que debería.
+
+Opciones:
+
+```php
+['FOLD', 'CALL']
+```
+
+---
+
+## 5. Módulos que NO entran todavía
+
+No meter en Postflop V1:
+
+* Donk bet
+* Overbet avanzada
+* Check-raise turn
+* Multiway pots
+* Side pots
+* SPR complejo
+* All-in trees
+* Ranges dinámicos completos
+* Solver real
+
+Eso sería Postflop V2.
+
+---
+
+## 6. Primer módulo a implementar
+
+El primer módulo debe ser:
+
+```text
+CBet IP
+```
+
+Razones:
+
+* Es el más fácil de entender.
+* Es el más frecuente.
+* Conecta directamente con preflop.
+* Permite usar boards simples.
+* Da feedback claro.
+* Tiene mucho valor para NL2-NL10.
+
+---
+
+## 7. Primer archivo nuevo
+
+Crear:
+
+```text
+app/SpotTraining/Modules/CbetIpSpots.php
+```
+
+Estructura inicial:
+
+```php
+class CbetIpSpots
+{
+    use BuildsSpotPlayers;
+
+    public static function all(): array
+    {
+        return [
+            self::akoOnK72r(),
+            self::aqOnK72r(),
+            self::ttOnA72r(),
+            self::qjsOnT92ss(),
+            self::airOnA83r(),
+        ];
+    }
+}
+```
+
+---
+
+## 8. Primeros spots recomendados
+
+### Spot 1
+
+```text
+BTN abre
+BB paga
+Flop K72 rainbow
+Hero tiene AKo
+BB check
+```
+
+Decisión correcta:
+
+```text
+BET_33
+```
+
+Idea:
+
+Top pair top kicker en board seco. Apostar pequeño imprime valor.
+
+Pool NL2-NL10:
+
+Muchos jugadores pagan demasiado con Kx peor, 7x, pocket pairs y floats débiles. Apostar pequeño por valor es mejor que slowplay.
+
+---
+
+### Spot 2
+
+```text
+BTN abre
+BB paga
+Flop K72 rainbow
+Hero tiene AQo
+BB check
+```
+
+Decisión correcta:
+
+```text
+BET_33 o CHECK según estructura simplificada
+```
+
+Idea:
+
+Tiene overcards y ventaja de rango, pero no valor directo.
+
+Pool NL2-NL10:
+
+Contra jugadores que foldean mucho flop, c-bet pequeña funciona. Contra calling stations, check back es mejor porque no hay fold equity suficiente.
+
+---
+
+### Spot 3
+
+```text
+CO abre
+BB paga
+Flop A72 rainbow
+Hero tiene TT
+BB check
+```
+
+Decisión correcta:
+
+```text
+CHECK
+```
+
+Idea:
+
+Tenemos showdown value, pero apostar convierte la mano en bluff sin necesidad.
+
+Pool NL2-NL10:
+
+Muchos rivales no foldean Ax ni pares. Check back controla bote y evita aislarse contra manos mejores.
+
+---
+
+### Spot 4
+
+```text
+BTN abre
+BB paga
+Flop T92 con flush draw
+Hero tiene QJs con proyecto
+BB check
+```
+
+Decisión correcta:
+
+```text
+BET_75
+```
+
+Idea:
+
+Proyecto fuerte con mucha equity. Buen candidato para apostar.
+
+Pool NL2-NL10:
+
+Semi-bluff rentable si el rival foldea suficiente. Contra calling stations, sigue siendo buena apuesta porque tenemos equity real, no puro aire.
+
+---
+
+### Spot 5
+
+```text
+BTN abre
+BB paga
+Flop A83 rainbow
+Hero tiene QJs sin backdoors claros
+BB check
+```
+
+Decisión correcta:
+
+```text
+CHECK
+```
+
+Idea:
+
+La mano tiene poca equity y mala continuación.
+
+Pool NL2-NL10:
+
+No hace falta farolear todos los boards A-high. Contra rivales que pagan demasiado, rendirse con aire malo ahorra dinero.
+
+---
+
+## 9. Cambios necesarios en repositorio
+
+### 1. Crear nuevo módulo
+
+```text
+app/SpotTraining/Modules/CbetIpSpots.php
+```
+
+### 2. Registrar el módulo en `SpotRepository`
+
+Añadir `CbetIpSpots::all()` dentro del array global de spots.
+
+### 3. Añadir filtro en Blade
+
+Agregar botón:
+
+```html
+<button type="button" data-module="cbet_ip">CBet IP</button>
+```
+
+### 4. Actualizar `moduleLabel()` en `SpotTrainingService`
 
 Añadir:
 
 ```php
-'insights'
+'cbet_ip' => 'CBet IP',
+```
+
+### 5. Verificar frontend
+
+El frontend ya debería soportar:
+
+* cartas de Hero
+* acción previa
+* opciones dinámicas
+* resultado
+* EV
+* frecuencia
+* Pool NL2-NL10
+
+Pero falta mostrar el board real si aún no existe visualmente.
+
+---
+
+## 10. Cambio visual necesario
+
+Actualmente la mesa muestra:
+
+```text
+SPOT PREFLOP
+Pot: X BB
+```
+
+Para postflop debe mostrar board:
+
+```text
+FLOP
+K♥ 7♣ 2♦
+Pot: 6.5 BB
+```
+
+Se debe añadir un contenedor:
+
+```html
+<div class="board-cards" id="boardCards"></div>
+```
+
+Y en JS:
+
+```js
+if (spot.board && spot.board.length) {
+    renderBoard(spot.board);
+}
+```
+
+Si no hay board, se mantiene:
+
+```text
+SPOT PREFLOP
 ```
 
 ---
 
-## Fase 2
+## 11. No romper Preflop
 
-Modificar SpotTrainingService.
-
-Exponer:
+El sistema debe ser compatible con ambos tipos:
 
 ```php
-insights.gto
-insights.low_stakes
+'street' => 'preflop'
 ```
 
-en el JSON enviado al frontend.
+o:
+
+```php
+'street' => 'flop'
+```
+
+Si un spot no tiene `board`, el frontend debe comportarse igual que ahora.
+
+No modificar los módulos preflop para adaptarlos a postflop.
 
 ---
 
-## Fase 3
+## 12. Naming de acciones postflop
 
-Modificar spot-training.js.
+Acciones recomendadas:
 
-Después del feedback mostrar:
+```php
+CHECK
+BET_33
+BET_50
+BET_75
+FOLD
+CALL
+RAISE
+```
 
-📚 Perspectiva GTO
+En frontend se pueden mostrar mejor así:
 
-texto
+```text
+CHECK
+BET 33%
+BET 50%
+BET 75%
+FOLD
+CALL
+RAISE
+```
 
-💰 Perspectiva Límites Bajos
-
-texto
-
----
-
-## Fase 4
-
-Modificar la interfaz.
-
-Añadir dos bloques visuales debajo del resultado.
-
-Ejemplo:
-
----
-
-📚 Perspectiva GTO
-
-texto
+Pero internamente usar nombres constantes.
 
 ---
 
-💰 Perspectiva Límites Bajos
+## 13. Criterio de evaluación
 
-texto
+Igual que preflop:
 
----
+```php
+'action_grades' => [
+    'CHECK' => [
+        'grade' => 'best',
+        'frequency' => 60,
+        'ev_score' => 100,
+        'feedback' => '...',
+    ],
+    ...
+]
+```
 
----
+Grados:
 
-# Implementación Inicial
-
-No actualizar los 150 spots.
-
-Primero realizar una prueba piloto.
-
-Módulo recomendado:
-
-BTN vs 3Bet
-
-Motivo:
-
-Es donde más diferencias existen entre:
-
-* teoría
-* población real
-
----
-
-# Spots piloto sugeridos
-
-A5s
-
-A4s
-
-AQo
-
-KQo
-
-TT
-
-KJs
-
-QTs
+```text
+best
+good
+marginal
+mistake
+blunder
+```
 
 ---
 
-# Objetivo Final
+## 14. Roadmap de implementación
 
-Cuando un usuario termine un spot debe salir entendiendo:
+### Fase 1
 
-1. Qué haría GTO.
-2. Qué suele funcionar en NL2-NL10.
-3. Por qué ambas líneas pueden diferir.
+Crear `CbetIpSpots.php` con 5 spots.
+
+### Fase 2
+
+Registrar el módulo.
+
+### Fase 3
+
+Añadir botón de filtro `CBet IP`.
+
+### Fase 4
+
+Mostrar board en la mesa.
+
+### Fase 5
+
+Validar que el flujo funciona igual que Preflop V1.
+
+### Fase 6
+
+Ampliar a 20 spots de CBet IP.
+
+### Fase 7
+
+Crear `BbVsCbetSpots.php`.
 
 ---
 
-# Visión ApexCash
+## 15. Definición de terminado para Postflop V1 inicial
 
-ApexCash no enseña únicamente teoría.
+La primera entrega estará lista cuando:
 
-ApexCash tampoco enseña únicamente exploits.
-
-ApexCash enseña a comprender la teoría y a ganar dinero contra los rivales que realmente existen en las mesas.
+* Exista módulo `CBet IP`.
+* Se puedan cargar spots de flop.
+* Se vea el board en la mesa.
+* El usuario pueda responder.
+* Se oculten botones al responder.
+* Se muestre resultado en panel derecho.
+* Se muestre Pool NL2-NL10 debajo de la mesa.
+* `Siguiente spot` cargue otro spot.
+* Los filtros funcionen.
+* Preflop siga funcionando sin romperse.
 
 ---
 
-# Frase guía
+## 16. Filosofía final
 
-Entiende la teoría.
+Postflop V1 debe enseñar al usuario a pensar en:
 
-Comprende a la población.
+```text
+¿Qué representa mi rango?
+¿Qué representa el board?
+¿Qué tipo de mano tengo?
+¿Qué manos peores pagan?
+¿Qué manos mejores foldean?
+¿El pool NL2-NL10 realmente foldea aquí?
+¿Estoy apostando por valor, bluff o protección?
+```
 
-Aprende cuándo desviarte.
+No debe enseñar a memorizar botones.
+
+Debe enseñar a tomar mejores decisiones.

@@ -1,19 +1,16 @@
 :root {
     --apex-bg: #08110d;
     --apex-card: #111c16;
-    --apex-card-2: #16261d;
     --apex-line: rgba(255,255,255,.1);
     --apex-text: #f3fff8;
     --apex-muted: #a8b9ad;
     --apex-green: #26d07c;
     --apex-gold: #f7c948;
     --apex-red: #ff5f57;
+    --apex-blue: #60a5fa;
 }
 
-/* ========================================
-   ESTILOS GENERALES Y BASE RESPONSIVE
-======================================== */
-.spot-page {
+.postflop-page {
     min-height: 100vh;
     background: radial-gradient(circle at top left, #173a29 0, #08110d 42%, #050807 100%);
     color: var(--apex-text);
@@ -21,25 +18,24 @@
     box-sizing: border-box;
 }
 
-.spot-header {
-    max-width: 80rem;
+.postflop-header {
+    max-width: 1280px;
     margin: 0 auto 22px;
     display: flex;
-    flex-wrap: wrap; /* Evita que colapse en pantallas medianas */
+    flex-wrap: wrap;
     align-items: flex-end;
     justify-content: space-between;
     gap: 18px;
 }
 
-/* Ocultar el encabezado si la pantalla es muy baja (móviles en horizontal) para maximizar el área de juego */
 @media (max-height: 580px) and (orientation: landscape) {
-    .spot-header {
+    .postflop-header {
         display: none;
     }
 }
 
-.spot-kicker,
-.spot-module {
+.postflop-kicker,
+.postflop-module {
     display: inline-block;
     font-size: 12px;
     letter-spacing: .14em;
@@ -48,22 +44,42 @@
     text-transform: uppercase;
 }
 
-.spot-header h1 {
+.postflop-header h1 {
     margin: 8px 0;
-    font-size: clamp(24px, 4vw, 48px); /* Ajuste fluido del título */
+    font-size: clamp(24px, 4vw, 48px);
     line-height: 1.1;
 }
 
-.spot-header p {
+.postflop-header p {
     margin: 0;
-    max-width: 720px;
+    max-width: 740px;
     color: var(--apex-muted);
     font-size: clamp(14px, 1.5vw, 16px);
 }
 
-/* ========================================
-   BOTONES
-======================================== */
+.street-tabs {
+    display: inline-flex;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--apex-line);
+}
+
+.street-tabs a {
+    color: var(--apex-text);
+    text-decoration: none;
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.street-tabs a.is-active {
+    background: rgba(38,208,124,.24);
+    color: #bbf7d0;
+}
+
 .ghost-btn,
 .next-btn,
 .decision-btn {
@@ -81,66 +97,56 @@
     border: 1px solid var(--apex-line);
 }
 
-/* ========================================
-   GRID PRINCIPAL RESPONSIVO
-======================================== */
-.spot-layout {
+.postflop-layout {
     width: 100%;
-    max-width: 80rem;
+    max-width: 1280px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr; /* 1 columna por defecto (Smartphones en vertical) */
+    grid-template-columns: 1fr;
     gap: clamp(10px, 2vw, 22px);
 }
 
-/* 📱 EQUIPOS GRANDES (min-width: 981px) O SMARTPHONES EN HORIZONTAL (landscape) */
-@media (min-width: 981px) or (orientation: landscape) {
-    .spot-layout {
-        /* Fuerza las 2 columnas siempre que se cumpla una de las dos condiciones */
-        grid-template-columns: minmax(0, 3fr) minmax(0, 1.3fr); 
-    }
-
-    /* Ajuste extra para móviles horizontales: evita tener que scrollear toda la web */
-    @media (max-height: 600px) {
-        .spot-panel {
-            max-height: 100dvh;
-            overflow-y: auto; /* Scroll interno solo para el contenido del panel derecho */
-            padding-right: 4px;
-        }
+@media (min-width: 981px), (orientation: landscape) {
+    .postflop-layout {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 1.35fr);
     }
 }
 
-.spot-table-card,
-.spot-panel .spot-box {
+@media (orientation: landscape) and (max-height: 600px) {
+    .postflop-panel {
+        max-height: 82vh;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+}
+
+.postflop-table-card,
+.postflop-panel .postflop-box {
     background: rgba(17, 28, 22, .92);
     border: 1px solid var(--apex-line);
     box-shadow: 0 24px 70px rgba(0,0,0,.35);
 }
 
-.spot-table-card {
+.postflop-table-card {
     border-radius: 28px;
     padding: clamp(10px, 2vw, 22px);
     width: 100%;
     box-sizing: border-box;
 }
 
-/* ========================================
-   LA MESA DE PÓKER (100% RESPONSIVE)
-======================================== */
-.spot-table {
+.postflop-table {
     position: relative;
     width: 100%;
-    /* Mantiene la proporción perfecta de la mesa para que no se deforme */
-    aspect-ratio: 16 / 9; 
-    max-height: 70vh; /* Se le da un poco más de margen en horizontal */
+    aspect-ratio: 16 / 9;
+    max-height: 70vh;
     margin: 0 auto;
-    overflow: visible; /* Permitir que los asientos sobresalgan sutilmente si es necesario */
+    overflow: visible;
 }
 
 .table-felt {
     position: absolute;
     inset: 4%;
-    border-radius: 100px; /* Cambiado a píldora en lugar de círculo para parecer mesa de póker real */
+    border-radius: 100px;
     background: radial-gradient(circle, #1e754b 0, #11603b 45%, #0b3d28 100%);
     border: clamp(8px, 1.5vw, 18px) solid #25170d;
     box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 30px 60px rgba(0,0,0,.35);
@@ -151,35 +157,47 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: max-content;
-    min-width: clamp(140px, 25%, 220px);
+    min-width: clamp(180px, 34%, 320px);
     text-align: center;
     padding: clamp(8px, 1.5vw, 16px) clamp(12px, 2vw, 22px);
     border-radius: 20px;
-    background: rgba(0,0,0,.22);
+    background: rgba(0,0,0,.24);
     border: 1px solid rgba(255,255,255,.16);
     z-index: 10;
 }
 
-.board-zone span {
+.board-zone > span {
     display: block;
     font-size: clamp(10px, 1vw, 12px);
     letter-spacing: .16em;
     color: rgba(255,255,255,.72);
+    margin-bottom: 8px;
+}
+
+.board-cards,
+.hero-cards {
+    display: flex;
+    justify-content: center;
+    gap: clamp(5px, 1vw, 10px);
 }
 
 .board-zone strong {
     display: block;
-    margin-top: 6px;
-    font-size: clamp(16px, 2vw, 24px);
+    margin-top: 8px;
+    font-size: clamp(15px, 2vw, 24px);
+    color: var(--apex-gold);
 }
 
-/* ========================================
-   ASIENTOS (SEATS)
-======================================== */
+.board-zone small {
+    display: block;
+    margin-top: 4px;
+    color: #dbeafe;
+    font-weight: 900;
+}
+
 .seat {
     position: absolute;
-    width: clamp(75px, 14vw, 140px); /* Escalado fluido según el ancho */
+    width: clamp(75px, 14vw, 140px);
     border-radius: 14px;
     background: rgba(3, 10, 7, .88);
     border: 1px solid rgba(255,255,255,.16);
@@ -203,7 +221,6 @@
 .seat .name { font-size: clamp(11px, 1.2vw, 14px); font-weight: 900; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .seat .stack { font-size: clamp(10px, 1vw, 12px); color: var(--apex-muted); margin-top: 2px; }
 
-/* Posiciones relativas perfectas basadas en porcentaje */
 .seat-utg { left: 20%; top: 25%; }
 .seat-hj  { left: 50%; top: 12%; }
 .seat-co  { left: 80%; top: 25%; }
@@ -211,15 +228,32 @@
 .seat-sb  { left: 50%; top: 88%; }
 .seat-bb  { left: 15%; top: 75%; }
 
-/* Cartas de Hero */
-.hero-cards {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+.hero-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
     margin-top: 12px;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(0,0,0,.18);
+    border: 1px solid var(--apex-line);
 }
 
-.card {
+.hero-row span {
+    display: block;
+    font-size: 11px;
+    color: var(--apex-muted);
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+.hero-row strong {
+    color: #bbf7d0;
+}
+
+.card,
+.board-card {
     width: clamp(40px, 8vw, 74px);
     aspect-ratio: 2.5 / 3.5;
     border-radius: 8px;
@@ -232,41 +266,16 @@
     box-shadow: 0 18px 35px rgba(0,0,0,.35);
 }
 
-.card.red { color: #d71920; }
-
-/* ========================================
-   PANEL DE ACCIONES Y CONTENIDO
-======================================== */
-.spot-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.board-card {
+    width: clamp(36px, 7vw, 58px);
+    font-size: clamp(14px, 2.4vw, 22px);
 }
 
-.spot-box {
-    border-radius: 22px;
-    padding: clamp(14px, 2vw, 22px);
-    box-sizing: border-box;
-}
+.card.red,
+.board-card.red { color: #d71920; }
 
-.spot-box h2,
-.spot-box h3 {
-    margin: 4px 0 10px;
-    font-size: clamp(18px, 2vw, 24px);
-}
-
-.spot-meta {
-    color: var(--apex-muted);
-    margin: 0;
-    font-size: clamp(13px, 1.2vw, 15px);
-}
-
-.actions-box ol {
-    padding-left: 20px;
-    margin: 0;
-    color: var(--apex-muted);
-    line-height: 1.6;
-    font-size: clamp(13px, 1.2vw, 15px);
+.table-actions-area {
+    margin-top: 12px;
 }
 
 .decision-buttons {
@@ -275,7 +284,6 @@
     gap: 10px;
 }
 
-/* Teléfonos pequeños: Apilar botones de decisión verticalmente si no caben */
 @media (max-width: 480px) {
     .decision-buttons {
         grid-template-columns: 1fr;
@@ -289,6 +297,7 @@
 
 .decision-btn.secondary { background: #e8edf0; }
 .decision-btn.danger { background: var(--apex-red); color: #fff; }
+.decision-btn.blue { background: var(--apex-blue); color: #031022; }
 
 .next-btn {
     width: 100%;
@@ -297,10 +306,102 @@
     color: #1a1204;
 }
 
-.feedback {
+.table-insights-area {
+    display: grid;
+    gap: 10px;
     margin-top: 14px;
+}
+
+.insight-box {
     border-radius: 16px;
     padding: 14px;
+    line-height: 1.55;
+    background: rgba(255,255,255,.08);
+    border: 1px solid var(--apex-line);
+    color: var(--apex-text);
+}
+
+.insight-box.gto { border-color: rgba(96,165,250,.45); }
+.insight-box.low-stakes { border-color: rgba(38,208,124,.45); }
+
+.postflop-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.postflop-box {
+    border-radius: 22px;
+    padding: clamp(14px, 2vw, 22px);
+    box-sizing: border-box;
+}
+
+.postflop-box h2,
+.postflop-box h3 {
+    margin: 4px 0 10px;
+    font-size: clamp(18px, 2vw, 24px);
+}
+
+.spot-meta,
+.actions-box ol {
+    color: var(--apex-muted);
+    line-height: 1.6;
+    font-size: clamp(13px, 1.2vw, 15px);
+}
+
+.actions-box ol {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.module-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.module-filter button {
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.05);
+    color: var(--apex-text);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: clamp(10px, 1vw, 12px);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.module-filter button.is-active {
+    background: rgba(38,208,124,.25);
+    border-color: rgba(38,208,124,.60);
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.metric-row span {
+    color: var(--apex-muted);
+    font-weight: 800;
+}
+
+.metric-row strong {
+    text-align: right;
+    color: #f3fff8;
+}
+
+.feedback,
+.grade-box,
+.frequency-box,
+.ev-box {
+    margin-top: 10px;
+    border-radius: 14px;
+    padding: 12px;
     background: rgba(255,255,255,.08);
     color: var(--apex-text);
     border: 1px solid var(--apex-line);
@@ -310,7 +411,14 @@
 .feedback.correct { border-color: rgba(38,208,124,.6); }
 .feedback.wrong { border-color: rgba(255,95,87,.7); }
 
-/* Grid de resumen */
+.grade-box strong,
+.frequency-box strong,
+.ev-box strong {
+    display: block;
+    margin-top: 4px;
+    font-size: clamp(15px, 1.8vw, 18px);
+}
+
 .summary-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -341,69 +449,8 @@
     font-size: clamp(18px, 2.5vw, 24px);
 }
 
-/* ========================================
-   FILTRO DE MÓDULOS
-======================================== */
-.module-filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 12px;
-}
-
-.module-filter button {
-    border: 1px solid rgba(255,255,255,.15);
-    background: rgba(255,255,255,.05);
-    color: var(--apex-text);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: clamp(10px, 1vw, 12px);
-    font-weight: 800;
-    cursor: pointer;
-    transition: .15s ease;
-}
-
-.module-filter button:hover {
-    background: rgba(38,208,124,.15);
-}
-
-.module-filter button.is-active {
-    background: rgba(38,208,124,.25);
-    border-color: rgba(38,208,124,.60);
-}
-
-/* ========================================
-   BLOQUES DE FEEDBACK EXTRA
-======================================== */
-.grade-box,
-.frequency-box,
-.ev-box {
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid var(--apex-line);
-}
-
-.grade-box strong,
-.frequency-box strong,
-.ev-box strong {
-    display: block;
-    margin-top: 4px;
-    font-size: clamp(15px, 1.8vw, 18px);
-}
-
-/* ========================================
-   FUGAS (LEAKS)
-======================================== */
-.leaks-box {
-    margin-top: 16px;
-}
-
-.leaks-box h4 {
-    margin-bottom: 10px;
-}
-
+.leaks-box { margin-top: 16px; }
+.leaks-box h4 { margin-bottom: 10px; }
 .leak-row {
     display: flex;
     justify-content: space-between;

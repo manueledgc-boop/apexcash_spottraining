@@ -12,126 +12,203 @@
 <div class="page">
 
     <header class="topbar">
-        <div class="brand">
+        <a href="{{ url('/') }}" class="brand">
             <div class="brand-mark">A</div>
             <div>
                 <strong>APEXCASH</strong>
-                <span>Train Cash Games</span>
+                <span>{{ __('landing.brand_subtitle') }}</span>
             </div>
-        </div>
+        </a>
 
         <nav class="nav">
-            <a href="#features">{{ __('app.nav_training') }}</a>
-            <a href="#modes">{{ __('app.nav_modes') }}</a>
+            <a href="#training">{{ __('landing.nav_training') }}</a>
+            <a href="#method">{{ __('landing.nav_method') }}</a>
+            <a href="#progress">{{ __('landing.nav_progress') }}</a>
+
             <div class="language-selector">
                 <select onchange="window.location.href=this.value">
-                    <option
-                        value="{{ route('lang.switch', 'es') }}"
-                        {{ app()->getLocale() == 'es' ? 'selected' : '' }}>
+                    <option value="{{ route('lang.switch', 'es') }}" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>
                         Español
                     </option>
-
-                    <option
-                        value="{{ route('lang.switch', 'en') }}"
-                        {{ app()->getLocale() == 'en' ? 'selected' : '' }}>
+                    <option value="{{ route('lang.switch', 'en') }}" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>
                         English
                     </option>
                 </select>
             </div>
-            <a href="{{ route('login') }}" class="login-link">
-                {{ __('app.login') }}
-            </a>
 
+            <a href="{{ route('login') }}" class="login-link">
+                {{ __('landing.login') }}
+            </a>
         </nav>
     </header>
 
     <main class="hero">
         <section class="hero-content">
-            <div class="badge">{{ __('app.badge') }}</div>
+            <div class="badge">{{ __('landing.badge') }}</div>
 
-            <h1>{{ __('app.hero_title') }}</h1>
+            <h1>{{ __('landing.hero_title') }}</h1>
 
-            <p>{{ __('app.hero_subtitle') }}</p>
+            <p>{{ __('landing.hero_subtitle') }}</p>
 
             <div class="hero-actions">
-                <a href="{{ route('register') }}" class="btn primary">{{ __('app.start_now') }}</a>
-                <a href="#modes" class="btn secondary">{{ __('app.see_modes') }}</a>
+                <a href="{{ route('login') }}" class="btn secondary">
+                    {{ __('landing.login') }}
+                </a>
+
+                <a href="{{ route('register') }}" class="btn primary">
+                    {{ __('landing.register') }}
+                </a>
             </div>
 
             <div class="hero-stats">
                 <div>
-                    <strong>100 BB</strong>
-                    <span>{{ __('app.stack_initial') }}</span>
+                    <strong>{{ __('landing.stat_1_value') }}</strong>
+                    <span>{{ __('landing.stat_1_label') }}</span>
                 </div>
                 <div>
-                    <strong>6-Max</strong>
-                    <span>{{ __('app.cash_training') }}</span>
+                    <strong>{{ __('landing.stat_2_value') }}</strong>
+                    <span>{{ __('landing.stat_2_label') }}</span>
                 </div>
                 <div>
-                    <strong>0€</strong>
-                    <span>{{ __('app.no_real_risk') }}</span>
+                    <strong>{{ __('landing.stat_3_value') }}</strong>
+                    <span>{{ __('landing.stat_3_label') }}</span>
                 </div>
             </div>
         </section>
 
-        <section class="table-preview">
-            <div class="glow"></div>
+        <section class="training-preview" aria-label="ApexCash training preview">
+            <div class="preview-glow"></div>
 
-            <div class="poker-card card-one">A♠</div>
-            <div class="poker-card card-two">K♥</div>
+            <div class="trainer-card">
+                <div class="trainer-top">
+                    <span>{{ __('landing.preview_badge') }}</span>
+                    <strong>{{ __('landing.preview_title') }}</strong>
+                </div>
 
-            <div class="mini-table">
-                <div class="seat top">BOT REG</div>
-                <div class="seat left">BOT TIGHT</div>
-                <div class="seat right">BOT AGGRO</div>
-                <div class="pot">POT 12.5 BB</div>
-                <div class="hero-seat">HERO</div>
+                <div class="mini-table">
+                    <div class="mini-seat seat-top">{{ __('landing.preview_villain') }}</div>
+                    <div class="mini-seat seat-left">BTN</div>
+                    <div class="mini-seat seat-right">BB</div>
+
+                    <div class="mini-pot">
+                        <span>{{ __('landing.preview_pot') }}</span>
+                        <strong>4.0 BB</strong>
+                    </div>
+
+                    <div class="mini-card card-one">A♠</div>
+                    <div class="mini-card card-two">K♥</div>
+
+                    <div class="mini-hero">HERO · SB</div>
+                </div>
+
+                <div class="decision-row">
+                    <button>Fold</button>
+                    <button>Call</button>
+                    <button class="is-best">3Bet</button>
+                </div>
+
+                <div class="feedback-preview">
+                    <span>{{ __('landing.preview_feedback_label') }}</span>
+                    <p>{{ __('landing.preview_feedback_text') }}</p>
+                </div>
             </div>
         </section>
     </main>
 
-    <section id="features" class="features">
-        <article>
-            <span>01</span>
-            <h3>Sesiones reales</h3>
-            <p>Entrena volumen como en una mesa cash real, pero en entorno controlado.</p>
-        </article>
+    <section id="training" class="section-block">
+        <div class="section-heading">
+            <span>{{ __('landing.training_kicker') }}</span>
+            <h2>{{ __('landing.training_title') }}</h2>
+            <p>{{ __('landing.training_text') }}</p>
+        </div>
 
-        <article>
-            <span>02</span>
-            <h3>Bots humanos</h3>
-            <p>Rivales con estilos distintos: tight, reg, agresivo y perfiles más duros.</p>
-        </article>
+        <div class="features">
+            <article>
+                <span>01</span>
+                <h3>{{ __('landing.feature_1_title') }}</h3>
+                <p>{{ __('landing.feature_1_text') }}</p>
+            </article>
 
-        <article>
-            <span>03</span>
-            <h3>Mejora medible</h3>
-            <p>Stats, leaks y progreso para saber si realmente estás mejorando.</p>
-        </article>
+            <article>
+                <span>02</span>
+                <h3>{{ __('landing.feature_2_title') }}</h3>
+                <p>{{ __('landing.feature_2_text') }}</p>
+            </article>
+
+            <article>
+                <span>03</span>
+                <h3>{{ __('landing.feature_3_title') }}</h3>
+                <p>{{ __('landing.feature_3_text') }}</p>
+            </article>
+        </div>
     </section>
 
-    <section id="modes" class="modes">
-        <h2>Elige cómo quieres entrenar</h2>
+    <section id="method" class="split-section">
+        <div>
+            <span class="section-kicker">{{ __('landing.method_kicker') }}</span>
+            <h2>{{ __('landing.method_title') }}</h2>
+            <p>{{ __('landing.method_text') }}</p>
+        </div>
+
+        <div class="method-grid">
+            <article>
+                <span>{{ __('landing.method_card_1_label') }}</span>
+                <h3>{{ __('landing.method_card_1_title') }}</h3>
+                <p>{{ __('landing.method_card_1_text') }}</p>
+            </article>
+
+            <article>
+                <span>{{ __('landing.method_card_2_label') }}</span>
+                <h3>{{ __('landing.method_card_2_title') }}</h3>
+                <p>{{ __('landing.method_card_2_text') }}</p>
+            </article>
+        </div>
+    </section>
+
+    <section id="progress" class="section-block">
+        <div class="section-heading">
+            <span>{{ __('landing.progress_kicker') }}</span>
+            <h2>{{ __('landing.progress_title') }}</h2>
+            <p>{{ __('landing.progress_text') }}</p>
+        </div>
 
         <div class="mode-grid">
-            <a href="{{ route('dashboard') }}" class="mode-card active">
-                <span>Disponible</span>
-                <h3>Cash Training</h3>
-                <p>Juega sesiones completas contra bots y mejora tu toma de decisiones.</p>
-                <strong>Entrar →</strong>
+            <article class="mode-card active">
+                <span>{{ __('landing.mode_1_status') }}</span>
+                <h3>{{ __('landing.mode_1_title') }}</h3>
+                <p>{{ __('landing.mode_1_text') }}</p>
+                <strong>{{ __('landing.mode_1_cta') }}</strong>
+            </article>
+
+            <article class="mode-card">
+                <span>{{ __('landing.mode_2_status') }}</span>
+                <h3>{{ __('landing.mode_2_title') }}</h3>
+                <p>{{ __('landing.mode_2_text') }}</p>
+                <strong>{{ __('landing.mode_2_cta') }}</strong>
+            </article>
+
+            <article class="mode-card">
+                <span>{{ __('landing.mode_3_status') }}</span>
+                <h3>{{ __('landing.mode_3_title') }}</h3>
+                <p>{{ __('landing.mode_3_text') }}</p>
+                <strong>{{ __('landing.mode_3_cta') }}</strong>
+            </article>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <span>{{ __('landing.final_kicker') }}</span>
+        <h2>{{ __('landing.final_title') }}</h2>
+        <p>{{ __('landing.final_text') }}</p>
+
+        <div class="hero-actions centered">
+            <a href="{{ route('login') }}" class="btn secondary">
+                {{ __('landing.login') }}
             </a>
 
-            <div class="mode-card locked">
-                <span>Próximamente</span>
-                <h3>Spot Training</h3>
-                <p>Practica spots concretos: 3bet pots, defensa de ciegas, river calls y más.</p>
-            </div>
-
-            <div class="mode-card locked">
-                <span>Próximamente</span>
-                <h3>Estadísticas</h3>
-                <p>Analiza VPIP, PFR, 3Bet, winrate, sesiones y leaks principales.</p>
-            </div>
+            <a href="{{ route('register') }}" class="btn primary">
+                {{ __('landing.register') }}
+            </a>
         </div>
     </section>
 

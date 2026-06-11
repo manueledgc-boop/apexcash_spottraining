@@ -23,7 +23,8 @@
             </div>
 
             <div class="dashboard-actions">
-                <a href="{{ route('spot-training.index') }}" class="dashboard-main-btn">Sesión rápida</a>
+                <a href="{{ route('spot-training.index') }}" class="dashboard-main-btn">Preflop</a>
+                <a href="{{ route('postflop-training.index') }}" class="dashboard-secondary-btn">Postflop</a>
                 @if ($worstLeak)
                     <a href="{{ route('spot-training.index', ['module' => $worstLeak->module]) }}" class="dashboard-secondary-btn">Practicar peor leak</a>
                 @endif
@@ -212,11 +213,15 @@
                 @endforelse
             </article>
 
-            <article class="dashboard-card table-card locked">
-                <span>Próxima fase</span>
-                <h2>Postflop Trainer</h2>
-                <p>Después de estabilizar el dashboard, el siguiente salto será BB vs BTN Flop: c-bets, check-call, check-raise, folds y boards por textura.</p>
-            </article>
+            <a href="{{ route('postflop-training.index') }}" class="dashboard-card table-card active">
+                <span>Nuevo entrenamiento</span>
+                <h2>Spot Training Postflop</h2>
+                <p>
+                    Entrena decisiones en flop: c-bets, check back, defensa vs c-bet,
+                    check-raise, value bets, semi-bluffs y boards por textura.
+                </p>
+                <strong>Entrar →</strong>
+            </a>
 
             <article class="dashboard-card table-card">
                 <span>Últimos resultados</span>

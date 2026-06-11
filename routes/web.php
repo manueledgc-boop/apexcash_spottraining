@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpotTrainingController;
+use App\Http\Controllers\PostflopTrainingController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -33,6 +34,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/spot-training/reset', [SpotTrainingController::class, 'reset'])
         ->name('spot-training.reset');
+
+    Route::get('/spot-training/postflop', [PostflopTrainingController::class, 'index'])
+        ->name('postflop-training.index');
+
+    Route::get('/spot-training/postflop/api/next', [PostflopTrainingController::class, 'next'])
+        ->name('postflop-training.next');
+
+    Route::post('/spot-training/postflop/api/answer', [PostflopTrainingController::class, 'answer'])
+        ->name('postflop-training.answer');
+
+    Route::post('/spot-training/postflop/reset', [PostflopTrainingController::class, 'reset'])
+        ->name('postflop-training.reset');
 });
 
 Route::middleware('auth')->group(function () {
