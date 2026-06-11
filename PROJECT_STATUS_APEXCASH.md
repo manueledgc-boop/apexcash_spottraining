@@ -1,390 +1,287 @@
-# PROJECT_STATUS_APEXCASH.md
+# APEXCASH PROJECT STATUS
 
-## Fecha
-
-2026-06
+## Fecha: 11 Junio 2026
 
 ---
 
-# Estado General del Proyecto
+# ESTADO GENERAL DEL PROYECTO
 
-ApexCash ha completado la primera versión funcional del motor de entrenamiento preflop basado en conceptos.
+ApexCash dispone actualmente de dos módulos funcionales de entrenamiento:
 
-La plataforma ya no funciona únicamente como un generador de spots aleatorios.
+1. Spot Training Preflop V1
+2. Postflop Trainer V1 (Flop)
 
-Ahora es capaz de:
+Ambos módulos funcionan dentro de Laravel utilizando la misma filosofía de entrenamiento:
 
-* Registrar resultados por usuario.
-* Detectar errores recurrentes.
-* Clasificar errores por módulos.
-* Clasificar errores por conceptos.
-* Mostrar leaks en dashboard.
-* Entrenar conceptos específicos.
-* Mantener sesiones de entrenamiento dirigidas.
-
-Este es el primer paso real hacia un entrenador personalizado de póker.
-
----
-
-# Visión del Proyecto
-
-ApexCash no pretende ser un solver GTO.
-
-ApexCash pretende convertirse en el gimnasio mental para jugadores de cash games.
-
-Objetivo principal:
-
-Detectar leaks reales y corregirlos mediante repetición focalizada.
-
-La plataforma está diseñada principalmente para:
-
-* NL2
-* NL5
-* NL10
-* NL25
-
-pero la arquitectura permitirá posteriormente trabajar también con:
-
-* NL50
-* NL100
-* Regulares avanzados
+* Spot único por pantalla.
+* Feedback inmediato.
+* Explicación GTO simplificada.
+* Explicación específica para límites bajos (NL2-NL10).
+* Sistema de XP.
+* Sistema de leaks.
+* Dashboard integrado.
+* Responsive mobile-first.
 
 ---
 
-# Arquitectura Actual
+# SPOT TRAINING PREFLOP V1
 
-## Estructura
+Estado: ESTABLE
 
-Familia
-↓
-Concepto
-↓
-Spot
+Módulos implementados:
 
-Ejemplo:
-
-BB vs BTN
-↓
-Ax Offsuit
-↓
-ATo
-
----
-
-# Módulos Implementados
-
-## Open Raise
-
-Estado:
-
-COMPLETADO
-
-Incluye:
-
-* Early Position Open
-* Late Position Open
-* SB Open
-
-Conceptos:
-
-* Ax Suited
-* Ax Offsuit
-* Broadway Premium
-* Broadway Weak
-* Suited Connectors
-* Weak Suited
-* Small Pairs
-* Trash Offsuit
-
----
-
-## BB vs BTN
-
-Estado:
-
-COMPLETADO
-
-Taxonomía completa implementada.
-
----
-
-## SB vs BTN
-
-Estado:
-
-COMPLETADO
-
-Taxonomía completa implementada.
-
----
-
-## BB vs SB
-
-Estado:
-
-COMPLETADO
-
-Taxonomía completa implementada.
-
----
-
-## BTN vs 3Bet
-
-Estado:
-
-COMPLETADO
-
-Conceptos:
-
-* Value Continue
-* Ax 4Bet Bluff
-* Suited Broadway
-* Offsuit Broadway
-* Medium Pairs
-* Small Pairs
-* Suited Connectors
-* Borderline Suited
-* Premium Continue
-
----
-
-## 3Bet vs Open
-
-Estado:
-
-COMPLETADO
-
-Conceptos:
-
-* Ax 3Bet Bluff
-* Value 3Bet
-* Suited Broadway
-* Pocket Pairs
-* Suited Connectors
-* Dominated Offsuit
-* Blind Defense
-
----
-
-# Contenido Disponible
-
-Spots actuales:
-
-150 aproximadamente
-
-Distribución:
-
-6 módulos
-
-25 spots por módulo
-
----
-
-# Sistema de Persistencia
-
-Implementado.
-
-Se almacenan:
-
-* usuario
-* módulo
-* familia
-* concepto
-* concepto_label
-* spot
-* aciertos
-* errores
-* accuracy
-
-Tabla:
-
-user_spot_stats
-
----
-
-# Dashboard
-
-Estado:
-
-COMPLETADO
-
-Incluye:
-
-## Resumen global
-
-* total spots
-* correctos
-* errores
-* accuracy
-* XP
-* nivel
-
-## Módulos
-
-* mejor módulo
-* peor módulo
-
-## Leaks
-
-* leaks por módulo
-
-## Peores Spots
-
-* spots con peor rendimiento
-
-## Concept Leaks
-
-* concepto
-* accuracy
-* errores
-
----
-
-# Learning Engine V2
-
-Estado:
-
-FASE 1 COMPLETADA
-
----
-
-## Entrenamiento por concepto
-
-Implementado.
-
-Ejemplo:
-
-/spot-training?concept=ax_3bet_bluff
-
-La sesión permanece dentro del concepto seleccionado.
-
-El sistema ya no mezcla spots de otros conceptos.
-
----
-
-## Concept Session Memory
-
-Implementado.
-
-La sesión recuerda:
-
-spot_training.current_concept
-
-Esto evita perder el filtro cuando se solicitan nuevos spots.
-
----
-
-# Sistema Anti-Repetición
-
-Implementado.
-
-TrainingRecommendationService
+* Open Raise
+* BB vs BTN
+* BTN vs 3Bet
+* 3Bet vs Open
+* SB vs BTN
+* BB vs SB
 
 Características:
 
-* evita spots recientes
-* mantiene lista de últimos spots vistos
-* reutiliza spots cuando el conjunto se agota
+* Hero correctamente resaltado.
+* Villano correctamente resaltado.
+* Feedback inmediato.
+* Grado de decisión.
+* Frecuencia GTO.
+* EV relativo.
+* Comentario específico para límites bajos.
+* Estadísticas persistentes.
+* Leaks persistentes.
+* XP y niveles.
+
+Estado actual:
+
+COMPLETADO.
 
 ---
 
-# Lo Próximo
+# POSTFLOP TRAINER V1
 
-## Prioridad 1
+Estado: FUNCIONAL
 
-Entrenar peor concepto
-
-Botón:
-
-🔥 Practicar peor concepto
-
-Flujo:
-
-Dashboard
-↓
-Peor Concepto
-↓
-Abrir sesión dirigida
-
----
-
-## Prioridad 2
-
-Entrenar Top 5 conceptos débiles
-
-Sesión automática:
-
-* Concepto #1
-* Concepto #2
-* Concepto #3
-* Concepto #4
-* Concepto #5
-
----
-
-## Prioridad 3
-
-Learning Engine V2 Fase 2
-
-Motor adaptativo.
-
-Más errores:
-
-↓ Más frecuencia.
-
-Más aciertos:
-
-↓ Menos frecuencia.
-
----
-
-## Prioridad 4
-
-4Bet Pots
-
-Nuevos módulos:
-
-* BTN vs SB 4Bet
-* SB vs BTN 4Bet
-* BB vs BTN 4Bet
-* CO vs BTN 4Bet
-
----
-
-## Prioridad 5
-
-Postflop Trainer
-
-Fases futuras:
+Street actual:
 
 * Flop
-* Turn
-* River
 
-Taxonomía equivalente:
+Tipos de spot implementados:
 
-Familia
-↓
-Concepto
-↓
-Spot
+* C-Bet IP
+* Check Back IP
+* Defensa vs C-Bet
+* Check-Raise
+* Value Bet
+* Semi-Bluff
+
+Información mostrada:
+
+* Board
+* Pot
+* SPR
+* Hero position
+* Villain position
+* Acción previa
+* Textura del board
+* Range advantage
+* Nut advantage
+* Stack efectivo
+
+Sistema de evaluación:
+
+* Acción correcta
+* Explicación GTO simplificada
+* Frecuencia
+* EV Score
+* XP
+
+Comentarios específicos:
+
+* GTO simplificado
+* Explicación para NL2-NL10
 
 ---
 
-# Estado del Proyecto
+# RESPONSIVE DESIGN
 
-Estado general:
+Estado: COMPLETADO
 
-MUY ESTABLE
+Reglas actuales:
 
-Contenido:
+## Smartphone vertical
 
-Suficiente para una V1 funcional.
+1 columna
 
-Arquitectura:
+Mesa arriba
 
-Escalable.
+Panel debajo
 
-Próximo gran salto:
+## Smartphone horizontal
 
-Entrenamiento personalizado automático basado en leaks y conceptos.
+2 columnas
+
+Mesa izquierda
+
+Panel derecha
+
+## Tablet
+
+2 columnas
+
+## Desktop
+
+2 columnas
+
+Mesa principal izquierda
+
+Panel análisis derecha
+
+---
+
+# DASHBOARD
+
+Estado: FUNCIONAL
+
+Actualmente muestra:
+
+* XP
+* Nivel
+* Accuracy global
+* Spots completados
+* Mejor módulo
+* Peor módulo
+* Leaks persistentes
+* Concept leaks
+* Actividad reciente
+
+Accesos disponibles:
+
+* Spot Training Preflop
+* Spot Training Postflop
+
+---
+
+# LANDING PAGE
+
+Estado: FUNCIONAL
+
+Características:
+
+* Español
+* Inglés
+* Responsive
+* Diseño moderno
+* Orientada a entrenamiento
+
+Mensaje principal:
+
+"No memorices tablas. Entrena decisiones reales."
+
+---
+
+# ARQUITECTURA ACTUAL
+
+Laravel 13
+
+Componentes principales:
+
+* DashboardController
+* SpotTrainingController
+* PostflopTrainingController
+
+Repositorios:
+
+* Spot Repository Preflop
+* PostflopSpotRepository
+
+Persistencia:
+
+* user_training_stats
+* user_leaks
+* estadísticas globales
+
+---
+
+# PROBLEMAS ABIERTOS
+
+Ningún problema crítico.
+
+Detalles menores detectados:
+
+1. Hero/Villano bajo las cartas ocultado temporalmente mediante:
+
+```html
+<div class="hero-row" hidden>
+```
+
+Funciona correctamente.
+
+Limpieza futura opcional.
+
+2. Algunos textos postflop deben unificarse visualmente con preflop.
+
+No afecta funcionalidad.
+
+---
+
+# SIGUIENTE FASE
+
+POSTFLOP V2
+
+Objetivo:
+
+Expandir el entrenador postflop manteniendo exactamente la misma filosofía que Preflop.
+
+Añadir:
+
+## Turn
+
+* Double barrel
+* Delayed c-bet
+* Turn probe
+* Turn check raise
+* Turn value bet
+
+## River
+
+* Thin value
+* Bluff catch
+* Block bet
+* Overbet
+* Triple barrel
+* Hero call
+
+---
+
+# VISIÓN A LARGO PLAZO
+
+ApexCash no pretende enseñar a memorizar tablas.
+
+Objetivo principal:
+
+Entrenar jugadores mediante repetición de decisiones reales.
+
+Cada spot debe mostrar siempre:
+
+1. Qué haría una estrategia equilibrada (GTO simplificado).
+
+2. Qué suele funcionar mejor contra jugadores recreacionales de NL2-NL10.
+
+El usuario aprende simultáneamente teoría y explotación práctica.
+
+---
+
+# ESTADO ACTUAL
+
+Preflop V1:
+100% funcional
+
+Postflop V1:
+100% funcional
+
+Dashboard:
+100% funcional
+
+Landing:
+100% funcional
+
+Proyecto listo para iniciar expansión Postflop V2.
