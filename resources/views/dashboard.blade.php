@@ -56,7 +56,7 @@
             <div>
                 <span>Nivel {{ $level }}</span>
                 <strong>{{ $xp }} XP</strong>
-                <p>{{ $levelProgress }}/250 XP para el siguiente nivel</p>
+                <p>Siguiente objetivo: {{ $nextGoal }} </p>
             </div>
             <div class="xp-bar" aria-label="Progreso de XP">
                 <span style="width: {{ $levelPercent }}%"></span>
@@ -68,6 +68,29 @@
             <article><span>Precisión global</span><strong>{{ number_format($accuracy, 1) }}%</strong></article>
             <article><span>Aciertos</span><strong>{{ $correct }}</strong></article>
             <article><span>Errores</span><strong>{{ $wrong }}</strong></article>
+        </section>
+
+        <section class="dashboard-grid two-cols">
+            <article class="dashboard-card">
+                <span>Ruta ApexCash</span>
+                <h2>Progresión</h2>
+
+                <div class="metric-row"><span>Preflop</span><strong>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>Flop</span><strong>{{ $flopUnlocked ? '✅' : '🔒' }}</strong></div>
+                <div class="metric-row"><span>Turn</span><strong>{{ $turnUnlocked ? '✅' : '🔒' }}</strong></div>
+                <div class="metric-row"><span>River</span><strong>{{ $riverUnlocked ? '✅' : '🔒' }}</strong></div>
+                <div class="metric-row"><span>Mastery</span><strong>{{ $masteryUnlocked ? '🏆' : '🔒' }}</strong></div>
+            </article>
+
+            <article class="dashboard-card">
+                <span>Precisión por etapa</span>
+                <h2>Entrenamiento</h2>
+
+                <div class="metric-row"><span>Preflop</span><strong>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>Flop</span><strong>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>Turn</span><strong>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>River</span><strong>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}%</strong></div>
+            </article>
         </section>
 
         <section class="dashboard-grid">

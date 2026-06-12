@@ -312,8 +312,11 @@ class SpotTrainingService
         ]);
 
         $this->updateTrainingSession($trainingSession, $isCorrect, $xpEarned);
+
         $this->updateStat($userId, 'global', 'Global', $grade, $isCorrect, $xpEarned);
+        $this->updateStat($userId, 'preflop_global', 'Preflop Global', $grade, $isCorrect, $xpEarned);
         $this->updateStat($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect, $xpEarned);
+
         $this->updateLeak($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect);
         $this->updateSpotStat($userId, $spot, $grade, $isCorrect);
     }
@@ -468,9 +471,9 @@ class SpotTrainingService
     protected function xpForGrade(string $grade): int
     {
         return match ($grade) {
-            'best' => 12,
-            'good' => 9,
-            'marginal' => 4,
+            'best' => 10,
+            'good' => 7,
+            'marginal' => 3,
             'mistake' => 1,
             'blunder' => 0,
             default => 0,

@@ -120,7 +120,7 @@ class PostflopTrainingService
 
         $stat = UserTrainingStat::query()
             ->where('user_id', $userId)
-            ->where('module', 'postflop_global')
+            ->where('module', 'postflop_flop')
             ->first();
 
         if (! $stat) {
@@ -268,10 +268,14 @@ class PostflopTrainingService
         ]);
 
         $this->updateTrainingSession($trainingSession, $isCorrect, $xpEarned);
-        $this->updateStat($userId, 'postflop_global', 'Postflop Global', $grade, $isCorrect, $xpEarned);
+
+        $this->updateStat($userId, 'global', 'Global', $grade, $isCorrect, $xpEarned);
+        $this->updateStat($userId, 'postflop_flop', 'Postflop Flop', $grade, $isCorrect, $xpEarned);
         $this->updateStat($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect, $xpEarned);
+
         $this->updateLeak($userId, $spot['module'], $spot['module_label'], $grade, $isCorrect);
         $this->updateSpotStat($userId, $spot, $grade, $isCorrect);
+
     }
 
     protected function currentTrainingSession(?string $module): TrainingSession

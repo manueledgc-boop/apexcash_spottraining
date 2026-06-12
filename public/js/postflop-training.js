@@ -24,7 +24,6 @@
         boardTexture: $('boardTexture'),
         rangeAdvantage: $('rangeAdvantage'),
         nutAdvantage: $('nutAdvantage'),
-        effectiveStack: $('effectiveStack'),
         spotActions: $('spotActions'),
         decisionButtons: $('decisionButtons'),
         nextSpotBtn: $('nextSpotBtn'),
@@ -41,6 +40,7 @@
         summaryAccuracy: $('summaryAccuracy'),
         leaksList: $('leaksList'),
         moduleFilter: $('moduleFilter'),
+        textureBox: $('textureBox'),
     };
 
     const redSuits = ['h', 'd', '♥', '♦'];
@@ -82,6 +82,8 @@
 
         state.locked = false;
 
+        els.textureBox.hidden = true;
+
         els.spotModule.textContent = spot.module_label ?? '--';
         els.spotTitle.textContent = spot.title ?? 'Spot postflop';
         els.spotMeta.textContent = `${spot.street?.toUpperCase() ?? 'FLOP'} · ${spot.hero_position} vs ${spot.villain_position} · ${spot.difficulty ?? 'Postflop V1'} · confianza ${spot.confidence ?? 0}%`;
@@ -96,8 +98,7 @@
         els.boardTexture.textContent = spot.board_texture ?? '--';
         els.rangeAdvantage.textContent = spot.range_advantage ?? '--';
         els.nutAdvantage.textContent = spot.nut_advantage ?? '--';
-        els.effectiveStack.textContent = spot.effective_stack_bb ? `${spot.effective_stack_bb} BB` : '--';
-
+        
         renderPlayers(spot.table_players ?? []);
         renderActions(spot.actions ?? []);
         renderDecisionButtons(spot.options ?? []);
@@ -134,6 +135,10 @@
     }
 
     function renderActions(actions) {
+        const stackLine = state.spot?.effective_stack_bb
+            ? `<li>Stack efectivo: ${state.spot.effective_stack_bb} BB</li>`
+            : '';
+        
         els.spotActions.innerHTML = actions.map(action => `<li>${action}</li>`).join('');
     }
 
@@ -197,6 +202,9 @@
 
     function hideResult() {
        
+        if (els.textureBox) {
+            els.textureBox.hidden = true;
+        }
 
         els.decisionResultBox.hidden = true;
         [els.feedbackBox, els.gradeBox, els.frequencyBox, els.evBox].forEach(box => {
@@ -244,6 +252,8 @@
         renderInsights(state.spot?.insights ?? {});
 
         els.decisionResultBox.hidden = false;
+
+        els.textureBox.hidden = false;
 
         els.feedbackBox.hidden = false;
         els.feedbackBox.classList.add(data.correct ? 'correct' : 'wrong');

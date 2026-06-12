@@ -92,13 +92,7 @@
                     </div>
                 </div>
 
-                <div class="postflop-box texture-box">
-                    <h3>Datos del spot</h3>
-                    <div class="metric-row"><span>Board</span><strong id="boardTexture">--</strong></div>
-                    <div class="metric-row"><span>Ventaja rango</span><strong id="rangeAdvantage">--</strong></div>
-                    <div class="metric-row"><span>Ventaja nuts</span><strong id="nutAdvantage">--</strong></div>
-                    <div class="metric-row"><span>Stack efectivo</span><strong id="effectiveStack">--</strong></div>
-                </div>
+                
 
                 <div class="postflop-box actions-box">
                     <h3>Acción previa</h3>
@@ -110,6 +104,26 @@
                     <div class="grade-box" id="gradeBox" hidden></div>
                     <div class="frequency-box" id="frequencyBox" hidden></div>
                     <div class="ev-box" id="evBox" hidden></div>
+                </div>
+
+                <div class="postflop-box texture-box" id="textureBox" hidden>
+                    <h3>Análisis del spot</h3>
+
+                    <div class="metric-row">
+                        <span>Board</span>
+                        <strong id="boardTexture">--</strong>
+                    </div>
+
+                    <div class="metric-row">
+                        <span>Ventaja rango</span>
+                        <strong id="rangeAdvantage">--</strong>
+                    </div>
+
+                    <div class="metric-row">
+                        <span>Ventaja nuts</span>
+                        <strong id="nutAdvantage">--</strong>
+                    </div>
+
                 </div>
 
                 <div class="postflop-box summary-box">

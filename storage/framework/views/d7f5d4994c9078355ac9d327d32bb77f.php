@@ -65,7 +65,7 @@
             <div>
                 <span>Nivel <?php echo e($level); ?></span>
                 <strong><?php echo e($xp); ?> XP</strong>
-                <p><?php echo e($levelProgress); ?>/250 XP para el siguiente nivel</p>
+                <p>Siguiente objetivo: <?php echo e($nextGoal); ?> </p>
             </div>
             <div class="xp-bar" aria-label="Progreso de XP">
                 <span style="width: <?php echo e($levelPercent); ?>%"></span>
@@ -77,6 +77,29 @@
             <article><span>Precisión global</span><strong><?php echo e(number_format($accuracy, 1)); ?>%</strong></article>
             <article><span>Aciertos</span><strong><?php echo e($correct); ?></strong></article>
             <article><span>Errores</span><strong><?php echo e($wrong); ?></strong></article>
+        </section>
+
+        <section class="dashboard-grid two-cols">
+            <article class="dashboard-card">
+                <span>Ruta ApexCash</span>
+                <h2>Progresión</h2>
+
+                <div class="metric-row"><span>Preflop</span><strong><?php echo e(number_format((float) ($preflopGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
+                <div class="metric-row"><span>Flop</span><strong><?php echo e($flopUnlocked ? '✅' : '🔒'); ?></strong></div>
+                <div class="metric-row"><span>Turn</span><strong><?php echo e($turnUnlocked ? '✅' : '🔒'); ?></strong></div>
+                <div class="metric-row"><span>River</span><strong><?php echo e($riverUnlocked ? '✅' : '🔒'); ?></strong></div>
+                <div class="metric-row"><span>Mastery</span><strong><?php echo e($masteryUnlocked ? '🏆' : '🔒'); ?></strong></div>
+            </article>
+
+            <article class="dashboard-card">
+                <span>Precisión por etapa</span>
+                <h2>Entrenamiento</h2>
+
+                <div class="metric-row"><span>Preflop</span><strong><?php echo e(number_format((float) ($preflopGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
+                <div class="metric-row"><span>Flop</span><strong><?php echo e(number_format((float) ($flopGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
+                <div class="metric-row"><span>Turn</span><strong><?php echo e(number_format((float) ($turnGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
+                <div class="metric-row"><span>River</span><strong><?php echo e(number_format((float) ($riverGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
+            </article>
         </section>
 
         <section class="dashboard-grid">

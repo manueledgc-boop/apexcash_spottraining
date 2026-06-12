@@ -20,6 +20,67 @@ class DashboardController extends Controller
             ->where('module', 'global')
             ->first();
 
+        $preflopGlobal = UserTrainingStat::query()
+            ->where('user_id', $userId)
+            ->where('module', 'preflop_global')
+            ->first();
+
+        $flopGlobal = UserTrainingStat::query()
+            ->where('user_id', $userId)
+            ->where('module', 'postflop_flop')
+            ->first();
+
+        $turnGlobal = UserTrainingStat::query()
+            ->where('user_id', $userId)
+            ->where('module', 'postflop_turn')
+            ->first();
+
+        $riverGlobal = UserTrainingStat::query()
+            ->where('user_id', $userId)
+            ->where('module', 'postflop_river')
+            ->first();
+
+        $xp = (int) ($global->xp ?? 0);
+
+        $preflopAccuracy = (float) ($preflopGlobal->accuracy ?? 0);
+        $flopAccuracy = (float) ($flopGlobal->accuracy ?? 0);
+        $turnAccuracy = (float) ($turnGlobal->accuracy ?? 0);
+        $riverAccuracy = (float) ($riverGlobal->accuracy ?? 0);
+
+        $flopUnlocked =
+            $xp >= 1000 &&
+            $preflopAccuracy >= 70;
+
+        $turnUnlocked =
+            $xp >= 3000 &&
+            $flopAccuracy >= 70;
+
+        $riverUnlocked =
+            $xp >= 6000 &&
+            $turnAccuracy >= 70;
+
+        $masteryUnlocked =
+            $xp >= 10000 &&
+            $riverAccuracy >= 70;
+
+        $nextGoal = 'Flop';
+
+        if ($flopUnlocked) {
+            $nextGoal = 'Turn';
+        }
+
+        if ($turnUnlocked) {
+            $nextGoal = 'River';
+        }
+
+        if ($riverUnlocked) {
+            $nextGoal = 'Mastery';
+        }
+
+        if ($masteryUnlocked) {
+            $nextGoal = 'Completado';
+        }
+
         $moduleStats = UserTrainingStat::query()
             ->where('user_id', $userId)
             ->where('module', '!=', 'global')
@@ -102,7 +163,18 @@ class DashboardController extends Controller
             'recentResults',
             'recentSessions',
             'worstSpots',
-            'conceptLeaks'
+            'conceptLeaks',
+            'preflopGlobal',
+            'flopGlobal',
+            'turnGlobal',
+            'riverGlobal',
+
+            'flopUnlocked',
+            'turnUnlocked',
+            'riverUnlocked',
+            'masteryUnlocked',
+
+            'nextGoal'
         ));
     }
 }
