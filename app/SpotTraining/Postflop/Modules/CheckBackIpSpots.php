@@ -17,6 +17,10 @@ class CheckBackIpSpots
             self::checkBackT98Ako(),
             self::checkBack876Aqo(),
             self::checkBackKqj55(),
+            self::checkBackQ84_77(),
+            self::checkBackK83_66(),
+            self::checkBackA72_TT(),
+            self::checkBackA98_JJ(),
         ];
     }
 
@@ -34,7 +38,7 @@ class CheckBackIpSpots
             ['8c', '8d'],
             ['Ks', '7h', '2c'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board seco alto',
             'Hero tiene ventaja de rango, pero esta mano concreta no quiere inflar bote.',
@@ -69,7 +73,7 @@ class CheckBackIpSpots
             ['Ah', '5c'],
             ['Js', 'Ts', '9d'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board muy conectado y dinámico',
             'BB conecta muy bien con este board.',
@@ -104,7 +108,7 @@ class CheckBackIpSpots
             ['5h', '5d'],
             ['As', '7c', '2d'],
             5.5,
-            8.6,
+            9,
             47.5,
             'A-high seco',
             'Hero tiene ventaja de rango.',
@@ -139,7 +143,7 @@ class CheckBackIpSpots
             ['Ah', 'Kd'],
             ['Ts', '9s', '8d'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board muy conectado y con color draw',
             'BB conecta muy fuerte con T98.',
@@ -174,7 +178,7 @@ class CheckBackIpSpots
             ['As', 'Qh'],
             ['8d', '7c', '6s'],
             5.5,
-            8.8,
+            9,
             48.5,
             'Board bajo conectado rainbow',
             'BB conecta más con esta textura.',
@@ -209,7 +213,7 @@ class CheckBackIpSpots
             ['5c', '5d'],
             ['Ks', 'Qs', 'Jh'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board alto, conectado y con proyecto',
             'Hero tiene broadways fuertes, pero 55 no realiza bien.',
@@ -227,6 +231,146 @@ class CheckBackIpSpots
             'Las parejas bajas sin equity se chequean mucho en boards altos conectados.',
             'En NL2-NL10 no intentes representar demasiado: te pagarán muchos proyectos y pares.',
             76
+        );
+    }
+
+    protected static function checkBackQ84_77(): array
+    {
+        return self::spot(
+            'pf_checkback_q84r_btn_vs_bb_77',
+            'check_back_ip',
+            'Check Back IP',
+            'showdown_value_medium_pair',
+            'Pareja media showdown value',
+            'BTN vs BB · Q84 rainbow con 77',
+            'BTN',
+            'BB',
+            ['7h', '7c'],
+            ['Qs', '8d', '4c'],
+            5.5,
+            9,
+            47.5,
+            'Board seco Q-high',
+            'Hero tiene ventaja de rango.',
+            'Hero tiene Qx fuertes; 77 tiene showdown value.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♦ 4♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            '77 tiene suficiente showdown value. Apostar convierte una mano razonable en un farol innecesario.',
+            'GTO simplificado: muchas parejas medias chequean.',
+            [
+                'CHECK' => ['grade'=>'best','frequency'=>72,'ev_score'=>80,'feedback'=>'Correcto. Controlas bote con showdown value.'],
+                'BET_33' => ['grade'=>'marginal','frequency'=>28,'ev_score'=>60,'feedback'=>'No es terrible, pero no hace falta.'],
+                'BET_66' => ['grade'=>'mistake','frequency'=>4,'ev_score'=>25,'feedback'=>'Demasiado grande.'],
+            ],
+            'Las parejas medias suelen preferir control de bote.',
+            'En NL2-NL10 evita apostar por información.',
+            80
+        );
+    }
+
+    protected static function checkBackK83_66(): array
+    {
+        return self::spot(
+            'pf_checkback_k83r_btn_vs_bb_66',
+            'check_back_ip',
+            'Check Back IP',
+            'medium_pair_control',
+            'Control con pareja media',
+            'BTN vs BB · K83 rainbow con 66',
+            'BTN',
+            'BB',
+            ['6h', '6c'],
+            ['Ks', '8d', '3c'],
+            5.5,
+            9,
+            47.5,
+            'K-high seco',
+            'Hero tiene ventaja de rango.',
+            'Hero tiene Kx fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 8♦ 3♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            '66 no necesita construir un bote grande y puede llegar al showdown con frecuencia razonable.',
+            'GTO simplificado: control de bote con showdown value medio.',
+            [
+                'CHECK' => ['grade'=>'best','frequency'=>74,'ev_score'=>78,'feedback'=>'Correcto.'],
+                'BET_33' => ['grade'=>'marginal','frequency'=>24,'ev_score'=>55,'feedback'=>'No es necesaria.'],
+                'BET_66' => ['grade'=>'mistake','frequency'=>4,'ev_score'=>22,'feedback'=>'Demasiado agresiva.'],
+            ],
+            'No conviertas todas las parejas medias en farol.',
+            'En microlímites esta apuesta recibe demasiados calls.',
+            78
+        );
+    }
+
+    protected static function checkBackA72_TT(): array
+    {
+        return self::spot(
+            'pf_checkback_a72r_btn_vs_bb_tt',
+            'check_back_ip',
+            'Check Back IP',
+            'underpair_showdown_value',
+            'Underpair con showdown value',
+            'BTN vs BB · A72 rainbow con TT',
+            'BTN',
+            'BB',
+            ['Th', 'Tc'],
+            ['As', '7d', '2c'],
+            5.5,
+            9,
+            47.5,
+            'A-high seco',
+            'Hero tiene ventaja de rango.',
+            'Hero tiene muchos Ax fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♦ 2♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            'TT todavía gana a muchas manos peores. Apostar no consigue tres calles de valor ni demasiados folds mejores.',
+            'GTO simplificado: underpairs fuertes mezclan check.',
+            [
+                'CHECK' => ['grade'=>'best','frequency'=>68,'ev_score'=>82,'feedback'=>'Muy bien.'],
+                'BET_33' => ['grade'=>'good','frequency'=>36,'ev_score'=>68,'feedback'=>'Puede mezclarse.'],
+                'BET_66' => ['grade'=>'mistake','frequency'=>6,'ev_score'=>30,'feedback'=>'No hace falta.'],
+            ],
+            'No toda mano razonable necesita apostar.',
+            'En NL2-NL10 muchas veces TT sigue siendo la mejor mano.',
+            82
+        );
+    }
+
+    protected static function checkBackA98_JJ(): array
+    {
+        return self::spot(
+            'pf_checkback_a98tt_btn_vs_bb_jj',
+            'check_back_ip',
+            'Check Back IP',
+            'pot_control_dynamic_board',
+            'Control en board dinámico',
+            'BTN vs BB · A98 two-tone con JJ',
+            'BTN',
+            'BB',
+            ['Jh', 'Jc'],
+            ['As', '9s', '8d'],
+            5.5,
+            9,
+            47.5,
+            'A-high dinámico',
+            'Hero tiene ventaja en Ax fuertes.',
+            'BB conecta con proyectos y pares.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 8♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            'JJ tiene showdown value pero no quiere jugar un bote grande en un board con muchos proyectos.',
+            'GTO simplificado: control de bote con parejas medias-altas.',
+            [
+                'CHECK' => ['grade'=>'best','frequency'=>70,'ev_score'=>80,'feedback'=>'Correcto.'],
+                'BET_33' => ['grade'=>'marginal','frequency'=>30,'ev_score'=>62,'feedback'=>'Puede mezclarse.'],
+                'BET_66' => ['grade'=>'mistake','frequency'=>8,'ev_score'=>28,'feedback'=>'Demasiado agresivo.'],
+            ],
+            'El control de bote gana importancia en boards dinámicos.',
+            'En límites bajos evita inflar el bote sin una mano fuerte.',
+            80
         );
     }
 }

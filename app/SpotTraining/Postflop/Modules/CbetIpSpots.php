@@ -17,6 +17,10 @@ class CbetIpSpots
             self::cbetIpK72Aa(),
             self::cbetIpLowBoardAqo(),
             self::cbetIpPairedBoardAko(),
+            self::cbetIpT83Aqo(),
+            self::cbetIpWetBoardAko(),
+            self::cbetIpA98Aj(),
+            self::cbetIpK22Aqo(),
         ];
     }
 
@@ -34,7 +38,7 @@ class CbetIpSpots
             ['Ah', 'Kh'],
             ['Ad', '7c', '2s'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board seco alto · rainbow',
             'Hero tiene ventaja clara de rango.',
@@ -69,7 +73,7 @@ class CbetIpSpots
             ['Kc', 'Qd'],
             ['Qs', '7d', '2c'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board seco con top pair medio-alto',
             'Hero tiene ventaja moderada de rango.',
@@ -104,7 +108,7 @@ class CbetIpSpots
             ['Kh', 'Qd'],
             ['As', '8c', '3d'],
             5.5,
-            8.4,
+            8.5,
             47.5,
             'A-high seco rainbow',
             'Hero tiene ventaja fuerte de rango.',
@@ -209,7 +213,7 @@ class CbetIpSpots
             ['Ac', 'Kd'],
             ['9s', '9h', '8c'],
             5.5,
-            8.6,
+            9,
             47.5,
             'Board emparejado medio',
             'La ventaja de rango no es tan clara.',
@@ -227,6 +231,146 @@ class CbetIpSpots
             'Los boards emparejados medios no siempre son buenos para c-bet automática.',
             'En microlímites no esperes muchos folds de 8x, 9x o pares. Check back es más simple.',
             74
+        );
+    }
+
+    protected static function cbetIpT83Aqo(): array
+    {
+        return self::spot(
+            'pf_cbet_ip_t83r_btn_vs_bb_aqo',
+            'cbet_ip',
+            'C-Bet IP',
+            'medium_board_overcards',
+            'Overcards en board medio',
+            'BTN vs BB · T83 rainbow con AQo',
+            'BTN',
+            'BB',
+            ['Ah', 'Qd'],
+            ['Ts', '8c', '3h'],
+            5.5,
+            9,
+            47.5,
+            'Board medio rainbow',
+            'Hero tiene algo de ventaja de rango, pero BB conecta bastante con Tx y 8x.',
+            'BB tiene sets y dobles ocasionales; Hero conserva overpairs fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 8♣ 3♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            'AQo sin backdoor fuerte en T83 rainbow no tiene suficiente equity ni fold equity para apostar siempre. Check back conserva equity y evita inflar un bote complicado.',
+            'GTO simplificado: reducir c-bet con overcards sin backdoors en boards medios.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 74, 'feedback' => 'Buen check. No conviertes dos overcards en farol automático.'],
+                'BET_33' => ['grade' => 'marginal', 'frequency' => 36, 'ev_score' => 62, 'feedback' => 'Puede mezclarse, pero no debe ser automática sin backdoors claros.'],
+                'BET_66' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 34, 'feedback' => 'Demasiado grande. BB continúa mucho con Tx, 8x y pares.'],
+            ],
+            'En boards medios, dos overcards sin backdoors no siempre apuestan.',
+            'En NL2-NL10 te pagan mucho con cualquier pareja. Check back evita faroles innecesarios.',
+            76
+        );
+    }
+
+    protected static function cbetIpWetBoardAko(): array
+    {
+        return self::spot(
+            'pf_cbet_ip_jt9ss_btn_vs_bb_ako',
+            'cbet_ip',
+            'C-Bet IP',
+            'avoid_cbet_wet_board',
+            'Evitar c-bet automática',
+            'BTN vs BB · JT9ss con AKo',
+            'BTN',
+            'BB',
+            ['Ah', 'Kd'],
+            ['Js', 'Ts', '9d'],
+            5.5,
+            9,
+            47.5,
+            'Board muy conectado y dinámico',
+            'BB conecta muy fuerte con este board.',
+            'BB tiene más dobles, escaleras y proyectos fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ T♠ 9♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'CHECK',
+            'AKo tiene overcards y gutshot, pero este board favorece demasiado a BB. Apostar sin fold equity suficiente puede generar muchos calls y check-raises.',
+            'GTO simplificado: check back frecuente en boards muy conectados que favorecen al defensor.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 78, 'feedback' => 'Correcto. Controlas bote en un board donde BB continúa muchísimo.'],
+                'BET_33' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 60, 'feedback' => 'No es terrible por la gutshot, pero recibe demasiada resistencia.'],
+                'BET_66' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 22, 'feedback' => 'Farol grande en un board que conecta demasiado con BB.'],
+            ],
+            'En JT9ss el defensor tiene muchísimas manos que pagan o resuben.',
+            'En microlímites no apuestes automático boards mojados. Te pagan pares, proyectos y gutshots.',
+            82
+        );
+    }
+
+    protected static function cbetIpA98Aj(): array
+    {
+        return self::spot(
+            'pf_cbet_ip_a98tt_btn_vs_bb_aj',
+            'cbet_ip',
+            'C-Bet IP',
+            'thin_value_protection_dynamic',
+            'Valor y protección en board dinámico',
+            'BTN vs BB · A98 two-tone con AJ',
+            'BTN',
+            'BB',
+            ['Ah', 'Jc'],
+            ['As', '9s', '8d'],
+            5.5,
+            9,
+            47.5,
+            'A-high conectado con flush draw',
+            'Hero tiene ventaja de Ax fuertes, pero BB conecta bastante con 9x, 8x y draws.',
+            'Hero tiene mejores Ax; BB tiene más dobles y proyectos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 8♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_66',
+            'AJ en A98 two-tone quiere valor y protección. El board tiene muchos proyectos y pares peores que pagan, así que un sizing medio/grande tiene sentido.',
+            'GTO simplificado: apostar más grande con top pair fuerte en boards dinámicos.',
+            [
+                'BET_66' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 86, 'feedback' => 'Muy bien. Cobras a draws, 9x, 8x y Ax peores.'],
+                'BET_33' => ['grade' => 'good', 'frequency' => 44, 'ev_score' => 76, 'feedback' => 'También válido, pero das buen precio a proyectos.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 42, 'feedback' => 'Demasiado pasivo. Das carta gratis en un board dinámico.'],
+            ],
+            'Top pair fuerte en board dinámico puede usar sizing más grande.',
+            'En NL2-NL10 apuesta por valor y protección: te pagan proyectos, Ax peores y pares.',
+            86
+        );
+    }
+
+    protected static function cbetIpK22Aqo(): array
+    {
+        return self::spot(
+            'pf_cbet_ip_k22r_btn_vs_bb_aqo',
+            'cbet_ip',
+            'C-Bet IP',
+            'paired_dry_range_advantage',
+            'C-bet en board emparejado seco',
+            'BTN vs BB · K22 rainbow con AQo',
+            'BTN',
+            'BB',
+            ['Ah', 'Qd'],
+            ['Ks', '2c', '2h'],
+            5.5,
+            9,
+            47.5,
+            'Board emparejado seco K-high',
+            'Hero tiene clara ventaja de rango en Kx fuertes.',
+            'Hero tiene más Kx premium; BB tiene pocos 2x pero algunos trips.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 2♣ 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_33',
+            'Aunque AQ no ligó, K22 rainbow favorece mucho al agresor. La apuesta pequeña presiona manos sin pareja y pares bajos por poco coste.',
+            'GTO simplificado: apostar pequeño con alta frecuencia en boards secos emparejados favorables.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 74, 'ev_score' => 78, 'feedback' => 'Buen spot para c-bet pequeña. Representas Kx y arriesgas poco.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 66, 'feedback' => 'Check también es razonable con showdown débil, pero pierdes fold equity barata.'],
+                'BET_66' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 36, 'feedback' => 'Grande no hace falta. Con aire prefieres presión barata.'],
+            ],
+            'Los boards K-high emparejados secos permiten c-bet pequeña frecuente.',
+            'En límites bajos apuesta pequeño: foldean mucha basura y no necesitas arriesgar grande.',
+            78
         );
     }
 }

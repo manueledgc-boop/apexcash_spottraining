@@ -15,6 +15,12 @@ class CheckRaiseSpots
             self::checkRaiseOpenEnder(),
             self::checkRaiseSet(),
             self::checkRaiseNutBackdoor(),
+            self::checkRaiseTopTwoPair(),
+            self::checkRaiseMiddleSetWetBoard(),
+            self::avoidCheckRaiseWeakGutshot(),
+            self::avoidCheckRaiseBottomPair(),
+            self::avoidCheckRaisePureAir(),
+            self::avoidCheckRaiseWeakTopPair(),
         ];
     }
 
@@ -155,6 +161,260 @@ class CheckRaiseSpots
             'Nut draw + gutshot + blockers puede jugar agresivo.',
             'Contra jugadores de límites bajos, raisea draws fuertes; no bluffs vacíos.',
             86
+        );
+    }
+
+    protected static function checkRaiseTopTwoPair(): array
+    {
+        return self::spot(
+            'pf_xraise_q84r_bb_vs_btn_q8_two_pair',
+            'check_raise',
+            'Check-Raise Flop',
+            'value_raise_two_pair',
+            'Check-raise por valor con dobles',
+            'BB vs BTN · Top two pair',
+            'BB',
+            'BTN',
+            ['Qh', '8c'],
+            ['Qs', '8d', '4c'],
+            8.5,
+            6.5,
+            49.0,
+            'Board seco con top two pair',
+            'BTN tiene ventaja de rango, pero BB conecta bien con dobles y sets.',
+            'BB tiene más dobles inesperadas; BTN tiene mejores Qx.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♦ 4♣', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'Top two pair es una mano muy fuerte que quiere construir bote y cobrar a Qx, overpairs ocasionales y floats con backdoors.',
+            'GTO simplificado: check-raise por valor con dobles fuertes.',
+            [
+                'RAISE' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 90, 'feedback' => 'Excelente. Construyes bote contra Qx y manos que no foldean fácil.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 78, 'feedback' => 'Call también es jugable, pero pierdes valor contra Qx que paga raise.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Nunca foldees top two pair en este spot.'],
+            ],
+            'Las dobles fuertes pueden jugar check-raise por valor.',
+            'En NL2-NL10 sube por valor: muchos rivales pagan con top pair y no foldean Qx.',
+            88
+        );
+    }
+
+    protected static function checkRaiseMiddleSetWetBoard(): array
+    {
+        return self::spot(
+            'pf_xraise_j87ss_bb_vs_btn_88',
+            'check_raise',
+            'Check-Raise Flop',
+            'value_raise_set_wet_board',
+            'Set en board mojado',
+            'BB vs BTN · Set medio en board mojado',
+            'BB',
+            'BTN',
+            ['8h', '8c'],
+            ['Js', '8s', '7d'],
+            8.5,
+            6.5,
+            49.0,
+            'Board conectado con flush draw',
+            'BTN tiene ventaja general, pero BB conecta muy fuerte con J87.',
+            'BB tiene sets, dobles y escaleras con más frecuencia.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 8♠ 7♦', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'Set medio en un board mojado debe subir con mucha frecuencia. Hay demasiados proyectos, top pairs y manos con equity que pueden pagar.',
+            'GTO simplificado: check-raise fuerte por valor y protección en boards dinámicos.',
+            [
+                'RAISE' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 94, 'feedback' => 'Muy bien. Cobras a proyectos y construyes bote con una mano enorme.'],
+                'CALL' => ['grade' => 'marginal', 'frequency' => 26, 'ev_score' => 68, 'feedback' => 'Call no es horrible, pero das precio a demasiados proyectos.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Nunca foldees set aquí.'],
+            ],
+            'En boards mojados, los sets suben más para cobrar equity.',
+            'En límites bajos no slowplayees sets en boards con proyectos: te pagan draws, Jx y pares + gutshot.',
+            92
+        );
+    }
+
+    protected static function avoidCheckRaiseWeakGutshot(): array
+    {
+        return self::spot(
+            'pf_no_xraise_a97r_bb_vs_btn_jt',
+            'check_raise',
+            'Check-Raise Flop',
+            'avoid_weak_gutshot_raise',
+            'No subir gutshot débil',
+            'BB vs BTN · Gutshot débil',
+            'BB',
+            'BTN',
+            ['Jh', 'Tc'],
+            ['As', '9d', '7c'],
+            8.5,
+            6.5,
+            49.0,
+            'A-high conectado medio',
+            'BTN tiene ventaja de Ax y manos fuertes.',
+            'BTN tiene más Ax fuertes; BB tiene algunas dobles y proyectos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♦ 7♣', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'JT tiene gutshot, pero no enough equity para convertirlo siempre en check-raise. Call realiza equity y evita inflar un bote contra un rango fuerte.',
+            'GTO simplificado: algunos gutshots pagan; no todos son check-raise.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 52, 'ev_score' => 72, 'feedback' => 'Correcto. Realizas equity sin convertir la mano en farol caro.'],
+                'FOLD' => ['grade' => 'marginal', 'frequency' => 32, 'ev_score' => 58, 'feedback' => 'Fold puede ser aceptable contra rivales muy fuertes, pero es algo tight ante sizing estándar.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 34, 'feedback' => 'Demasiado agresivo. Tienes poca equity y no bloqueas suficientes manos fuertes.'],
+            ],
+            'No todos los proyectos débiles son buenos check-raise.',
+            'En NL2-NL10 evita check-raise con gutshots débiles: te pagan demasiado y terminas quemando dinero.',
+            76
+        );
+    }
+
+    protected static function avoidCheckRaiseBottomPair(): array
+    {
+        return self::spot(
+            'pf_no_xraise_k84r_bb_vs_btn_84',
+            'check_raise',
+            'Check-Raise Flop',
+            'avoid_turning_pair_into_bluff',
+            'No convertir pareja en farol',
+            'BB vs BTN · Bottom pair contra c-bet',
+            'BB',
+            'BTN',
+            ['8h', '4c'],
+            ['Ks', '8d', '4h'],
+            8.5,
+            6.5,
+            49.0,
+            'K-high seco con dobles bajas',
+            'BTN tiene ventaja de rango con Kx.',
+            'BB tiene algunas dobles escondidas; BTN tiene Kx fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 8♦ 4♥', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'Con dobles bajas, Hero tiene una mano fuerte y escondida. En este spot sí puede hacer check-raise por valor contra Kx y pares que no creen la historia.',
+            'GTO simplificado: las dobles escondidas pueden subir por valor incluso en K-high seco.',
+            [
+                'RAISE' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 86, 'feedback' => 'Correcto. Tu mano está muy escondida y puedes cobrar a Kx.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 46, 'ev_score' => 78, 'feedback' => 'Call también es fuerte; mantiene bluffs dentro.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Nunca foldees dobles aquí.'],
+            ],
+            'Las dobles escondidas son buenas candidatas a check-raise por valor.',
+            'En microlímites sube por valor cuando ligas dobles escondidas: muchos rivales pagan con Kx.',
+            84
+        );
+    }
+
+    protected static function avoidCheckRaisePureAir(): array
+    {
+        return self::spot(
+            'pf_no_xraise_k72r_bb_vs_btn_j5o',
+            'check_raise',
+            'Check-Raise Flop',
+            'avoid_pure_air_bluff',
+            'No check-raise con aire total',
+            'BB vs BTN · Aire total en K72r',
+            'BB',
+            'BTN',
+            ['Jh', '5c'],
+            ['Ks', '7d', '2c'],
+            8.5,
+            6.5,
+            49.0,
+            'K-high seco rainbow',
+            'BTN tiene una ventaja clara de rango.',
+            'BTN tiene muchos Kx fuertes y overpairs.',
+            [
+                'BTN opens 2.5 BB',
+                'BB calls',
+                'Flop: K♠ 7♦ 2♣',
+                'BB checks',
+                'BTN bets 3 BB',
+                'Action on Hero BB'
+            ],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'J5o no tiene pareja, proyecto, backdoor relevante ni blockers importantes. Es una mano perfecta para abandonar.',
+            'GTO simplificado: aire total se foldea. No todo necesita convertirse en farol.',
+            [
+                'FOLD' => [
+                    'grade' => 'best',
+                    'frequency' => 92,
+                    'ev_score' => 82,
+                    'feedback' => 'Correcto. Ahorras fichas abandonando una mano sin equity.'
+                ],
+                'CALL' => [
+                    'grade' => 'mistake',
+                    'frequency' => 6,
+                    'ev_score' => 24,
+                    'feedback' => 'Call sin plan. Vas a foldear demasiados turns.'
+                ],
+                'RAISE' => [
+                    'grade' => 'blunder',
+                    'frequency' => 2,
+                    'ev_score' => 8,
+                    'feedback' => 'Check-raise muy malo. No tienes equity ni blockers suficientes.'
+                ],
+            ],
+            'Los mejores folds también son parte del buen póker.',
+            'En NL2-NL10 muchos jugadores pierden dinero intentando farolear con aire total. Simplemente foldea.',
+            84
+        );
+    }
+
+    protected static function avoidCheckRaiseWeakTopPair(): array
+    {
+        return self::spot(
+            'pf_no_xraise_q72r_bb_vs_btn_q8',
+            'check_raise',
+            'Check-Raise Flop',
+            'avoid_overplaying_top_pair',
+            'No sobrejugar top pair débil',
+            'BB vs BTN · Top pair kicker débil',
+            'BB',
+            'BTN',
+            ['Qh', '8c'],
+            ['Qs', '7d', '2c'],
+            8.5,
+            6.5,
+            49.0,
+            'Q-high seco rainbow',
+            'BTN tiene ventaja de rango general.',
+            'BTN tiene mejores Qx con frecuencia.',
+            [
+                'BTN opens 2.5 BB',
+                'BB calls',
+                'Flop: Q♠ 7♦ 2♣',
+                'BB checks',
+                'BTN bets 3 BB',
+                'Action on Hero BB'
+            ],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Top pair con kicker débil es demasiado fuerte para foldear, pero normalmente no necesita check-raise. Call mantiene bluffs y manos peores dentro.',
+            'GTO simplificado: muchas top pairs medias o débiles prefieren call.',
+            [
+                'CALL' => [
+                    'grade' => 'best',
+                    'frequency' => 82,
+                    'ev_score' => 86,
+                    'feedback' => 'Correcto. Mantienes el rango del rival amplio.'
+                ],
+                'RAISE' => [
+                    'grade' => 'mistake',
+                    'frequency' => 14,
+                    'ev_score' => 52,
+                    'feedback' => 'Te aíslas contra mejores Qx y haces foldear bluffs.'
+                ],
+                'FOLD' => [
+                    'grade' => 'blunder',
+                    'frequency' => 0,
+                    'ev_score' => 5,
+                    'feedback' => 'Top pair no puede foldearse ante una c-bet estándar.'
+                ],
+            ],
+            'No todas las manos fuertes quieren construir un bote grande.',
+            'En NL2-NL10 mucha gente sobrejuega top pair. Call suele ser la línea más rentable.',
+            88
         );
     }
 }

@@ -21,6 +21,7 @@
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
         $worstLeak = $leaks->first();
+        $postflopModules = $postflopModules ?? ['cbet_ip', 'check_back_ip', 'defense_vs_cbet', 'check_raise', 'value_bet', 'semi_bluff'];
     ?>
 
     <main class="dashboard-page">
@@ -35,7 +36,12 @@
                 <a href="<?php echo e(route('spot-training.index')); ?>" class="dashboard-main-btn">Preflop</a>
                 <a href="<?php echo e(route('postflop-training.index')); ?>" class="dashboard-secondary-btn">Postflop</a>
                 <?php if($worstLeak): ?>
-                    <a href="<?php echo e(route('spot-training.index', ['module' => $worstLeak->module])); ?>" class="dashboard-secondary-btn">Practicar peor leak</a>
+                    <?php
+                        $worstLeakRoute = in_array($worstLeak->module, $postflopModules, true)
+                            ? 'postflop-training.index'
+                            : 'spot-training.index';
+                    ?>
+                    <a href="<?php echo e(route($worstLeakRoute, ['module' => $worstLeak->module])); ?>" class="dashboard-secondary-btn">Practicar peor leak</a>
                 <?php endif; ?>
             </div>
         </section>
@@ -55,7 +61,13 @@
                 </p>
             </div>
 
-            <a href="<?php echo e(route('spot-training.index', ['module' => $criticalLeak->module])); ?>">
+            <?php
+                $criticalLeakRoute = in_array($criticalLeak->module, $postflopModules, true)
+                    ? 'postflop-training.index'
+                    : 'spot-training.index';
+            ?>
+
+            <a href="<?php echo e(route($criticalLeakRoute, ['module' => $criticalLeak->module])); ?>">
                 Practicar ahora
             </a>
         </section>
@@ -84,11 +96,41 @@
                 <span>Ruta ApexCash</span>
                 <h2>Progresión</h2>
 
-                <div class="metric-row"><span>Preflop</span><strong><?php echo e(number_format((float) ($preflopGlobal->accuracy ?? 0), 1)); ?>%</strong></div>
-                <div class="metric-row"><span>Flop</span><strong><?php echo e($flopUnlocked ? '✅' : '🔒'); ?></strong></div>
-                <div class="metric-row"><span>Turn</span><strong><?php echo e($turnUnlocked ? '✅' : '🔒'); ?></strong></div>
-                <div class="metric-row"><span>River</span><strong><?php echo e($riverUnlocked ? '✅' : '🔒'); ?></strong></div>
-                <div class="metric-row"><span>Mastery</span><strong><?php echo e($masteryUnlocked ? '🏆' : '🔒'); ?></strong></div>
+                <div class="metric-row">
+                    <span>Preflop</span>
+                    <strong>
+                        <?php echo e(number_format((float) ($preflopGlobal->accuracy ?? 0), 1)); ?>%
+                        <?php echo e($flopUnlocked ? '✅' : '🔒'); ?>
+
+                    </strong>
+                </div>
+
+                <div class="metric-row">
+                    <span>Flop</span>
+                    <strong>
+                        <?php echo e(number_format((float) ($flopGlobal->accuracy ?? 0), 1)); ?>%
+                        <?php echo e($turnUnlocked ? '✅' : '🔒'); ?>
+
+                    </strong>
+                </div>
+
+                <div class="metric-row">
+                    <span>Turn</span>
+                    <strong>
+                        <?php echo e(number_format((float) ($turnGlobal->accuracy ?? 0), 1)); ?>%
+                        <?php echo e($riverUnlocked ? '✅' : '🔒'); ?>
+
+                    </strong>
+                </div>
+
+                <div class="metric-row">
+                    <span>River</span>
+                    <strong>
+                        <?php echo e(number_format((float) ($riverGlobal->accuracy ?? 0), 1)); ?>%
+                        <?php echo e($masteryUnlocked ? '🏆' : '🔒'); ?>
+
+                    </strong>
+                </div>
             </article>
 
             <article class="dashboard-card">
@@ -142,7 +184,12 @@
                 <span>Leaks persistentes</span>
                 <h2>Módulos débiles</h2>
                 <?php $__empty_1 = true; $__currentLoopData = $leaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $leak): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <a class="metric-row" href="<?php echo e(route('spot-training.index', ['module' => $leak->module])); ?>">
+                    <?php
+                        $leakRoute = in_array($leak->module, $postflopModules, true)
+                            ? 'postflop-training.index'
+                            : 'spot-training.index';
+                    ?>
+                    <a class="metric-row" href="<?php echo e(route($leakRoute, ['module' => $leak->module])); ?>">
                         <span><?php echo e($leak->module_label); ?></span>
                         <strong><?php echo e(number_format((float) $leak->accuracy, 1)); ?>% · <?php echo e($leak->total); ?> spots</strong>
                     </a>
@@ -156,7 +203,12 @@
                 <h2>Errores concretos</h2>
 
                 <?php $__empty_1 = true; $__currentLoopData = $worstSpots; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $spot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <a class="metric-row" href="<?php echo e(route('spot-training.index', ['spot_id' => $spot->spot_id])); ?>">
+                    <?php
+                        $spotRoute = in_array($spot->module, $postflopModules, true)
+                            ? 'postflop-training.index'
+                            : 'spot-training.index';
+                    ?>
+                    <a class="metric-row" href="<?php echo e(route($spotRoute, ['spot_id' => $spot->spot_id])); ?>">
                         <span>
                             <?php echo e($spot->hero_cards ?: 'Spot'); ?>
 
@@ -225,9 +277,14 @@
                 <h2>Patrones débiles</h2>
 
                 <?php $__empty_1 = true; $__currentLoopData = $conceptLeaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $concept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php
+                        $conceptRoute = in_array($concept->module, $postflopModules, true)
+                            ? 'postflop-training.index'
+                            : 'spot-training.index';
+                    ?>
                     <a
                         class="metric-row"
-                        href="<?php echo e(route('spot-training.index', ['concept' => $concept->concept])); ?>"
+                        href="<?php echo e(route($conceptRoute, ['concept' => $concept->concept])); ?>"
                     >
                         <span>
                             <?php echo e($concept->concept_label ?: $concept->concept); ?>
@@ -258,6 +315,42 @@
                 </p>
                 <strong>Entrar →</strong>
             </a>
+
+            <?php if($turnUnlocked): ?>
+
+                <a href="<?php echo e(route('postflop-turn.index')); ?>"
+                class="dashboard-card table-card active">
+
+                    <span>Nuevo entrenamiento</span>
+                    <h2>Postflop Turn</h2>
+
+                    <p>
+                        Entrena second barrel, probe bets,
+                        defensa vs barrel, value bets
+                        y decisiones críticas de turn.
+                    </p>
+
+                    <strong>Entrar →</strong>
+
+                </a>
+
+                <?php else: ?>
+
+                <article class="dashboard-card table-card">
+
+                    <span>Bloqueado</span>
+                    <h2>Postflop Turn</h2>
+
+                    <p>
+                        Necesitas alcanzar los requisitos
+                        de XP y precisión en Flop.
+                    </p>
+
+                    <strong>🔒</strong>
+
+                </article>
+
+                <?php endif; ?>
 
             <article class="dashboard-card table-card">
                 <span>Últimos resultados</span>

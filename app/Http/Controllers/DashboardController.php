@@ -63,14 +63,14 @@ class DashboardController extends Controller
             $xp >= 10000 &&
             $riverAccuracy >= 70;
 
-        $nextGoal = 'Flop';
+        $nextGoal = 'Desbloquear Flop';
 
         if ($flopUnlocked) {
-            $nextGoal = 'Turn';
+            $nextGoal = 'Desbloquear Turn';
         }
 
         if ($turnUnlocked) {
-            $nextGoal = 'River';
+            $nextGoal = 'Desbloquear River';
         }
 
         if ($riverUnlocked) {
@@ -81,9 +81,34 @@ class DashboardController extends Controller
             $nextGoal = 'Completado';
         }
 
+        $stageModules = [
+            'global',
+            'preflop_global',
+            'postflop_flop',
+            'postflop_turn',
+            'postflop_river',
+        ];
+
+        $postflopModules = [
+            // FLOP
+            'cbet_ip',
+            'check_back_ip',
+            'defense_vs_cbet',
+            'check_raise',
+            'value_bet',
+            'semi_bluff',
+
+            // TURN
+            'turn_barrel',
+            'turn_probe',
+            'turn_defense',
+            'turn_check_raise',
+            'turn_value_bet',
+        ];
+
         $moduleStats = UserTrainingStat::query()
             ->where('user_id', $userId)
-            ->where('module', '!=', 'global')
+            ->whereNotIn('module', $stageModules)
             ->orderBy('accuracy')
             ->orderByDesc('total_spots')
             ->get();
@@ -139,6 +164,7 @@ class DashboardController extends Controller
             ->whereNotNull('concept')
             ->where('total', '>=', 2)
             ->selectRaw('
+                module,
                 concept,
                 concept_label,
                 family_label,
@@ -147,7 +173,7 @@ class DashboardController extends Controller
                 SUM(wrong) as wrong,
                 ROUND((SUM(correct) / NULLIF(SUM(total), 0)) * 100, 2) as accuracy
             ')
-            ->groupBy('concept', 'concept_label', 'family_label')
+            ->groupBy('module', 'concept', 'concept_label', 'family_label')
             ->orderBy('accuracy')
             ->orderByDesc('wrong')
             ->limit(5)
@@ -173,6 +199,7 @@ class DashboardController extends Controller
             'turnUnlocked',
             'riverUnlocked',
             'masteryUnlocked',
+            'postflopModules',
 
             'nextGoal'
         ));

@@ -27,7 +27,7 @@ class PostflopTrainingController extends Controller
         return view('spot-training.postflop', [
             'initialModule' => $module,
             'initialMode' => $mode,
-            'initialSpot' => $spotId
+            'initialSpot' => ($spotId || $module || $concept)
                 ? $service->nextSpot($module, $mode, $spotId, $concept)
                 : ($service->currentSpot() ?? $service->nextSpot($module, $mode, null, $concept)),
             'summary' => $service->summary(),
