@@ -1,30 +1,69 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'ApexCash') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="icon" href="{{ asset('favicon/apexcash.ico') }}">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link href="{{ asset('assets/css/apexcash-auth.css') }}" rel="stylesheet">
+</head>
+<body class="font-sans antialiased">
+    <main class="auth-shell">
+        <section class="auth-brand-panel">
+            <a href="{{ url('/') }}" class="auth-logo-link" aria-label="ApexCash home">
+                <img src="{{ asset('images/apexcash-logo-v2.png') }}" alt="ApexCash" class="auth-logo">
+            </a>
+
+            <div class="auth-brand-copy">
+                <span class="auth-kicker">Cash Game Training System</span>
+                <h1>Entrena decisiones. Detecta leaks. Sube de nivel.</h1>
+                <p>
+                    ApexCash convierte tu estudio de poker en un sistema medible:
+                    Preflop, Flop, Turn y River con XP, precisión, leaks y feedback inmediato.
+                </p>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="auth-stage-card">
+                <div class="auth-stage-row is-active">
+                    <span>01</span>
+                    <strong>Preflop</strong>
+                    <small>Base sólida</small>
+                </div>
+                <div class="auth-stage-row">
+                    <span>02</span>
+                    <strong>Flop</strong>
+                    <small>C-bets y defensa</small>
+                </div>
+                <div class="auth-stage-row">
+                    <span>03</span>
+                    <strong>Turn</strong>
+                    <small>Barrels y probes</small>
+                </div>
+                <div class="auth-stage-row">
+                    <span>04</span>
+                    <strong>River</strong>
+                    <small>Value, bluffs y calls</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="auth-form-panel">
+            <div class="auth-card">
                 {{ $slot }}
             </div>
-        </div>
-    </body>
+
+            <p class="auth-footer-note">
+                ApexCash V1 · Entrenamiento estructurado para Cash Games
+            </p>
+        </section>
+    </main>
+</body>
 </html>

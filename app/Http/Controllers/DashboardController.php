@@ -5,106 +5,42 @@ namespace App\Http\Controllers;
 use App\Models\TrainingResult;
 use App\Models\TrainingSession;
 use App\Models\UserLeak;
-use App\Models\UserTrainingStat;
-use Illuminate\View\View;
 use App\Models\UserSpotStat;
+use App\Models\UserTrainingStat;
+use App\Services\TrainingProgressionService;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(TrainingProgressionService $progression): View
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user->id;
 
-        $global = UserTrainingStat::query()
-            ->where('user_id', $userId)
-            ->where('module', 'global')
-            ->first();
+        $global = $progression->globalStats($user);
+        $preflopGlobal = $progression->stageStats($user, 'preflop');
+        $flopGlobal = $progression->stageStats($user, 'flop');
+        $turnGlobal = $progression->stageStats($user, 'turn');
+        $riverGlobal = $progression->stageStats($user, 'river');
 
-        $preflopGlobal = UserTrainingStat::query()
-            ->where('user_id', $userId)
-            ->where('module', 'preflop_global')
-            ->first();
+        $progress = $progression->summary($user);
 
-        $flopGlobal = UserTrainingStat::query()
-            ->where('user_id', $userId)
-            ->where('module', 'postflop_flop')
-            ->first();
+        $flopUnlocked = (bool) $progress['flop']['unlocked'];
+        $turnUnlocked = (bool) $progress['turn']['unlocked'];
+        $riverUnlocked = (bool) $progress['river']['unlocked'];
+        $masteryUnlocked = (bool) $progress['mastery']['unlocked'];
+        $nextGoal = $progression->nextGoal($user);
 
-        $turnGlobal = UserTrainingStat::query()
-            ->where('user_id', $userId)
-            ->where('module', 'postflop_turn')
-            ->first();
+        $stageModules = $progression->stageAggregateModules();
+        $flopModules = $progression->flopModules();
+        $turnModules = $progression->turnModules();
+        $riverModules = $progression->riverModules();
 
-        $riverGlobal = UserTrainingStat::query()
-            ->where('user_id', $userId)
-            ->where('module', 'postflop_river')
-            ->first();
-
-        $xp = (int) ($global->xp ?? 0);
-
-        $preflopAccuracy = (float) ($preflopGlobal->accuracy ?? 0);
-        $flopAccuracy = (float) ($flopGlobal->accuracy ?? 0);
-        $turnAccuracy = (float) ($turnGlobal->accuracy ?? 0);
-        $riverAccuracy = (float) ($riverGlobal->accuracy ?? 0);
-
-        $flopUnlocked =
-            $xp >= 1000 &&
-            $preflopAccuracy >= 70;
-
-        $turnUnlocked =
-            $xp >= 3000 &&
-            $flopAccuracy >= 70;
-
-        $riverUnlocked =
-            $xp >= 6000 &&
-            $turnAccuracy >= 70;
-
-        $masteryUnlocked =
-            $xp >= 10000 &&
-            $riverAccuracy >= 70;
-
-        $nextGoal = 'Desbloquear Flop';
-
-        if ($flopUnlocked) {
-            $nextGoal = 'Desbloquear Turn';
-        }
-
-        if ($turnUnlocked) {
-            $nextGoal = 'Desbloquear River';
-        }
-
-        if ($riverUnlocked) {
-            $nextGoal = 'Mastery';
-        }
-
-        if ($masteryUnlocked) {
-            $nextGoal = 'Completado';
-        }
-
-        $stageModules = [
-            'global',
-            'preflop_global',
-            'postflop_flop',
-            'postflop_turn',
-            'postflop_river',
-        ];
-
-        $postflopModules = [
-            // FLOP
-            'cbet_ip',
-            'check_back_ip',
-            'defense_vs_cbet',
-            'check_raise',
-            'value_bet',
-            'semi_bluff',
-
-            // TURN
-            'turn_barrel',
-            'turn_probe',
-            'turn_defense',
-            'turn_check_raise',
-            'turn_value_bet',
-        ];
+        $postflopModules = array_values(array_unique(array_merge(
+            $flopModules,
+            $turnModules,
+            $riverModules,
+        )));
 
         $moduleStats = UserTrainingStat::query()
             ->where('user_id', $userId)
@@ -194,13 +130,14 @@ class DashboardController extends Controller
             'flopGlobal',
             'turnGlobal',
             'riverGlobal',
-
             'flopUnlocked',
             'turnUnlocked',
             'riverUnlocked',
             'masteryUnlocked',
             'postflopModules',
-
+            'flopModules',
+            'turnModules',
+            'riverModules',
             'nextGoal'
         ));
     }

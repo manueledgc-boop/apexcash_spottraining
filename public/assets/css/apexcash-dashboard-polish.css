@@ -1,0 +1,413 @@
+/* ApexCash Dashboard Top Polish */
+/* Este archivo mejora navbar + hero del dashboard sin romper el resto del sistema. */
+
+.apex-nav {
+    background: rgba(250, 250, 250, .96);
+    border-bottom: 1px solid rgba(2, 8, 5, .08);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, .05);
+    backdrop-filter: blur(14px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.apex-nav-inner {
+    max-width: 1220px;
+    margin: 0 auto;
+    height: 84px;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.apex-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    min-width: 0;
+}
+
+.apex-nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #07130d;
+    min-width: fit-content;
+}
+
+.apex-nav-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(242, 169, 28, .16);
+}
+
+.apex-nav-brand strong {
+    display: block;
+    font-weight: 900;
+    letter-spacing: -.04em;
+    line-height: 1;
+    font-size: 18px;
+}
+
+.apex-nav-brand span {
+    display: block;
+    color: #6b786f;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-top: 3px;
+}
+
+.apex-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.apex-nav-links a,
+.apex-nav-simple {
+    color: #4b5a50;
+    text-decoration: none;
+    font-weight: 800;
+    transition: color .2s ease;
+}
+
+.apex-nav-links a:hover,
+.apex-nav-simple:hover {
+    color: #07130d;
+}
+
+.apex-user-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(7, 19, 13, .09);
+    background: #fff;
+    color: #334039;
+    border-radius: 999px;
+    min-height: 44px;
+    padding: 0 16px;
+    font-weight: 800;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .06);
+}
+
+.apex-user-chevron {
+    width: 16px;
+    height: 16px;
+}
+
+.apex-mobile-toggle {
+    display: none;
+    color: #07130d;
+}
+
+.apex-mobile-menu {
+    border-top: 1px solid rgba(0,0,0,.08);
+    background: #fff;
+}
+
+/* Hero nuevo */
+.dashboard-hero-v2 {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 430px);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: stretch;
+    overflow: hidden;
+    border-radius: 34px;
+    background:
+        radial-gradient(circle at 15% 5%, rgba(44, 216, 132, .16), transparent 32%),
+        radial-gradient(circle at 92% 10%, rgba(248, 211, 91, .18), transparent 30%),
+        linear-gradient(145deg, #071121, #07150f 72%);
+    border: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: 0 35px 90px rgba(0, 0, 0, .35);
+}
+
+.dashboard-hero-main {
+    min-width: 0;
+}
+
+.dashboard-hero-v2 h1 {
+    max-width: 760px;
+    margin-bottom: 16px;
+}
+
+.dashboard-hero-v2 p {
+    max-width: 720px;
+}
+
+.dashboard-hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 28px;
+    max-width: 760px;
+}
+
+.dashboard-hero-metrics div {
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .055);
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.dashboard-hero-metrics span,
+.dashboard-next-goal span,
+.quick-panel-title {
+    display: block;
+    color: rgba(220, 255, 232, .58);
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.dashboard-hero-metrics strong {
+    display: block;
+    margin-top: 8px;
+    color: #fff;
+    font-size: clamp(22px, 3vw, 34px);
+    letter-spacing: -.05em;
+    line-height: 1;
+}
+
+.dashboard-next-goal {
+    margin-top: 14px;
+    padding: 18px 20px;
+    max-width: 760px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(248, 211, 91, .14), rgba(44, 216, 132, .08));
+    border: 1px solid rgba(248, 211, 91, .18);
+}
+
+.dashboard-next-goal strong {
+    display: block;
+    margin-top: 8px;
+    color: #f8d35b;
+    line-height: 1.45;
+}
+
+.dashboard-quick-panel {
+    align-self: stretch;
+    padding: 22px;
+    border-radius: 28px;
+    background: rgba(1, 13, 8, .58);
+    border: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+
+.stage-route-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.stage-route-card {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.stage-route-card span {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.stage-route-card strong {
+    display: block;
+    color: #fff;
+    font-weight: 900;
+}
+
+.stage-route-card small {
+    display: block;
+    color: rgba(220,255,232,.56);
+    margin-top: 3px;
+    font-size: 12px;
+}
+
+.stage-route-card em {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 12px;
+}
+
+.stage-route-card.is-open {
+    background: linear-gradient(135deg, rgba(50, 210, 105, .18), rgba(130, 230, 40, .08));
+}
+
+.stage-route-card.is-open span {
+    background: linear-gradient(135deg, #35d060, #98e72a);
+    color: #061008;
+}
+
+.stage-route-card.is-open em {
+    color: #98e72a;
+}
+
+.stage-route-card.is-locked {
+    background: rgba(255,255,255,.035);
+    opacity: .74;
+}
+
+.stage-route-card.is-locked span {
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.6);
+}
+
+.stage-route-card.is-locked em {
+    color: rgba(255,255,255,.48);
+}
+
+.worst-leak-cta {
+    display: block;
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 18px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 900;
+    color: #101006;
+    background: linear-gradient(135deg, #f8d35b, #f2a91c);
+    box-shadow: 0 18px 35px rgba(242, 169, 28, .18);
+}
+
+@media (max-width: 980px) {
+    .apex-nav-inner {
+        height: 74px;
+        padding: 0 18px;
+    }
+
+    .apex-nav-links,
+    .apex-nav-user {
+        display: none;
+    }
+
+    .apex-mobile-toggle {
+        display: inline-flex;
+    }
+
+    .dashboard-hero-v2 {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-hero-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .apex-nav-brand div {
+        display: none;
+    }
+
+    .dashboard-hero-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .stage-route-card {
+        grid-template-columns: 38px 1fr;
+    }
+
+    .stage-route-card em {
+        grid-column: 2;
+    }
+}
+
+
+/* ==========================================================
+   GLOBAL NAV FIX
+   ----------------------------------------------------------
+   Esta parte es intencionalmente fuerte porque las páginas de
+   Preflop/Flop/Turn/River no cargaban el CSS del dashboard y
+   el logo tomaba su tamaño real.
+   ========================================================== */
+
+.apex-nav {
+    min-height: clamp(70px, 7vh, 84px) !important;
+    max-height: clamp(70px, 7vh, 84px) !important;
+    overflow: visible !important;
+}
+
+.apex-nav-inner {
+    height: clamp(70px, 7vh, 84px) !important;
+    min-height: clamp(70px, 7vh, 84px) !important;
+    max-height: clamp(70px, 7vh, 84px) !important;
+}
+
+.apex-nav-brand,
+.apex-nav-brand:visited {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: clamp(10px, 1vw, 14px) !important;
+    height: clamp(48px, 5vh, 58px) !important;
+    max-height: clamp(48px, 5vh, 58px) !important;
+    overflow: hidden !important;
+    flex: 0 0 auto !important;
+}
+
+.apex-nav-brand img,
+.apex-nav-icon {
+    width: clamp(38px, 3vw, 48px) !important;
+    height: clamp(38px, 3vw, 48px) !important;
+    max-width: clamp(38px, 3vw, 48px) !important;
+    max-height: clamp(38px, 3vw, 48px) !important;
+    min-width: clamp(38px, 3vw, 48px) !important;
+    min-height: clamp(38px, 3vw, 48px) !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    flex: 0 0 auto !important;
+    display: block !important;
+    border-radius: clamp(10px, 1vw, 14px) !important;
+}
+
+.apex-nav-brand div {
+    display: block !important;
+    line-height: 1.05 !important;
+    overflow: hidden !important;
+}
+
+.apex-nav-brand strong {
+    font-size: clamp(16px, 1.25vw, 18px) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+.apex-nav-brand span {
+    font-size: clamp(9px, .8vw, 11px) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 560px) {
+    .apex-nav-brand img,
+    .apex-nav-icon {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+    }
+
+    .apex-nav-brand div {
+        display: none !important;
+    }
+}

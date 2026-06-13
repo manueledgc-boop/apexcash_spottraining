@@ -1,5 +1,6 @@
 <x-app-layout>
     <link href="{{ asset('assets/css/apexcash-dashboard.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/apexcash-dashboard-polish.css') }}" rel="stylesheet">
 
     @php
         $total = (int) ($global->total_spots ?? 0);
@@ -12,27 +13,171 @@
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
         $worstLeak = $leaks->first();
-        $postflopModules = $postflopModules ?? ['cbet_ip', 'check_back_ip', 'defense_vs_cbet', 'check_raise', 'value_bet', 'semi_bluff'];
+
+        $flopModules = $postflopModules ?? [
+            'cbet_ip',
+            'check_back_ip',
+            'defense_vs_cbet',
+            'check_raise',
+            'value_bet',
+            'semi_bluff',
+        ];
+
+        $turnModules = [
+            'turn_barrel',
+            'turn_probe_bet',
+            'turn_defense',
+            'turn_value_bet',
+            'turn_check_raise',
+        ];
+
+        $riverModules = [
+            'river_value_bet',
+            'river_bluff_catch',
+            'river_bluff',
+            'river_thin_value',
+            'river_overbet',
+        ];
+
+        $trainingRouteForModule = function (?string $module) use ($flopModules, $turnModules, $riverModules) {
+            if (in_array($module, $flopModules, true)) {
+                return 'postflop-training.index';
+            }
+
+            if (in_array($module, $turnModules, true)) {
+                return 'postflop-turn.index';
+            }
+
+            if (in_array($module, $riverModules, true)) {
+                return 'postflop-river.index';
+            }
+
+            return 'spot-training.index';
+        };
     @endphp
 
     <main class="dashboard-page">
-        <section class="dashboard-hero">
-            <div>
+        <section class="dashboard-hero dashboard-hero-v2">
+            <div class="dashboard-hero-main">
                 <span class="dashboard-badge">APEXCASH TRAINING DASHBOARD</span>
+
                 <h1>Hola, {{ auth()->user()->name }}</h1>
-                <p>Tu progreso ya está guardado: XP, precisión, módulos fuertes, módulos débiles, últimos resultados y leaks reales.</p>
+
+                <p>
+                    Tu progreso ya está guardado: XP, precisión, módulos desbloqueados,
+                    leaks reales y errores concretos que debes corregir.
+                </p>
+
+                <div class="dashboard-hero-metrics">
+                    <div>
+                        <span>Nivel</span>
+                        <strong>{{ $level }}</strong>
+                    </div>
+
+                    <div>
+                        <span>XP Global</span>
+                        <strong>{{ $xp }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Accuracy</span>
+                        <strong>{{ number_format($accuracy, 1) }}%</strong>
+                    </div>
+
+                    <div>
+                        <span>Spots</span>
+                        <strong>{{ $total }}</strong>
+                    </div>
+                </div>
+
+                <div class="dashboard-next-goal">
+                    <span>Siguiente objetivo</span>
+                    <strong>{{ $nextGoal }}</strong>
+                </div>
             </div>
 
-            <div class="dashboard-actions">
-                <a href="{{ route('spot-training.index') }}" class="dashboard-main-btn">Preflop</a>
-                <a href="{{ route('postflop-training.index') }}" class="dashboard-secondary-btn">Postflop</a>
+            <div class="dashboard-quick-panel">
+                <span class="quick-panel-title">Ruta ApexCash</span>
+
+                <div class="stage-route-list">
+                    <a href="{{ route('spot-training.index') }}" class="stage-route-card is-open">
+                        <span>01</span>
+                        <div>
+                            <strong>Preflop</strong>
+                            <small>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                        </div>
+                        <em>Entrar</em>
+                    </a>
+
+                    @if($flopUnlocked)
+                        <a href="{{ route('postflop-training.index') }}" class="stage-route-card is-open">
+                            <span>02</span>
+                            <div>
+                                <strong>Flop</strong>
+                                <small>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                            </div>
+                            <em>Entrar</em>
+                        </a>
+                    @else
+                        <div class="stage-route-card is-locked">
+                            <span>02</span>
+                            <div>
+                                <strong>Flop</strong>
+                                <small>Bloqueado por progreso</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    @endif
+
+                    @if($turnUnlocked)
+                        <a href="{{ route('postflop-turn.index') }}" class="stage-route-card is-open">
+                            <span>03</span>
+                            <div>
+                                <strong>Turn</strong>
+                                <small>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                            </div>
+                            <em>Entrar</em>
+                        </a>
+                    @else
+                        <div class="stage-route-card is-locked">
+                            <span>03</span>
+                            <div>
+                                <strong>Turn</strong>
+                                <small>Bloqueado por progreso</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    @endif
+
+                    @if($riverUnlocked)
+                        <a href="{{ route('postflop-river.index') }}" class="stage-route-card is-open">
+                            <span>04</span>
+                            <div>
+                                <strong>River</strong>
+                                <small>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                            </div>
+                            <em>Entrar</em>
+                        </a>
+                    @else
+                        <div class="stage-route-card is-locked">
+                            <span>04</span>
+                            <div>
+                                <strong>River</strong>
+                                <small>Bloqueado por progreso</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    @endif
+                </div>
+
                 @if ($worstLeak)
                     @php
-                        $worstLeakRoute = in_array($worstLeak->module, $postflopModules, true)
-                            ? 'postflop-training.index'
-                            : 'spot-training.index';
+                        $worstLeakRoute = $trainingRouteForModule($worstLeak->module);
                     @endphp
-                    <a href="{{ route($worstLeakRoute, ['module' => $worstLeak->module]) }}" class="dashboard-secondary-btn">Practicar peor leak</a>
+
+                    <a href="{{ route($worstLeakRoute, ['module' => $worstLeak->module]) }}" class="worst-leak-cta">
+                        Practicar peor leak →
+                    </a>
                 @endif
             </div>
         </section>
@@ -53,9 +198,7 @@
             </div>
 
             @php
-                $criticalLeakRoute = in_array($criticalLeak->module, $postflopModules, true)
-                    ? 'postflop-training.index'
-                    : 'spot-training.index';
+                $criticalLeakRoute = $trainingRouteForModule($criticalLeak->module);
             @endphp
 
             <a href="{{ route($criticalLeakRoute, ['module' => $criticalLeak->module]) }}">
@@ -172,9 +315,7 @@
                 <h2>Módulos débiles</h2>
                 @forelse ($leaks as $leak)
                     @php
-                        $leakRoute = in_array($leak->module, $postflopModules, true)
-                            ? 'postflop-training.index'
-                            : 'spot-training.index';
+                        $leakRoute = $trainingRouteForModule($leak->module);
                     @endphp
                     <a class="metric-row" href="{{ route($leakRoute, ['module' => $leak->module]) }}">
                         <span>{{ $leak->module_label }}</span>
@@ -191,9 +332,7 @@
 
                 @forelse ($worstSpots as $spot)
                     @php
-                        $spotRoute = in_array($spot->module, $postflopModules, true)
-                            ? 'postflop-training.index'
-                            : 'spot-training.index';
+                        $spotRoute = $trainingRouteForModule($spot->module);
                     @endphp
                     <a class="metric-row" href="{{ route($spotRoute, ['spot_id' => $spot->spot_id]) }}">
                         <span>
@@ -262,9 +401,7 @@
 
                 @forelse ($conceptLeaks as $concept)
                     @php
-                        $conceptRoute = in_array($concept->module, $postflopModules, true)
-                            ? 'postflop-training.index'
-                            : 'spot-training.index';
+                        $conceptRoute = $trainingRouteForModule($concept->module);
                     @endphp
                     <a
                         class="metric-row"
@@ -327,6 +464,42 @@
                     <p>
                         Necesitas alcanzar los requisitos
                         de XP y precisión en Flop.
+                    </p>
+
+                    <strong>🔒</strong>
+
+                </article>
+
+                @endif
+
+            @if($riverUnlocked)
+
+                <a href="{{ route('postflop-river.index') }}"
+                class="dashboard-card table-card active">
+
+                    <span>Nuevo entrenamiento</span>
+                    <h2>Postflop River</h2>
+
+                    <p>
+                        Entrena value bets, thin value,
+                        bluff catchers, faroles polarizados
+                        y overbets de river.
+                    </p>
+
+                    <strong>Entrar →</strong>
+
+                </a>
+
+                @else
+
+                <article class="dashboard-card table-card">
+
+                    <span>Bloqueado</span>
+                    <h2>Postflop River</h2>
+
+                    <p>
+                        Necesitas alcanzar los requisitos
+                        de XP y precisión en Turn.
                     </p>
 
                     <strong>🔒</strong>

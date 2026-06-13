@@ -1,46 +1,38 @@
-<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
-<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('app-layout'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-    <link href="<?php echo e(asset('assets/css/postflop-training.css')); ?>" rel="stylesheet">
+<x-app-layout>
+    <link href="{{ asset('assets/css/postflop-training.css') }}" rel="stylesheet">
 
     <script>
-        window.ApexPostflopTurnTraining = {
-            initialSpot: <?php echo json_encode($initialSpot, 15, 512) ?>,
-            initialSummary: <?php echo json_encode($summary, 15, 512) ?>,
-            initialLeaks: <?php echo json_encode($leaks, 15, 512) ?>,
-            initialModule: <?php echo json_encode($initialModule ?? null, 15, 512) ?>,
-            initialMode: <?php echo json_encode($initialMode ?? 'normal', 15, 512) ?>,
-            lifetime: <?php echo json_encode($lifetime, 15, 512) ?>,
-            nextUrl: <?php echo json_encode(route('postflop-turn.next'), 15, 512) ?>,
-            answerUrl: <?php echo json_encode(route('postflop-turn.answer'), 15, 512) ?>,
-            csrf: <?php echo json_encode(csrf_token(), 15, 512) ?>,
+        window.ApexPostflopRiverTraining = {
+            initialSpot: @json($initialSpot),
+            initialSummary: @json($summary),
+            initialLeaks: @json($leaks),
+            initialModule: @json($initialModule ?? null),
+            initialMode: @json($initialMode ?? 'normal'),
+            lifetime: @json($lifetime),
+            nextUrl: @json(route('postflop-river.next')),
+            answerUrl: @json(route('postflop-river.answer')),
+            csrf: @json(csrf_token()),
         };
     </script>
 
     <main class="postflop-page">
         <section class="postflop-header">
             <div>
-                <span class="postflop-kicker">APEXCASH POSTFLOP TURN V1</span>
-                <h1>Entrenador postflop · Turn</h1>
-                <p>Practica decisiones de turn: segunda barrel, probe bet, defensa vs barrel, rendirse, protección, scare cards, control de bote y value.</p>
+                <span class="postflop-kicker">APEXCASH POSTFLOP RIVER V1</span>
+                <h1>Entrenador postflop · River</h1>
+                <p>Practica decisiones de river: value claro, thin value, bluffs, bluff catch, overbets y control de showdown.</p>
             </div>
 
             <div class="street-tabs">
-                <a href="<?php echo e(route('spot-training.index')); ?>">Preflop</a>
-                <a href="<?php echo e(route('postflop-training.index')); ?>">Flop</a>
-                <a href="<?php echo e(route('postflop-turn.index')); ?>" class="is-active">Turn</a>
+                <a href="{{ route('spot-training.index') }}">Preflop</a>
+                <a href="{{ route('postflop-training.index') }}">Flop</a>
+                <a href="{{ route('postflop-turn.index') }}">Turn</a>
+                <a href="{{ route('postflop-river.index') }}" class="is-active">River</a>
             </div>
 
-            <form method="POST" action="<?php echo e(route('postflop-turn.reset')); ?>">
-                <?php echo csrf_field(); ?>
-                <button type="submit" class="ghost-btn">Reiniciar turn</button>
+            <form method="POST" action="{{ route('postflop-river.reset') }}">
+                @csrf
+                <button type="submit" class="ghost-btn">Reiniciar river</button>
             </form>
         </section>
 
@@ -49,7 +41,7 @@
                 <div class="postflop-table" id="postflopTable">
                     <div class="table-felt">
                         <div class="board-zone">
-                            <span>BOARD · TURN</span>
+                            <span>BOARD · RIVER</span>
                             <div class="board-cards" id="boardCards"></div>
                             <strong id="spotPot">Pot: -- BB</strong>
                             <small id="spotSpr">SPR: --</small>
@@ -91,11 +83,11 @@
 
                     <div class="module-filter" id="moduleFilter">
                         <button type="button" data-module="">Todos</button>
-                        <button type="button" data-module="turn_barrel">Turn Barrel</button>
-                        <button type="button" data-module="turn_probe">Turn Probe Bet</button>
-                        <button type="button" data-module="turn_defense">Turn Defense</button>
-                        <button type="button" data-module="turn_value_bet">Turn Value Bet</button>
-                        <button type="button" data-module="turn_check_raise">Turn Check Raise</button>
+                        <button type="button" data-module="river_value_bet">River Value Bet</button>
+                        <button type="button" data-module="river_bluff_catch">River Bluff Catch</button>
+                        <button type="button" data-module="river_bluff">River Bluff</button>
+                        <button type="button" data-module="river_thin_value">River Thin Value</button>
+                        <button type="button" data-module="river_overbet">River Overbet</button>
                     </div>
                 </div>
 
@@ -136,7 +128,7 @@
                 </div>
 
                 <div class="postflop-box summary-box">
-                    <h3>Sesión turn</h3>
+                    <h3>Sesión river</h3>
 
                     <div class="summary-grid">
                         <div><span>Total</span><strong id="summaryTotal">0</strong></div>
@@ -146,7 +138,7 @@
                     </div>
 
                     <div class="leaks-box">
-                        <h4>Leaks turn</h4>
+                        <h4>Leaks river</h4>
                         <div id="leaksList"></div>
                     </div>
                 </div>
@@ -154,15 +146,5 @@
         </section>
     </main>
 
-    <script src="<?php echo e(asset('js/postflop-turn-training.js')); ?>"></script>
- <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\laragon\www\apexcash\resources\views/spot-training/turn.blade.php ENDPATH**/ ?>
+    <script src="{{ asset('js/postflop-river-training.js') }}"></script>
+</x-app-layout>
