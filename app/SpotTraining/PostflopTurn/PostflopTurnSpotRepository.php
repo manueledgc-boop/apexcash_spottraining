@@ -4,7 +4,10 @@ namespace App\SpotTraining\PostflopTurn;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
 use App\SpotTraining\PostflopTurn\Modules\TurnBarrelSpots;
+use App\SpotTraining\PostflopTurn\Modules\TurnCheckRaiseSpots;
+use App\SpotTraining\PostflopTurn\Modules\TurnDefenseSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnProbeBetSpots;
+use App\SpotTraining\PostflopTurn\Modules\TurnValueBetSpots;
 
 class PostflopTurnSpotRepository
 {
@@ -15,6 +18,9 @@ class PostflopTurnSpotRepository
         return array_merge(
             TurnBarrelSpots::all(),
             TurnProbeBetSpots::all(),
+            TurnDefenseSpots::all(),
+            TurnValueBetSpots::all(),
+            TurnCheckRaiseSpots::all(),
         );
     }
 

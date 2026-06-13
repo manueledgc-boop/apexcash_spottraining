@@ -20,7 +20,7 @@
             <div>
                 <span class="postflop-kicker">APEXCASH POSTFLOP TURN V1</span>
                 <h1>Entrenador postflop · Turn</h1>
-                <p>Practica decisiones de turn: segunda barrel, rendirse, protección, scare cards, control de bote y value.</p>
+                <p>Practica decisiones de turn: segunda barrel, probe bet, defensa vs barrel, rendirse, protección, scare cards, control de bote y value.</p>
             </div>
 
             <div class="street-tabs">
@@ -84,6 +84,9 @@
                         <button type="button" data-module="">Todos</button>
                         <button type="button" data-module="turn_barrel">Turn Barrel</button>
                         <button type="button" data-module="turn_probe">Turn Probe Bet</button>
+                        <button type="button" data-module="turn_defense">Turn Defense</button>
+                        <button type="button" data-module="turn_value_bet">Turn Value Bet</button>
+                        <button type="button" data-module="turn_check_raise">Turn Check Raise</button>
                     </div>
                 </div>
 
