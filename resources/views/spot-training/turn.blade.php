@@ -83,6 +83,7 @@
                     <div class="module-filter" id="moduleFilter">
                         <button type="button" data-module="">Todos</button>
                         <button type="button" data-module="turn_barrel">Turn Barrel</button>
+                        <button type="button" data-module="turn_probe">Turn Probe Bet</button>
                     </div>
                 </div>
 
