@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ApexCash es un sistema de entrenamiento de poker Cash Games con spots, XP, leaks, GTO simplificado y ajustes para microlímites NL2-NL10.">
 
-    <link href="{{ asset('assets/css/apexcash-landing.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/apexcash-landing.css') }}?v=20260615logo2" rel="stylesheet">
 </head>
 <body>
 
@@ -14,12 +14,17 @@
 
     <header class="topbar">
         <a href="{{ url('/') }}" class="brand">
-            <div class="brand-mark">A</div>
-            <div>
+            <img
+                src="{{ asset('images/apexcash-icon.png') }}"
+                alt="ApexCash"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
                 <strong>APEXCASH</strong>
-                <span>Cash Game Training System</span>
+                <span>Training System</span>
             </div>
-        </a>
+            </a>
 
         <nav class="nav">
             <a href="#training">Entrenamiento</a>
@@ -67,7 +72,7 @@
 
             <div class="hero-stats">
                 <div>
-                    <strong>250+</strong>
+                    <strong>1000+</strong>
                     <span>spots de entrenamiento</span>
                 </div>
                 <div>

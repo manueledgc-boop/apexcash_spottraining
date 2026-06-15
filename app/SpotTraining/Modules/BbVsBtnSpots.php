@@ -16,6 +16,13 @@ class BbVsBtnSpots
             self::jto(), self::t8s(), self::pocket22(), self::pocket88(), self::k4s(),
             self::q2s(), self::j7o(), self::a7s(), self::kqo(), self::q9o(),
             self::t6s(), self::nineEightOff(), self::sixFiveSuited(), self::sevenTwoOff(), self::aTo(),
+
+            self::ako(), self::aqo(), self::a8s(), self::a4o(), self::a3s(),
+            self::ajo(), self::kts(), self::kjo(), self::k8o(), self::k2s(),
+            self::qts(), self::qto(), self::q5s(), self::j9s(), self::j4s(),
+            self::pocket33(), self::pocket66(), self::pocket99(), self::pocketTT(),
+            self::nineSevenSuited(), self::eightSevenOff(), self::sevenSixOff(),
+            self::fiveFourSuited(), self::t5o(), self::t7o(),
         ];
     }
 
@@ -536,4 +543,380 @@ class BbVsBtnSpots
                 'En NL2-NL10 suele ser más rentable defender manos con buena jugabilidad y castigar errores postflop que intentar reproducir frecuencias GTO exactas.'
         };
     }
+
+    protected static function ako(): array
+    {
+        return self::base(['Ah','Kd'], '3BET',
+            'AKo es demasiado fuerte para solo pagar siempre. Contra BTN amplio, 3Bet por valor captura mucho EV.',
+            'GTO simplificado: FOLD 0%, CALL 38%, 3BET 62%.',
+            self::grades('3BET', 0, 38, 62, ['FOLD'=>0,'CALL'=>88,'3BET'=>100], [
+                'FOLD'=>'Blunder. AKo nunca se foldea BB vs BTN.',
+                'CALL'=>'Aceptable como mezcla, pero pierdes valor si nunca 3beteas.',
+                '3BET'=>'Correcto. 3Bet de valor claro contra rango amplio de BTN.',
+            ]),
+            'premium_continue',
+            'Premium continue'
+        );
+    }
+
+    protected static function aqo(): array
+    {
+        return self::base(['Ad','Qh'], 'CALL',
+            'AQo defiende muy bien contra BTN. Puede pagar o 3betear; call mantiene dominadas dentro.',
+            'GTO simplificado: FOLD 2%, CALL 58%, 3BET 40%.',
+            self::grades('CALL', 2, 58, 40, ['FOLD'=>5,'CALL'=>100,'3BET'=>94], [
+                'FOLD'=>'Blunder. AQo es demasiado fuerte.',
+                'CALL'=>'Correcto. Defensa sólida y estable.',
+                '3BET'=>'Muy buena mezcla por valor, especialmente contra BTN loose.',
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
+        );
+    }
+
+    protected static function a8s(): array
+    {
+        return self::base(['Ac','8c'], 'CALL',
+            'A8s combina blocker, suitedness y buena equity. Defensa clara contra BTN.',
+            'GTO simplificado: FOLD 4%, CALL 66%, 3BET 30%.',
+            self::grades('CALL', 4, 66, 30, ['FOLD'=>12,'CALL'=>100,'3BET'=>90], [
+                'FOLD'=>'Demasiado tight.',
+                'CALL'=>'Correcto. A8s realiza bien equity pagando.',
+                '3BET'=>'Buena mezcla como bluff/value thin por blocker.',
+            ]),
+            'ax_suited',
+            'Ases suited'
+        );
+    }
+
+    protected static function a4o(): array
+    {
+        return self::base(['As','4d'], 'FOLD',
+            'A4o tiene blocker, pero mala jugabilidad y mucha dominación postflop.',
+            'GTO simplificado: FOLD 64%, CALL 32%, 3BET 4%.',
+            self::grades('FOLD', 64, 32, 4, ['FOLD'=>100,'CALL'=>58,'3BET'=>18], [
+                'FOLD'=>'Correcto como base sólida.',
+                'CALL'=>'Puede existir contra BTN muy loose, pero es delicado.',
+                '3BET'=>'Mal candidato: poca jugabilidad cuando recibe call.',
+            ]),
+            'ax_offsuit_medium',
+            'Ax offsuit medios'
+        );
+    }
+
+    protected static function a3s(): array
+    {
+        return self::base(['Ah','3h'], 'CALL',
+            'A3s es defensa clara y también buen candidato de 3Bet bluff por blocker.',
+            'GTO simplificado: FOLD 8%, CALL 56%, 3BET 36%.',
+            self::grades('CALL', 8, 56, 36, ['FOLD'=>22,'CALL'=>100,'3BET'=>92], [
+                'FOLD'=>'Demasiado tight.',
+                'CALL'=>'Correcto. Buena realización de equity.',
+                '3BET'=>'Muy buena mezcla con blocker al As.',
+            ]),
+            'ax_suited',
+            'Ases suited'
+        );
+    }
+
+    protected static function ajo(): array
+    {
+        return self::base(['Ac','Jd'], 'CALL',
+            'AJo tiene fuerza suficiente para defender, pero no quiere aislarse siempre contra rangos fuertes.',
+            'GTO simplificado: FOLD 10%, CALL 64%, 3BET 26%.',
+            self::grades('CALL', 10, 64, 26, ['FOLD'=>28,'CALL'=>100,'3BET'=>82], [
+                'FOLD'=>'Demasiado tight contra BTN.',
+                'CALL'=>'Correcto. Defensa estándar.',
+                '3BET'=>'Buena mezcla, pero no automática.',
+            ]),
+            'ax_offsuit_medium',
+            'Ax offsuit medios'
+        );
+    }
+
+    protected static function kts(): array
+    {
+        return self::base(['Ks','Ts'], 'CALL',
+            'KTs es defensa muy fuerte por suitedness, blocker y dominación sobre Kx peores.',
+            'GTO simplificado: FOLD 4%, CALL 78%, 3BET 18%.',
+            self::grades('CALL', 4, 78, 18, ['FOLD'=>10,'CALL'=>100,'3BET'=>82], [
+                'FOLD'=>'Demasiado tight.',
+                'CALL'=>'Correcto. KTs defiende muy bien.',
+                '3BET'=>'Buena mezcla baja-media.',
+            ]),
+            'broadway_suited',
+            'Broadways suited'
+        );
+    }
+
+    protected static function kjo(): array
+    {
+        return self::base(['Kh','Jd'], 'CALL',
+            'KJo puede defender contra BTN, aunque sufre dominación cuando el bote crece demasiado.',
+            'GTO simplificado: FOLD 30%, CALL 62%, 3BET 8%.',
+            self::grades('CALL', 30, 62, 8, ['FOLD'=>70,'CALL'=>100,'3BET'=>35], [
+                'FOLD'=>'No es horrible contra BTN tight.',
+                'CALL'=>'Correcto como defensa estándar.',
+                '3BET'=>'No es buen 3Bet frecuente.',
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
+        );
+    }
+
+    protected static function k8o(): array
+    {
+        return self::base(['Kc','8d'], 'FOLD',
+            'K8o queda dominada muchas veces y realiza mal equity fuera de posición.',
+            'GTO simplificado: FOLD 62%, CALL 36%, 3BET 2%.',
+            self::grades('FOLD', 62, 36, 2, ['FOLD'=>100,'CALL'=>62,'3BET'=>10], [
+                'FOLD'=>'Correcto como base.',
+                'CALL'=>'Defensa fina contra BTN muy amplio.',
+                '3BET'=>'Demasiado débil como 3Bet.',
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
+        );
+    }
+
+    protected static function k2s(): array
+    {
+        return self::base(['Ks','2s'], 'FOLD',
+            'K2s tiene blocker y suitedness, pero kicker muy débil y poca jugabilidad.',
+            'GTO simplificado: FOLD 58%, CALL 38%, 3BET 4%.',
+            self::grades('FOLD', 58, 38, 4, ['FOLD'=>100,'CALL'=>68,'3BET'=>18], [
+                'FOLD'=>'Correcto como estrategia base.',
+                'CALL'=>'Puede existir a baja frecuencia.',
+                '3BET'=>'No es el mejor bluff; hay Ax suited mejores.',
+            ]),
+            'weak_suited_broadway',
+            'Broadways suited débiles'
+        );
+    }
+
+    protected static function qts(): array
+    {
+        return self::base(['Qs','Ts'], 'CALL',
+            'QTs defiende muy bien por conectividad, suitedness y fuerza relativa contra BTN.',
+            'GTO simplificado: FOLD 8%, CALL 78%, 3BET 14%.',
+            self::grades('CALL', 8, 78, 14, ['FOLD'=>20,'CALL'=>100,'3BET'=>74], [
+                'FOLD'=>'Demasiado tight.',
+                'CALL'=>'Correcto. Mano muy jugable.',
+                '3BET'=>'Aceptable como mezcla baja.',
+            ]),
+            'broadway_suited',
+            'Broadways suited'
+        );
+    }
+
+    protected static function qto(): array
+    {
+        return self::base(['Qh','Td'], 'CALL',
+            'QTo offsuit puede defender contra BTN amplio, pero está cerca del borde.',
+            'GTO simplificado: FOLD 42%, CALL 54%, 3BET 4%.',
+            self::grades('CALL', 42, 54, 4, ['FOLD'=>82,'CALL'=>100,'3BET'=>22], [
+                'FOLD'=>'Conservador, pero no grave.',
+                'CALL'=>'Correcto contra BTN estándar o loose.',
+                '3BET'=>'Demasiado ambicioso.',
+            ]),
+            'broadway_offsuit',
+            'Broadways offsuit'
+        );
+    }
+
+    protected static function q5s(): array
+    {
+        return self::base(['Qd','5d'], 'FOLD',
+            'Q5s parece jugable por ser suited, pero genera muchas top pairs dominadas.',
+            'GTO simplificado: FOLD 54%, CALL 42%, 3BET 4%.',
+            self::grades('FOLD', 54, 42, 4, ['FOLD'=>100,'CALL'=>78,'3BET'=>18], [
+                'FOLD'=>'Correcto como base sólida.',
+                'CALL'=>'Marginal; no abuses de estas suited débiles.',
+                '3BET'=>'No tiene suficiente calidad para bluff frecuente.',
+            ]),
+            'weak_suited_broadway',
+            'Broadways suited débiles'
+        );
+    }
+
+    protected static function j9s(): array
+    {
+        return self::base(['Js','9s'], 'CALL',
+            'J9s defiende bien por suitedness y conectividad. Es mejor pagar que convertirla siempre en 3Bet.',
+            'GTO simplificado: FOLD 18%, CALL 74%, 3BET 8%.',
+            self::grades('CALL', 18, 74, 8, ['FOLD'=>45,'CALL'=>100,'3BET'=>48], [
+                'FOLD'=>'Algo tight.',
+                'CALL'=>'Correcto. Buena defensa jugable.',
+                '3BET'=>'Puede existir poco, pero call domina.',
+            ]),
+            'suited_connectors',
+            'Suited connectors'
+        );
+    }
+
+    protected static function j4s(): array
+    {
+        return self::base(['Jh','4h'], 'FOLD',
+            'J4s tiene suitedness, pero kicker débil y conectividad pobre.',
+            'GTO simplificado: FOLD 60%, CALL 38%, 3BET 2%.',
+            self::grades('FOLD', 60, 38, 2, ['FOLD'=>100,'CALL'=>70,'3BET'=>10], [
+                'FOLD'=>'Correcto.',
+                'CALL'=>'Defensa marginal contra BTN muy loose.',
+                '3BET'=>'Demasiado débil.',
+            ]),
+            'weak_suited_broadway',
+            'Broadways suited débiles'
+        );
+    }
+
+    protected static function pocket33(): array
+    {
+        return self::base(['3c','3d'], 'CALL',
+            '33 defiende por precio, set value y algo de showdown value.',
+            'GTO simplificado: FOLD 20%, CALL 78%, 3BET 2%.',
+            self::grades('CALL', 20, 78, 2, ['FOLD'=>60,'CALL'=>100,'3BET'=>12], [
+                'FOLD'=>'Conservador.',
+                'CALL'=>'Correcto. Set value suficiente.',
+                '3BET'=>'No es buen 3Bet.',
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
+        );
+    }
+
+    protected static function pocket66(): array
+    {
+        return self::base(['6c','6d'], 'CALL',
+            '66 es defensa clara contra BTN por showdown value y set value.',
+            'GTO simplificado: FOLD 8%, CALL 88%, 3BET 4%.',
+            self::grades('CALL', 8, 88, 4, ['FOLD'=>25,'CALL'=>100,'3BET'=>28], [
+                'FOLD'=>'Demasiado tight.',
+                'CALL'=>'Correcto. Defensa estándar.',
+                '3BET'=>'No es principal.',
+            ]),
+            'small_pairs',
+            'Pocket pairs bajos'
+        );
+    }
+
+    protected static function pocket99(): array
+    {
+        return self::base(['9c','9d'], 'CALL',
+            '99 es defensa muy fuerte. Call mantiene el rango amplio de BTN, aunque 3Bet puede mezclarse.',
+            'GTO simplificado: FOLD 0%, CALL 82%, 3BET 18%.',
+            self::grades('CALL', 0, 82, 18, ['FOLD'=>0,'CALL'=>100,'3BET'=>84], [
+                'FOLD'=>'Blunder.',
+                'CALL'=>'Correcto. Mucho showdown value.',
+                '3BET'=>'Buena mezcla por valor/protección.',
+            ]),
+            'medium_pairs',
+            'Pocket pairs medios'
+        );
+    }
+
+    protected static function pocketTT(): array
+    {
+        return self::base(['Tc','Td'], '3BET',
+            'TT es suficientemente fuerte para 3Bet por valor/protección contra BTN amplio.',
+            'GTO simplificado: FOLD 0%, CALL 48%, 3BET 52%.',
+            self::grades('3BET', 0, 48, 52, ['FOLD'=>0,'CALL'=>94,'3BET'=>100], [
+                'FOLD'=>'Blunder.',
+                'CALL'=>'Muy aceptable como mezcla.',
+                '3BET'=>'Correcto. Captura valor y niega equity.',
+            ]),
+            'medium_pairs',
+            'Pocket pairs medios'
+        );
+    }
+
+    protected static function nineSevenSuited(): array
+    {
+        return self::base(['9s','7s'], 'CALL',
+            '97s defiende por suitedness y conectividad, aunque no es tan fuerte como T9s o 98s.',
+            'GTO simplificado: FOLD 24%, CALL 70%, 3BET 6%.',
+            self::grades('CALL', 24, 70, 6, ['FOLD'=>60,'CALL'=>100,'3BET'=>35], [
+                'FOLD'=>'Algo conservador.',
+                'CALL'=>'Correcto. Buena jugabilidad por precio.',
+                '3BET'=>'No es principal.',
+            ]),
+            'suited_connectors',
+            'Suited connectors'
+        );
+    }
+
+    protected static function eightSevenOff(): array
+    {
+        return self::base(['8h','7d'], 'FOLD',
+            '87o tiene conectividad, pero al ser offsuit realiza peor equity y genera proyectos débiles.',
+            'GTO simplificado: FOLD 56%, CALL 42%, 3BET 2%.',
+            self::grades('FOLD', 56, 42, 2, ['FOLD'=>100,'CALL'=>78,'3BET'=>10], [
+                'FOLD'=>'Correcto como base.',
+                'CALL'=>'Marginal contra BTN loose.',
+                '3BET'=>'No tiene blockers.',
+            ]),
+            'offsuit_connectors',
+            'Conectores offsuit'
+        );
+    }
+
+    protected static function sevenSixOff(): array
+    {
+        return self::base(['7h','6d'], 'FOLD',
+            '76o conecta algo, pero offsuit y fuera de posición no realiza suficiente equity.',
+            'GTO simplificado: FOLD 64%, CALL 34%, 3BET 2%.',
+            self::grades('FOLD', 64, 34, 2, ['FOLD'=>100,'CALL'=>60,'3BET'=>8], [
+                'FOLD'=>'Correcto.',
+                'CALL'=>'Demasiado loose como base.',
+                '3BET'=>'Blunder. Sin blockers ni equity suficiente.',
+            ]),
+            'offsuit_connectors',
+            'Conectores offsuit'
+        );
+    }
+
+    protected static function fiveFourSuited(): array
+    {
+        return self::base(['5h','4h'], 'CALL',
+            '54s puede defender por precio, conectividad y capacidad de ligar proyectos fuertes.',
+            'GTO simplificado: FOLD 24%, CALL 72%, 3BET 4%.',
+            self::grades('CALL', 24, 72, 4, ['FOLD'=>58,'CALL'=>100,'3BET'=>30], [
+                'FOLD'=>'Conservador, pero no grave.',
+                'CALL'=>'Correcto. Buena defensa especulativa.',
+                '3BET'=>'No es principal.',
+            ]),
+            'suited_connectors',
+            'Suited connectors'
+        );
+    }
+
+    protected static function t5o(): array
+    {
+        return self::base(['Th','5d'], 'FOLD',
+            'T5o es offsuit, desconectada y sin blockers útiles. No merece defensa estándar.',
+            'GTO simplificado: FOLD 88%, CALL 12%, 3BET 0%.',
+            self::grades('FOLD', 88, 12, 0, ['FOLD'=>100,'CALL'=>20,'3BET'=>0], [
+                'FOLD'=>'Correcto. Fold claro.',
+                'CALL'=>'Demasiado loose.',
+                '3BET'=>'Blunder.',
+            ]),
+            'trash_offsuit',
+            'Basura offsuit'
+        );
+    }
+
+    protected static function t7o(): array
+    {
+        return self::base(['Ts','7d'], 'FOLD',
+            'T7o tiene poca conectividad real y al ser offsuit juega mal postflop.',
+            'GTO simplificado: FOLD 76%, CALL 22%, 3BET 2%.',
+            self::grades('FOLD', 76, 22, 2, ['FOLD'=>100,'CALL'=>38,'3BET'=>8], [
+                'FOLD'=>'Correcto.',
+                'CALL'=>'Demasiado loose como estándar.',
+                '3BET'=>'Sin blockers ni suficiente jugabilidad.',
+            ]),
+            'trash_offsuit',
+            'Basura offsuit'
+        );
+    }
+
 }

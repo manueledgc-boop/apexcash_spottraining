@@ -104,12 +104,9 @@
                     </div>
 
                     <div class="leaks-box">
-                        <h4>Tus leaks actuales</h4>
+                        <h4>Resumen Preflop</h4>
                         <div id="leaksList"></div>
 
-                        <button type="button" id="practiceLeakBtn" class="ghost-btn">
-                            Practicar peor leak
-                        </button>
                     </div>
                 </div>
             </aside>

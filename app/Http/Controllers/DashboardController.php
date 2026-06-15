@@ -49,15 +49,34 @@ class DashboardController extends Controller
             ->orderByDesc('total_spots')
             ->get();
 
-        $bestModule = (clone $moduleStats)
-            ->where('total_spots', '>=', 3)
-            ->sortByDesc('accuracy')
-            ->first();
+        $rankedModules = $moduleStats
+            ->where('total_spots', '>=', 10)
+            ->values();
 
-        $worstModule = (clone $moduleStats)
-            ->where('total_spots', '>=', 3)
-            ->sortBy('accuracy')
-            ->first();
+        $bestModule = null;
+        $worstModule = null;
+
+        if ($rankedModules->count() >= 1) {
+
+            $bestModule = $rankedModules
+                ->sortByDesc('accuracy')
+                ->first();
+
+            if ($rankedModules->count() >= 2) {
+
+                $candidateWorst = $rankedModules
+                    ->sortBy('accuracy')
+                    ->first();
+
+                if (
+                    $candidateWorst &&
+                    $bestModule &&
+                    $candidateWorst->module !== $bestModule->module
+                ) {
+                    $worstModule = $candidateWorst;
+                }
+            }
+        }
 
         $leaks = UserLeak::query()
             ->where('user_id', $userId)

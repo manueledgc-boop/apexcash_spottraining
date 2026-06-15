@@ -112,7 +112,7 @@
     }
 }
 
-@media (orientation: landscape) and (max-height: 600px) {
+@media (orientation: landscape) and (max-height: 100%) {
     .postflop-panel {
         max-height: 82vh;
         overflow-y: auto;

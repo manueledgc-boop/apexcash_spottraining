@@ -118,6 +118,36 @@ class SbVsBtnSpots
             self::spot(['Qs','5s'], 'FOLD', [58,16,26], 'Q5s no tiene suficiente fuerza ni blocker premium para defenderse siempre.', 'weak_suited_hands', 'Suited débiles'),
             self::spot(['6c','5c'], 'FOLD', [64,20,16], '65s desde SB realiza mal equity OOP y no bloquea manos fuertes.', 'weak_suited_hands', 'Suited débiles'),
             self::spot(['2h','2d'], 'FOLD', [62,24,14], '22 no debe pagarse por setmine desde SB con tanta frecuencia. Sin posición pierde mucho valor.', 'small_pairs_oop', 'Pocket pairs pequeños OOP'),
+
+            self::spot(['Ah','Ks'], '3BET', [0,3,97], 'AKo es 3Bet de valor puro contra BTN. En SB no queremos pagar y jugar un bote multiway con BB entrando barato.', 'value_3bet', '3Bet por valor'),
+            self::spot(['Qh','Qd'], '3BET', [0,2,98], 'QQ debe 3betear casi siempre. Pagar desde SB pierde valor, permite entrada de BB y oculta menos de lo que parece.', 'value_3bet', '3Bet por valor'),
+            self::spot(['Jd','Jc'], '3BET', [2,8,90], 'JJ domina mucho del rango de open de BTN y necesita protección. Es 3Bet claro, no trampa pasiva.', 'value_3bet', '3Bet por valor'),
+            self::spot(['9h','9c'], '3BET', [12,18,70], '99 contra BTN amplio es suficientemente fuerte para 3Betear por valor/protección desde SB.', 'value_3bet', '3Bet por valor'),
+            self::spot(['6s','6d'], 'FOLD', [46,30,24], '66 es el borde incómodo: pagar OOP no imprime dinero y 3Betearlo siempre sobreexpone una mano difícil postflop.', 'small_pairs_oop', 'Pocket pairs pequeños OOP'),
+
+            self::spot(['Ad','3d'], '3BET', [20,8,72], 'A3s es buen 3Bet bluff: bloquea Ax fuertes y conserva equity cuando BTN paga. Mejor agresivo que call OOP.', 'ax_bluff_3bet', '3Bet bluff con Ax suited'),
+            self::spot(['As','9s'], '3BET', [18,12,70], 'A9s puede 3betear de forma lineal contra BTN amplio. Tiene blocker, equity y domina varios Ax peores.', 'ax_bluff_3bet', '3Bet bluff con Ax suited'),
+            self::spot(['Ac','7c'], '3BET', [24,10,66], 'A7s es defensa agresiva razonable: blocker al As y jugabilidad suficiente. Call desde SB debe ser poco frecuente.', 'ax_bluff_3bet', '3Bet bluff con Ax suited'),
+            self::spot(['Ah','2h'], '3BET', [28,8,64], 'A2s es el Ax suited más bajo, pero sigue funcionando como 3Bet bluff por blocker y potencial de color/rueda.', 'ax_bluff_3bet', '3Bet bluff con Ax suited'),
+            self::spot(['As','6d'], 'FOLD', [60,5,35], 'A6o tiene blocker, pero está demasiado dominada y juega mal postflop. No conviertas cualquier As en 3Bet.', 'dominated_offsuit', 'Offsuit dominadas'),
+
+            self::spot(['Kd','Td'], '3BET', [18,16,66], 'KTs combina blocker, equity y buena jugabilidad. Contra BTN amplio es una 3Bet muy educativa desde SB.', 'kx_bluff_3bet', '3Bet bluff con Kx suited'),
+            self::spot(['Kh','8h'], '3BET', [34,14,52], 'K8s puede entrar como 3Bet bluff selectivo. No es valor puro: depende de que BTN abra amplio y foldee algo.', 'kx_bluff_3bet', '3Bet bluff con Kx suited'),
+            self::spot(['Ks','4s'], 'FOLD', [50,14,36], 'K4s bloquea algo, pero la jugabilidad es baja. En micro-límites es fácil pasarse de agresivo con estos Kxs débiles.', 'kx_bluff_3bet', '3Bet bluff con Kx suited'),
+            self::spot(['Kc','Jo'], 'FOLD', [48,10,42], 'KJo offsuit parece fuerte, pero OOP se domina mucho contra continuaciones. 3Bet solo contra BTN muy amplio y fold frecuente.', 'dominated_offsuit', 'Offsuit dominadas'),
+            self::spot(['Kh','Qh'], '3BET', [10,16,74], 'KQs es demasiado fuerte para jugar pasivo desde SB. 3Bet construye valor y evita que BB realice equity gratis.', 'value_3bet', '3Bet por valor'),
+
+            self::spot(['Qh','Jh'], '3BET', [26,20,54], 'QJs es suited broadway con buena equity. Puede mezclarse, pero la línea agresiva simplifica mucho el spot OOP.', 'semi_bluff_suited', 'Suited semi-bluffs'),
+            self::spot(['Qc','Tc'], '3BET', [30,18,52], 'QTs tiene conectividad y suitedness suficientes para 3Bet selectivo, especialmente contra opens BTN demasiado amplios.', 'semi_bluff_suited', 'Suited semi-bluffs'),
+            self::spot(['Js','Ts'], '3BET', [32,22,46], 'JTs es una de las suited connectors que mejor realiza equity. Aun así, desde SB no debe convertirse en call automático.', 'semi_bluff_suited', 'Suited semi-bluffs'),
+            self::spot(['8c','7c'], 'FOLD', [56,26,18], '87s juega bonito en posición, pero desde SB pierde mucho EV. Sin blocker premium, no hace falta defenderla siempre.', 'weak_suited_hands', 'Suited débiles'),
+            self::spot(['5h','4h'], 'FOLD', [68,20,12], '54s es demasiado baja para defender estándar desde SB. La fantasía de ligar escalera no compensa jugar OOP sin iniciativa.', 'weak_suited_hands', 'Suited débiles'),
+
+            self::spot(['Ad','Qd'], '3BET', [2,6,92], 'AQs es 3Bet por valor muy claro. Domina Ax y broadways peores del BTN y realiza excelente equity.', 'value_3bet', '3Bet por valor'),
+            self::spot(['Ah','Td'], '3BET', [18,8,74], 'ATo contra BTN amplio puede 3betear por valor fino y blocker. Pagar OOP suele ser peor que tomar iniciativa.', 'value_3bet', '3Bet por valor'),
+            self::spot(['Qc','9c'], 'FOLD', [48,24,28], 'Q9s está cerca, pero en SB se mete en muchos top pairs dominados. Como estándar educativo, fold es más limpio.', 'weak_suited_hands', 'Suited débiles'),
+            self::spot(['Jd','8d'], 'FOLD', [58,20,22], 'J8s no bloquea suficiente y realiza mal equity. No confundas suited con defendible.', 'weak_suited_hands', 'Suited débiles'),
+            self::spot(['Ts','7s'], 'FOLD', [62,18,20], 'T7s es demasiado débil para defensa estándar SB vs BTN. En micro-límites este tipo de mano quema dinero postflop.', 'weak_suited_hands', 'Suited débiles'),
         ];
     }
 

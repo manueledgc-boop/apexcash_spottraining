@@ -19,6 +19,10 @@ class ValueBetSpots
             self::valueBetTwoPairA9A98(),
             self::valueBetSetDryBoard(),
             self::valueBetTopPairDynamicBoard(),
+            self::valueBetTptkThreeBetPot(),
+            self::valueBetSetWetBoard(),
+            self::valueBetSecondPairThinValue(),
+            self::valueBetOverpairLowConnected(),
         ];
     }
 
@@ -301,4 +305,147 @@ class ValueBetSpots
             84
         );
     }
+
+    protected static function valueBetTptkThreeBetPot(): array
+    {
+        return self::spot(
+            'pf_value_sb_3bet_vs_btn_a84_ak',
+            'value_bet',
+            'Value Bet Flop',
+            'tptk_3bet_pot',
+            'TPTK en 3Bet pot',
+            'SB vs BTN · AK en A84r 3Bet pot',
+            'SB',
+            'BTN',
+            ['Ah', 'Kd'],
+            ['As', '8c', '4h'],
+            18.5,
+            4.4,
+            81.5,
+            'A-high seco en 3Bet pot',
+            'SB tiene ventaja fuerte de rango por 3Bet preflop.',
+            'SB tiene AA, AK, AQ y overpairs; BTN tiene algunos Ax peores.',
+            ['BTN opens 2.5 BB', 'SB 3bets 10 BB', 'BTN calls', 'Flop: A♠ 8♣ 4♥', 'Action on Hero SB'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_33',
+            'AK domina muchos Ax peores y en 3Bet pot no necesita apostar enorme. El sizing pequeño deja dentro AQ, AJ, AT y pares curiosos.',
+            'GTO simplificado: c-bet pequeña por valor con top pair top kicker en A-high seco de 3Bet pot.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 90, 'feedback' => 'Excelente. Construyes bote sin aislarte solo contra manos fuertes.'],
+                'BET_66' => ['grade' => 'good', 'frequency' => 28, 'ev_score' => 78, 'feedback' => 'Puede explotar a calling stations, pero estándar es más pequeño.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 14, 'ev_score' => 50, 'feedback' => 'Demasiado pasivo con una mano que domina el rango de call.'],
+            ],
+            'En 3Bet pot, TPTK apuesta pequeño con frecuencia en boards secos.',
+            'En NL2-NL10 no regales carta. Te pagan Ax peores demasiadas veces.',
+            90,
+            'three_bet_pot',
+            '3Bet Pot'
+        );
+    }
+
+    protected static function valueBetSetWetBoard(): array
+    {
+        return self::spot(
+            'pf_value_btn_vs_bb_986ss_99',
+            'value_bet',
+            'Value Bet Flop',
+            'set_wet_board',
+            'Set en board mojado',
+            'BTN vs BB · Set en 986ss',
+            'BTN',
+            'BB',
+            ['9h', '9d'],
+            ['9s', '8s', '6c'],
+            5.5,
+            8.5,
+            47.5,
+            'Board muy conectado con flush draw',
+            'BB conecta mucho, pero Hero tiene mano premium.',
+            'BB tiene escaleras/proyectos; Hero tiene sets fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♠ 6♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_66',
+            'Set fuerte en board muy dinámico debe apostar grande. Hay demasiados draws, pares + draw y manos hechas peores que pagan.',
+            'GTO simplificado: manos de valor fuerte usan sizing grande en texturas conectadas.',
+            [
+                'BET_66' => ['grade' => 'best', 'frequency' => 74, 'ev_score' => 94, 'feedback' => 'Muy bien. Cobras caro a proyectos y manos peores.'],
+                'BET_33' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 76, 'feedback' => 'Gana dinero, pero das precio demasiado barato.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 20, 'feedback' => 'Slowplay muy malo: demasiadas cartas malas en turn.'],
+            ],
+            'Cuanto más mojado el board, más urgente es cobrar y proteger con valor fuerte.',
+            'En microlímites apuesta fuerte. Te pagan proyectos aunque el precio sea malo.',
+            92
+        );
+    }
+
+    protected static function valueBetSecondPairThinValue(): array
+    {
+        return self::spot(
+            'pf_value_btn_vs_bb_k72_a7',
+            'value_bet',
+            'Value Bet Flop',
+            'thin_value_second_pair',
+            'Valor fino con segunda pareja',
+            'BTN vs BB · Segunda pareja en K72r',
+            'BTN',
+            'BB',
+            ['Ah', '7h'],
+            ['Ks', '7c', '2d'],
+            5.5,
+            8.5,
+            47.5,
+            'K-high seco',
+            'BTN tiene ventaja de rango, pero A7 no es top pair.',
+            'BTN tiene Kx fuertes; BB tiene muchos pares débiles.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♣ 2♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_33',
+            'A7 puede apostar pequeño por valor/protección contra 2x, pares pequeños, gutshots débiles y overcards. No quiere inflar demasiado el bote.',
+            'GTO simplificado: segunda pareja con kicker alto mezcla apuesta pequeña y check; como ejercicio, la línea preferida es bet pequeño.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 80, 'feedback' => 'Correcto. Valor fino y protección sin convertir la mano en bluff.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 44, 'ev_score' => 74, 'feedback' => 'También válido para controlar bote.'],
+                'BET_66' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 48, 'feedback' => 'Demasiado grande: aíslas contra Kx y manos mejores.'],
+            ],
+            'El valor fino existe, pero normalmente con sizing pequeño.',
+            'En NL2-NL10 apuesta pequeño: te pagan pares peores, pero no exageres el tamaño.',
+            78
+        );
+    }
+
+    protected static function valueBetOverpairLowConnected(): array
+    {
+        return self::spot(
+            'pf_value_co_vs_bb_765_tt',
+            'value_bet',
+            'Value Bet Flop',
+            'overpair_dynamic_board',
+            'Overpair vulnerable',
+            'CO vs BB · TT en 765 two-tone',
+            'CO',
+            'BB',
+            ['Th', 'Td'],
+            ['7s', '6s', '5c'],
+            5.5,
+            8.8,
+            48.5,
+            'Board bajo conectado con flush draw',
+            'BB conecta muchísimo con esta textura.',
+            'BB tiene sets, dobles, escaleras y muchos proyectos.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: 7♠ 6♠ 5♣', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_66',
+            'TT es overpair pero muy vulnerable. Apostar grande cobra a proyectos, 7x, 6x y pares con equity. Checkear da demasiadas cartas gratis.',
+            'GTO simplificado: overpair vulnerable en board dinámico apuesta menos frecuencia, pero cuando apuesta suele usar tamaño grande.',
+            [
+                'BET_66' => ['grade' => 'best', 'frequency' => 52, 'ev_score' => 82, 'feedback' => 'Bien. Proteges y cobras a muchas manos con equity.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 38, 'ev_score' => 72, 'feedback' => 'Aceptable contra rivales agresivos, pero no debe ser automático.'],
+                'BET_33' => ['grade' => 'mistake', 'frequency' => 18, 'ev_score' => 56, 'feedback' => 'Sizing pequeño da demasiado precio en un board peligroso.'],
+            ],
+            'Las overpairs vulnerables necesitan protección real en boards conectados.',
+            'En microlímites apuesta fuerte: los proyectos pagan y los rivales no castigan suficiente.',
+            82
+        );
+    }
+
 }

@@ -9,6 +9,9 @@ use App\SpotTraining\Postflop\Modules\CheckRaiseSpots;
 use App\SpotTraining\Postflop\Modules\DefenseVsCbetSpots;
 use App\SpotTraining\Postflop\Modules\SemiBluffSpots;
 use App\SpotTraining\Postflop\Modules\ValueBetSpots;
+use App\SpotTraining\Postflop\Modules\OverbetSpots;
+use App\SpotTraining\Postflop\Modules\DonkBetSpots;
+use App\SpotTraining\Postflop\Modules\FloatSpots;
 
 class PostflopSpotRepository
 {
@@ -23,6 +26,9 @@ class PostflopSpotRepository
             CheckRaiseSpots::all(),
             ValueBetSpots::all(),
             SemiBluffSpots::all(),
+            OverbetSpots::all(),
+            DonkBetSpots::all(),
+            FloatSpots::all(),
         );
     }
 

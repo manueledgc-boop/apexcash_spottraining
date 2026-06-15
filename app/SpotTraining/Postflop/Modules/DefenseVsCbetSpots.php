@@ -21,6 +21,8 @@ class DefenseVsCbetSpots
             self::defendVsCbetGutshotClean(),
             self::defendVsCbetWeakFlushDraw(),
             self::defendVsCbetBackdoorAir(),
+            self::defendVsCbetNutFlushDrawRaise(),
+            self::defendVsCbetOvercardsBackdoorFloat(),
         ];
     }
 
@@ -373,4 +375,75 @@ class DefenseVsCbetSpots
             82
         );
     }
+
+    protected static function defendVsCbetNutFlushDrawRaise(): array
+    {
+        return self::spot(
+            'pf_defend_vs_cbet_q82ss_bb_vs_btn_as5s',
+            'defense_vs_cbet',
+            'Defensa vs C-Bet',
+            'nut_flush_draw_aggression',
+            'Nut flush draw agresivo',
+            'BB vs BTN · Nut flush draw vs c-bet',
+            'BB',
+            'BTN',
+            ['As', '5s'],
+            ['Qs', '8s', '2d'],
+            7,
+            7,
+            49.0,
+            'Board Q-high con proyecto de color',
+            'BTN tiene ventaja de rango, pero BB tiene draws fuertes y sets.',
+            'BB puede representar sets, dobles y proyectos fuertes; Hero bloquea el mejor color.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♠ 2♦', 'BB checks', 'BTN bets 2 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'A5s con nut flush draw tiene mucha equity, bloquea colores fuertes y puede hacer foldear aire, Ax mejores sin ligar y algunos pares débiles. Call también es jugable, pero subir enseña cuándo convertir equity fuerte en presión.',
+            'GTO simplificado: mezclar call y raise; raise es excelente con nut draw y blocker al color máximo.',
+            [
+                'RAISE' => ['grade' => 'best', 'frequency' => 44, 'ev_score' => 84, 'feedback' => 'Muy buen semi-bluff. Tienes equity real, fold equity y bloqueas el nut flush.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 56, 'ev_score' => 78, 'feedback' => 'Correcto también. Pagar mantiene el bote controlado y realiza equity.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 5, 'feedback' => 'Fold gravísimo. Tienes un proyecto muy fuerte.'],
+            ],
+            'Los nut flush draws pueden jugarse agresivos porque combinan equity + blockers + fold equity.',
+            'En NL2-NL10 el raise funciona mejor contra rivales que c-betean mucho y foldean. Contra calling stations, call y cobra cuando completes.',
+            88
+        );
+    }
+
+    protected static function defendVsCbetOvercardsBackdoorFloat(): array
+    {
+        return self::spot(
+            'pf_defend_vs_cbet_j74r_bb_vs_co_aq_bdfd',
+            'defense_vs_cbet',
+            'Defensa vs C-Bet',
+            'overcards_backdoor_float',
+            'Float con overcards y backdoor',
+            'BB vs CO · Overcards con backdoor fuerte',
+            'BB',
+            'CO',
+            ['Ah', 'Qh'],
+            ['Jc', '7h', '4s'],
+            7,
+            7.5,
+            49.0,
+            'Board medio semi-seco',
+            'CO tiene ventaja moderada, pero BB conecta bastante con pares y draws.',
+            'Hero no tiene pareja, pero conserva dos overcards, backdoor flush y algunas turns buenas.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: J♣ 7♥ 4♠', 'BB checks', 'CO bets 2 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'AQ con backdoor de color y dos overcards puede pagar contra sizing pequeño. No es una defensa automática contra tamaño grande, pero ante c-bet pequeña tiene suficiente jugabilidad en turns A, Q, T, K o corazón.',
+            'GTO simplificado: defender algunos floats con overcards + backdoor fuerte; no subir sin equity directa.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 48, 'ev_score' => 74, 'feedback' => 'Bien. Tienes overcards, backdoor de color y varias turns buenas para continuar.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 66, 'feedback' => 'Fold no es grave, especialmente si el rival apuesta grande o barrelea mucho.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 38, 'feedback' => 'Raise demasiado optimista. No tienes proyecto directo ni blocker fuerte al rango de valor.'],
+            ],
+            'Los floats buenos no son aire: necesitan overcards, backdoors y cartas futuras claras para continuar.',
+            'En microlímites paga estos spots solo contra sizing pequeño. Si el rival barrelea turn sin parar, foldear flop es mejor.',
+            76
+        );
+    }
+
 }

@@ -19,7 +19,8 @@
     <main class="auth-shell">
         <section class="auth-brand-panel">
             <a href="{{ url('/') }}" class="auth-logo-link" aria-label="ApexCash home">
-                <img src="{{ asset('images/apexcash-logo-v2.png') }}" alt="ApexCash" class="auth-logo">
+                <img src="{{ asset('images/apexcash-icon.png') }}" alt="ApexCash" class="auth-logo">
+                <div class="auth-brand-copy"><h1>APEXCASH</h1></div>
             </a>
 
             <div class="auth-brand-copy">

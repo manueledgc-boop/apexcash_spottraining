@@ -89,6 +89,9 @@
                         <button type="button" data-module="check_raise">Check-Raise</button>
                         <button type="button" data-module="value_bet">Value Bet</button>
                         <button type="button" data-module="semi_bluff">Semi-Bluff</button>
+                        <button type="button" data-module="overbet">Overbet</button>
+                        <button type="button" data-module="donk_bet">Donk Bet</button>
+                        <button type="button" data-module="float">Float</button>
                     </div>
                 </div>
 
@@ -137,7 +140,7 @@
                     </div>
 
                     <div class="leaks-box">
-                        <h4>Leaks postflop</h4>
+                        <h4>Resumen Flop</h4>
                         <div id="leaksList"></div>
                     </div>
                 </div>

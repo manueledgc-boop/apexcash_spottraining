@@ -282,21 +282,29 @@
                     @if ($bestModule)
                         {{ number_format((float) $bestModule->accuracy, 1) }}% de precisión en {{ $bestModule->total_spots }} spots.
                     @else
-                        Necesitas al menos 3 spots por módulo para detectar fortalezas reales.
+                        Necesitas al menos 10 spots por módulo para detectar fortalezas reales.
                     @endif
                 </p>
             </article>
 
             <article class="dashboard-card danger-card">
                 <span>Peor módulo</span>
-                <h2>{{ $worstModule->module_label ?? ($worstLeak->module_label ?? 'Sin datos todavía') }}</h2>
+                <h2>
+                    @if ($worstModule)
+                        {{ $worstModule->module_label }}
+                    @elseif ($bestModule)
+                        Aún no disponible
+                    @else
+                        Sin muestra suficiente
+                    @endif
+                </h2>
                 <p>
                     @if ($worstModule)
                         {{ number_format((float) $worstModule->accuracy, 1) }}% de precisión. Este módulo debe entrenarse primero.
-                    @elseif ($worstLeak)
-                        {{ number_format((float) $worstLeak->accuracy, 1) }}% de precisión en {{ $worstLeak->total }} spots.
+                    @elseif ($bestModule)
+                        Practica al menos otro módulo con 10 spots para comparar resultados.
                     @else
-                        Responde algunos spots para que ApexCash detecte tu primer leak.
+                        Necesitas al menos 10 spots en dos módulos distintos para detectar un módulo débil real.
                     @endif
                 </p>
             </article>

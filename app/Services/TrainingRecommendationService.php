@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingRecommendationService
 {
-    protected int $recentLimit = 15;
-
     public function __construct(
         protected SpotRepository $spots
     ) {
@@ -22,13 +20,19 @@ class TrainingRecommendationService
     ): array {
         if ($concept) {
             return $this->pickAndRemember(
-                $this->spots->byConcept($concept)
+                $this->spots->byConcept($concept),
+                $module,
+                $mode,
+                $concept
             );
         }
 
         if ($module) {
             return $this->pickAndRemember(
-                $this->spots->byModule($module)
+                $this->spots->byModule($module),
+                $module,
+                $mode,
+                $concept
             );
         }
 
@@ -37,7 +41,10 @@ class TrainingRecommendationService
 
             if ($worstLeak) {
                 return $this->pickAndRemember(
-                    $this->spots->byModule($worstLeak)
+                    $this->spots->byModule($worstLeak),
+                    $worstLeak,
+                    $mode,
+                    $concept
                 );
             }
         }
@@ -46,12 +53,18 @@ class TrainingRecommendationService
 
         if ($recommendedModule) {
             return $this->pickAndRemember(
-                $this->spots->byModule($recommendedModule)
+                $this->spots->byModule($recommendedModule),
+                $recommendedModule,
+                $mode,
+                $concept
             );
         }
 
         return $this->pickAndRemember(
-            $this->spots->all()
+            $this->spots->all(),
+            null,
+            $mode,
+            $concept
         );
     }
 
@@ -116,59 +129,81 @@ class TrainingRecommendationService
         return $weightedModules[array_rand($weightedModules)];
     }
 
-    protected function pickAndRemember(array $spots): array
-    {
-        $spot = $this->randomFromWithoutRecent($spots);
+    protected function pickAndRemember(
+        array $spots,
+        ?string $module = null,
+        string $mode = 'normal',
+        ?string $concept = null
+    ): array {
+        $spot = $this->randomFromUnseenPool($spots, $module, $mode, $concept);
 
-        $this->rememberSpot($spot);
+        $this->rememberSeenSpot($spot, $module, $mode, $concept);
 
         return $spot;
     }
 
-    protected function randomFromWithoutRecent(array $spots): array
-    {
+    protected function randomFromUnseenPool(
+        array $spots,
+        ?string $module = null,
+        string $mode = 'normal',
+        ?string $concept = null
+    ): array {
         if (empty($spots)) {
             $spots = $this->spots->all();
+            $module = null;
+            $concept = null;
         }
 
         if (empty($spots)) {
             throw new \RuntimeException('No hay spots disponibles para entrenamiento.');
         }
 
-        $recentIds = session('spot_training.recent_spots', []);
+        $poolKey = $this->poolKey($module, $mode, $concept);
+        $seenIds = session($poolKey, []);
 
-        $available = array_values(array_filter($spots, function (array $spot) use ($recentIds) {
+        $available = array_values(array_filter($spots, function (array $spot) use ($seenIds): bool {
             $spotId = $this->spotId($spot);
 
-            return ! in_array($spotId, $recentIds, true);
+            if (! $spotId) {
+                return true;
+            }
+
+            return ! in_array($spotId, $seenIds, true);
         }));
 
         if (empty($available)) {
+            session([$poolKey => []]);
             $available = $spots;
         }
 
         return $available[array_rand($available)];
     }
 
-    protected function rememberSpot(array $spot): void
-    {
+    protected function rememberSeenSpot(
+        array $spot,
+        ?string $module = null,
+        string $mode = 'normal',
+        ?string $concept = null
+    ): void {
         $spotId = $this->spotId($spot);
 
         if (! $spotId) {
             return;
         }
 
-        $recent = session('spot_training.recent_spots', []);
+        $poolKey = $this->poolKey($module, $mode, $concept);
+        $seenIds = session($poolKey, []);
 
-        $recent[] = $spotId;
+        $seenIds[] = $spotId;
 
-        $recent = array_values(array_unique($recent));
+        session([
+            $poolKey => array_values(array_unique($seenIds)),
+        ]);
+    }
 
-        if (count($recent) > $this->recentLimit) {
-            $recent = array_slice($recent, -$this->recentLimit);
-        }
-
-        session(['spot_training.recent_spots' => $recent]);
+    protected function poolKey(?string $module = null, string $mode = 'normal', ?string $concept = null): string
+    {
+        return 'spot_training.seen_spot_ids.' . md5(($module ?? 'all') . '|' . $mode . '|' . ($concept ?? 'all'));
     }
 
     protected function spotId(array $spot): ?string

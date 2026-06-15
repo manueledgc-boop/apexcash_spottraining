@@ -2,7 +2,7 @@
     <div class="apex-nav-inner">
         <div class="apex-nav-left">
             <a href="{{ route('dashboard') }}" class="apex-nav-brand">
-                <img src="{{ asset('images/apexcash-icon.png') }}" alt="ApexCash" class="apex-nav-icon">
+                <img src="{{ asset('images/apexcash-icon2.png') }}" alt="ApexCash" class="apex-nav-icon">
                 <div>
                     <strong>APEXCASH</strong>
                     <span>Training System</span>

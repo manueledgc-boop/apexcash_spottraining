@@ -19,6 +19,10 @@ class SemiBluffSpots
             self::semiBluffComboDrawAggressive(),
             self::semiBluffGutshotBackdoorControl(),
             self::semiBluffLowFlushDrawControl(),
+            self::semiBluffPairAndFlushDraw(),
+            self::semiBluffOvercardsGutshotVsCbet(),
+            self::semiBluffMonotoneNutBlocker(),
+            self::semiBluffBackdoorTurnPlan(),
         ];
     }
 
@@ -301,4 +305,145 @@ class SemiBluffSpots
             80
         );
     }
+
+    protected static function semiBluffPairAndFlushDraw(): array
+    {
+        return self::spot(
+            'pf_semibluff_j82ss_bb_vs_btn_8s7s',
+            'semi_bluff',
+            'Semi-Bluff Flop',
+            'pair_plus_draw',
+            'Par + proyecto',
+            'BB vs BTN · Par medio + flush draw',
+            'BB',
+            'BTN',
+            ['8s', '7s'],
+            ['Js', '8d', '2s'],
+            8.5,
+            6.5,
+            49.0,
+            'J-high con proyecto de color',
+            'BTN conserva ventaja de rango.',
+            'BB tiene más dobles bajas y proyectos conectados.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 8♦ 2♠', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Segundo par con flush draw tiene demasiada equity para foldear. El call mantiene manos peores dentro y evita aislarte contra Jx fuerte o proyectos mejores.',
+            'GTO simplificado: par + draw continúa casi siempre; raise se mezcla, pero call es la línea base.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 82, 'feedback' => 'Correcto. Realizas equity y mantienes el rango rival amplio.'],
+                'RAISE' => ['grade' => 'good', 'frequency' => 28, 'ev_score' => 74, 'feedback' => 'Buen mix agresivo, pero no obligatorio con par medio.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 24, 'feedback' => 'Error claro. Tienes par, proyecto y buen precio.'],
+            ],
+            'Par + proyecto es una de las mejores categorías para continuar contra cbet.',
+            'En NL2-NL10 no conviertas siempre esta mano en raise: pagar suele imprimir más contra rivales que barrellean de más o pagan demasiado.',
+            84
+        );
+    }
+
+    protected static function semiBluffOvercardsGutshotVsCbet(): array
+    {
+        return self::spot(
+            'pf_semibluff_987r_co_vs_btn_aq_gutshot',
+            'semi_bluff',
+            'Semi-Bluff Flop',
+            'overcards_gutshot',
+            'Overcards + gutshot',
+            'CO vs BTN · AQ con gutshot en board medio',
+            'CO',
+            'BTN',
+            ['Ah', 'Qh'],
+            ['9s', '8d', '7c'],
+            9.5,
+            5.8,
+            55.0,
+            'Board medio muy conectado',
+            'BTN conecta bien al pagar preflop.',
+            'BTN tiene más escaleras y dobles; CO conserva overpairs.',
+            ['CO opens 2.5 BB', 'BTN calls', 'Flop: 9♠ 8♦ 7♣', 'CO checks', 'BTN bets 4 BB', 'Action on Hero CO'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'AQ tiene dos overcards y gutshot a T, pero el board favorece mucho al caller. Call es mejor que inflar el bote con fold equity dudosa.',
+            'GTO simplificado: en boards conectados que golpean al caller, las overcards con gutshot continúan con cautela.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 52, 'ev_score' => 74, 'feedback' => 'Correcto. Continúas por equity sin sobrerrepresentar tu mano.'],
+                'RAISE' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 55, 'feedback' => 'Demasiado ambicioso como estándar: el rival no foldea suficiente en este board.'],
+                'FOLD' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 58, 'feedback' => 'Puede ser aceptable contra rival muy fuerte, pero por defecto hay equity para continuar.'],
+            ],
+            'No todos los draws con overcards son raises; textura y fold equity mandan.',
+            'En microlímites, evita faroles grandes en boards que el rival conecta muchísimo. Paga si el precio es razonable.',
+            76
+        );
+    }
+
+    protected static function semiBluffMonotoneNutBlocker(): array
+    {
+        return self::spot(
+            'pf_semibluff_k86hhh_btn_vs_bb_ahqc',
+            'semi_bluff',
+            'Semi-Bluff Flop',
+            'nut_blocker_monotone',
+            'Blocker en board monotono',
+            'BTN vs BB · Ah blocker en K86hhh',
+            'BTN',
+            'BB',
+            ['Ah', 'Qc'],
+            ['Kh', '8h', '6h'],
+            5.5,
+            8.6,
+            47.5,
+            'Board monotono K-high',
+            'Hero tiene ventaja de rango moderada.',
+            'Ambos tienen colores; Hero bloquea el nut flush con Ah.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♥ 8♥ 6♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_33',
+            'Ah bloquea el color máximo y puede apostar pequeño para denegar equity. El tamaño grande no hace falta porque los rangos continúan polarizados en boards monótonos.',
+            'GTO simplificado: en monotone boards se usa mucho sizing pequeño, especialmente con blockers relevantes.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 78, 'feedback' => 'Correcto. Presionas barato con blocker fuerte.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 38, 'ev_score' => 70, 'feedback' => 'También válido: realizas equity y evitas check-raise.'],
+                'BET_66' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 42, 'feedback' => 'Demasiado grande para una mano sin pareja ni draw hecho.'],
+            ],
+            'El blocker al nut flush permite apostar, pero el sizing debe respetar la textura.',
+            'En NL2-NL10 el blocker no significa que debas volverte loco: apuesta pequeño o controla.',
+            78
+        );
+    }
+
+    protected static function semiBluffBackdoorTurnPlan(): array
+    {
+        return self::spot(
+            'pf_semibluff_q62r_btn_vs_bb_ksjs_backdoors',
+            'semi_bluff',
+            'Semi-Bluff Flop',
+            'backdoor_barrel_plan',
+            'Backdoors con plan de turn',
+            'BTN vs BB · KJs con backdoors',
+            'BTN',
+            'BB',
+            ['Ks', 'Js'],
+            ['Qh', '6s', '2d'],
+            5.5,
+            8.6,
+            47.5,
+            'Q-high seco con backdoor flush',
+            'Hero tiene ventaja de rango.',
+            'Hero tiene mejores Qx y overpairs; BB tiene pares bajos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♥ 6♠ 2♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_66'],
+            'BET_33',
+            'KJs sin pareja pero con overcard, backdoor color y backdoor escalera puede apostar pequeño. La clave es tener plan: seguir en turns que mejoran equity, no barrelear cualquier carta.',
+            'GTO simplificado: los backdoors buenos apuestan pequeño con frecuencia en boards secos de ventaja de rango.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 76, 'feedback' => 'Correcto. Semi-bluff barato con cartas futuras claras para continuar.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 70, 'feedback' => 'También correcto; realizas equity y proteges tu rango de check.'],
+                'BET_66' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 36, 'feedback' => 'Tamaño excesivo para una mano de backdoors, no de draw fuerte.'],
+            ],
+            'Un semi-bluff con backdoors necesita plan de turns: picas, A, T o 9 mejoran mucho.',
+            'En microlímites, apuesta pequeño estos spots y abandona más cuando el turn no mejora. No conviertas todos los backdoors en triple barrel.',
+            80
+        );
+    }
+
 }

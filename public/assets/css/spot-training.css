@@ -32,7 +32,7 @@
 }
 
 /* Ocultar el encabezado si la pantalla es muy baja (móviles en horizontal) para maximizar el área de juego */
-@media (max-height: 580px) and (orientation: landscape) {
+@media (max-height: 100%) and (orientation: landscape) {
     .spot-header {
         display: none;
     }
@@ -101,7 +101,7 @@
     }
 
     /* Ajuste extra para móviles horizontales: evita tener que scrollear toda la web */
-    @media (max-height: 600px) {
+    @media (max-height: 100%) {
         .spot-panel {
             max-height: 100dvh;
             overflow-y: auto; /* Scroll interno solo para el contenido del panel derecho */

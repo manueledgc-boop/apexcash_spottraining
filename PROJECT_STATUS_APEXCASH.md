@@ -4,91 +4,28 @@ Fecha: Junio 2026
 
 ---
 
-# RESUMEN EJECUTIVO
+# ESTADO GENERAL
 
-ApexCash ya dispone de un sistema completo de entrenamiento progresivo basado en XP, precisión y desbloqueo de módulos.
+ApexCash ya dispone de una arquitectura completa de entrenamiento progresivo para Cash Games basada en:
 
-Actualmente existen tres niveles de entrenamiento implementados:
+* XP
+* Accuracy
+* Leaks
+* Peores spots
+* Progresión por etapas
+* Desbloqueo de contenido
 
-* Preflop
-* Postflop Flop
-* Postflop Turn
-
-La arquitectura permite seguir ampliando el sistema con River y futuras expansiones sin modificar la estructura principal.
+El sistema está preparado para funcionar como una plataforma real de aprendizaje estructurado.
 
 ---
 
-# ESTADO GENERAL DEL PROYECTO
+# MÓDULOS IMPLEMENTADOS
 
-## Dashboard
+## Preflop Training
 
 Estado: COMPLETADO
 
-Funcionalidades:
-
-* Login usuario
-* Dashboard principal
-* Estadísticas globales
-* XP acumulada
-* Nivel global
-* Precisión global
-* Progreso de desbloqueo
-* Entradas a módulos de entrenamiento
-* Leaks persistentes
-* Peores spots persistentes
-
----
-
-# SISTEMA DE PROGRESIÓN
-
-Estado: COMPLETADO
-
-Concepto:
-
-El usuario progresa a través de etapas de aprendizaje.
-
-Ruta de progreso:
-
-Preflop
-↓
-Flop
-↓
-Turn
-↓
-River
-↓
-Mastery
-
----
-
-## XP
-
-XP global acumulada.
-
-Todos los módulos suman al mismo progreso general.
-
----
-
-## Precisión
-
-Cada módulo mantiene precisión independiente.
-
-Ejemplo:
-
-Preflop Accuracy
-Flop Accuracy
-Turn Accuracy
-River Accuracy
-
-Esto permite detectar áreas débiles específicas.
-
----
-
-# PRELOP TRAINING
-
-Estado: COMPLETADO
-
-Incluye:
+Contenido:
 
 * Open Raise
 * BB vs BTN
@@ -96,35 +33,26 @@ Incluye:
 * SB vs BTN
 * BTN vs 3Bet
 * 3Bet Pots
-* Recomendaciones
-* Leaks
-* XP
-* Estadísticas persistentes
 
-Aproximadamente:
+Características:
+
+* XP
+* Accuracy
+* Leaks
+* Persistencia
+* Recomendaciones
+
+Contenido aproximado:
 
 100 spots
 
 ---
 
-# POSTFLOP FLOP TRAINING
+## Flop Training
 
 Estado: COMPLETADO
 
-Sistema funcional:
-
-* Board dinámico
-* Hero
-* Villano
-* Acción previa
-* Pot
-* SPR
-* Stack efectivo
-* GTO simplificado
-* Explicación Low Stakes
-* Persistencia completa
-
-Módulos actuales:
+Contenido:
 
 * C-Bet IP
 * Check Back
@@ -133,201 +61,230 @@ Módulos actuales:
 * Value Bet
 * Semi Bluff
 
-Cantidad actual:
+Características:
+
+* GTO simplificado
+* Explicación Microlímites
+* Persistencia completa
+
+Contenido actual:
 
 56 spots
 
-Todos persistentes.
-
 ---
 
-# POSTFLOP TURN TRAINING
+## Turn Training
 
-Estado: COMPLETADO (V1)
+Estado: COMPLETADO V1
 
-Arquitectura independiente.
-
-Componentes:
-
-* PostflopTurnSpotRepository
-* TurnBarrelSpots
-* PostflopTurnTrainingService
-* PostflopTurnTrainingController
-* turn.blade.php
-* postflop-turn-training.js
-
-Persistencia:
-
-* TrainingResults
-* TrainingSessions
-* UserTrainingStats
-* UserLeaks
-* UserSpotStats
-
-XP Turn:
-
-Best = 15 XP
-Good = 11 XP
-Marginal = 5 XP
-Mistake = 1 XP
-Blunder = 0 XP
-
-Módulos actuales:
+Contenido:
 
 * Turn Barrel
-
-Cantidad actual:
-
-10 spots
-
----
-
-# SISTEMA DE LEAKS
-
-Estado: COMPLETADO
-
-Persistencia permanente.
-
-Detecta:
-
-* Módulos débiles
-* Precisión
-* Errores frecuentes
-* Blunders
-
-Ordenados por Weakness Score.
-
----
-
-# SISTEMA DE SPOTS
-
-Estado: COMPLETADO
-
-Persistencia individual por spot.
-
-Se registra:
-
-* Veces visto
-* Veces acertado
-* Veces fallado
-* Accuracy
-* Última aparición
-
-Preparado para:
-
-* Repetición inteligente
-* Priorizar spots débiles
-* Algoritmo anti-repetición
-
----
-
-# SISTEMA ANTI-REPETICIÓN
-
-Estado: PENDIENTE
-
-Objetivo:
-
-Evitar que aparezcan continuamente los mismos spots.
-
-Plan:
-
-* Priorizar spots no vistos recientemente.
-* Priorizar spots con peor accuracy.
-* Mantener variedad de entrenamiento.
-
----
-
-# RIVER TRAINING
-
-Estado: NO INICIADO
-
-Pendiente:
-
-* River Value Bet
-* River Bluff Catch
-* River Thin Value
-* River Overbet
-* River Hero Call
-
-Objetivo inicial:
-
-50 spots.
-
----
-
-# TURN V2
-
-Pendiente:
-
-* Turn Probe Bet
+* Turn Probe
 * Turn Defense
 * Turn Value Bet
 * Turn Check Raise
 
-Objetivo:
+Contenido actual:
 
-50 spots totales.
+50 spots
 
-Actualmente:
-
-10 / 50
+Persistencia completa.
 
 ---
 
-# OBJETIVO DE CONTENIDO
+## River Training
 
-Preflop:
-≈100 spots
+Estado: COMPLETADO V1
 
-Flop:
-≈100 spots
+Contenido:
 
-Turn:
-≈50 spots
+* River Value Bet
+* River Bluff Catch
+* River Bluff
+* River Thin Value
+* River Overbet
 
-River:
-≈50 spots
+Contenido actual:
 
-Total estimado:
+50 spots
 
-300 spots+
-
----
-
-# VISIÓN DEL PRODUCTO
-
-ApexCash no pretende ser únicamente una herramienta GTO.
-
-Cada spot debe mostrar:
-
-1. Explicación GTO simplificada.
-2. Explicación específica para microlímites (NL2-NL10).
-
-Objetivo:
-
-Ayudar al jugador a entender:
-
-* Qué haría la teoría.
-* Qué suele ser más rentable contra el pool real de límites bajos.
+Persistencia completa.
 
 ---
 
-# PRÓXIMO PASO
+# SISTEMA DE PROGRESIÓN
 
-Implementar:
+Estado: COMPLETADO
 
-Turn Probe Bet
+Implementado:
 
-Objetivo:
+* XP Global
+* Accuracy por etapa
+* Muestra mínima de spots
+* Desbloqueo progresivo
 
-10 nuevos spots.
+Ruta:
 
-Después:
+Preflop
+↓
+Flop
+↓
+Turn
+↓
+River
 
-Turn Defense
-Turn Value Bet
-Turn Check Raise
+Validaciones:
 
-Y posteriormente:
+* XP mínimo
+* Accuracy mínima
+* Spots mínimos completados
 
-River V1.
+El acceso directo mediante URL queda bloqueado mediante middleware.
+
+---
+
+# LEAKS
+
+Estado: COMPLETADO
+
+Persistencia:
+
+* Leaks persistentes
+* Leak crítico
+* Peor leak
+* Concept leaks
+
+Cada leak dirige al módulo correcto.
+
+---
+
+# SPOT STATS
+
+Estado: COMPLETADO
+
+Persistencia individual:
+
+* Visto
+* Aciertos
+* Fallos
+* Accuracy
+* Última aparición
+
+Preparado para futuras mejoras de repetición inteligente.
+
+---
+
+# DASHBOARD
+
+Estado: COMPLETADO
+
+Mejoras realizadas:
+
+* Branding ApexCash
+* Hero profesional
+* XP global
+* Accuracy global
+* Nivel
+* Objetivo siguiente
+* Ruta de progreso visual
+* Acceso rápido a leaks
+
+Diseño responsive.
+
+---
+
+# LOGIN Y REGISTRO
+
+Estado: COMPLETADO
+
+Rediseño completo:
+
+* Branding ApexCash
+* Login profesional
+* Registro profesional
+* Recuperación de contraseña
+* Verificación de email
+* Layout responsive
+
+Pendiente:
+
+* Login con Google
+
+---
+
+# IDENTIDAD VISUAL
+
+Estado: COMPLETADO V1
+
+Implementado:
+
+* Logo ApexCash
+* Icono ApexCash
+* Favicon
+* Navbar profesional
+* Dashboard profesional
+* Auth profesional
+
+---
+
+# NAVEGACIÓN
+
+Estado: COMPLETADO
+
+Unificación visual:
+
+* Dashboard
+* Preflop
+* Flop
+* Turn
+* River
+
+Todos utilizan el mismo navbar y branding.
+
+---
+
+# PENDIENTE PARA VERSIÓN 1.1
+
+## Alta prioridad
+
+* Landing Page comercial definitiva
+* Login con Google
+* Página Statistics
+* Página Leaks dedicada
+
+## Media prioridad
+
+* Sistema anti-repetición inteligente
+* Priorización de spots débiles
+* Recomendaciones avanzadas
+
+## Baja prioridad
+
+* Dark/Light theme
+* Perfil ampliado
+* Logros y badges
+
+---
+
+# VALORACIÓN ACTUAL
+
+Arquitectura: 9/10
+
+Contenido: 9/10
+
+Progresión: 9/10
+
+Dashboard: 9/10
+
+Auth: 9/10
+
+Branding: 8/10
+
+Estado general:
+
+APEXCASH V1 funcional y presentable.
+
+El núcleo de entrenamiento ya está construido.
+
+Las siguientes mejoras se centrarán principalmente en experiencia de usuario, marketing y crecimiento del producto.

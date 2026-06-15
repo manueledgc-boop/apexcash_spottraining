@@ -138,6 +138,42 @@ class ThreeBetVsOpenSpots
             self::spot('CO', 'UTG', ['Qh','Qs'], '3BET', [0,32,68], 'QQ contra UTG es 3Bet clara por valor. Call puede proteger rango, pero foldear es imposible.', 'value_3bet', '3Bet por valor'),
             self::spot('BTN', 'UTG', ['5s','5d'], 'CALL', [18,80,2], '55 en BTN contra UTG paga por set value y posición. 3Bet sin blockers no es atractiva.', 'pocket_pairs', 'Pocket pairs'),
             self::spot('SB', 'CO', ['Jc','Ts'], 'FOLD', [64,18,18], 'JTo offsuit desde SB contra CO es una defensa floja: dominación, mala realización OOP y poco blocker real.', 'dominated_offsuit', 'Offsuit dominadas'),
+
+            // Premium value 3Bets
+            self::spot('SB', 'BTN', ['Ah','Kd'], '3BET', [0,4,96], 'AKo desde SB contra BTN es 3Bet claro por valor. Domina muchos Ax/Kx del open y evita jugar un bote multiway OOP.', 'value_3bet', '3Bet por valor'),
+            self::spot('BB', 'BTN', ['Ac','Kh'], '3BET', [0,24,76], 'AKo en BB contra BTN puede pagar a veces, pero como base de entrenamiento captura más EV 3beteando por valor contra robo amplio.', 'value_3bet', '3Bet por valor'),
+            self::spot('BTN', 'CO', ['Kh','Ks'], '3BET', [0,10,90], 'KK en BTN contra CO debe construir bote inmediatamente. Pagar existe como trampa ocasional, pero 3Bet es la línea principal.', 'value_3bet', '3Bet por valor'),
+            self::spot('CO', 'HJ', ['Ah','Ad'], '3BET', [0,18,82], 'AA contra HJ es 3Bet por valor. Slowplay puede existir con baja frecuencia, pero el plan estándar es aislar y construir bote.', 'value_3bet', '3Bet por valor'),
+            self::spot('SB', 'UTG', ['Kh','Ks'], '3BET', [0,8,92], 'KK desde SB contra UTG sigue siendo 3Bet claro por valor. Pagar OOP deja realizar equity gratis a BB y pierde valor.', 'value_3bet', '3Bet por valor'),
+
+            // Strong value / protection
+            self::spot('BTN', 'HJ', ['Ad','Kh'], '3BET', [0,24,76], 'AKo en BTN contra HJ es 3Bet rentable por valor y protección. Call puede mezclarse, pero 3Bet castiga opens dominados.', 'value_3bet', '3Bet por valor'),
+            self::spot('SB', 'HJ', ['Jh','Jd'], '3BET', [4,18,78], 'JJ desde SB contra HJ prefiere 3Bet por valor/protección. Pagar OOP deja demasiadas overcards y permite a BB entrar barato.', 'value_3bet', '3Bet por valor'),
+            self::spot('BB', 'CO', ['Qc','Qd'], '3BET', [0,30,70], 'QQ en BB contra CO es suficientemente fuerte para 3Bet de valor. Call existe, pero 3Bet simplifica y captura valor de broadways y pares peores.', 'value_3bet', '3Bet por valor'),
+            self::spot('SB', 'BTN', ['Td','Ts'], '3BET', [8,24,68], 'TT desde SB contra BTN gana mucho con 3Bet por valor/protección. Pagar OOP permite que BB entre y complica muchas texturas.', 'value_3bet', '3Bet por valor'),
+            self::spot('BB', 'SB', ['As','Qh'], '3BET', [0,42,58], 'AQo BB vs SB es una defensa muy fuerte. Call realiza equity IP, pero 3Bet por valor castiga un rango de robo muy amplio.', 'value_3bet', '3Bet por valor'),
+
+            // Ax suited 3Bet bluffs
+            self::spot('BTN', 'CO', ['Ah','4h'], '3BET', [12,38,50], 'A4s en BTN contra CO es buen 3Bet bluff mixto: bloquea Ax fuertes, conserva equity y puede ganar el bote preflop.', 'ax_3bet_bluff', '3Bet bluff con Ax suited'),
+            self::spot('CO', 'HJ', ['Ad','4d'], '3BET', [24,32,44], 'A4s CO vs HJ no es call automático. Como 3Bet bluff selectivo funciona por blocker y jugabilidad cuando recibe call.', 'ax_3bet_bluff', '3Bet bluff con Ax suited'),
+            self::spot('SB', 'BTN', ['As','2s'], '3BET', [28,12,60], 'A2s desde SB contra BTN es buen candidato a 3Bet bluff por blocker, equity suited y mala realización si solo paga OOP.', 'ax_3bet_bluff', '3Bet bluff con Ax suited'),
+            self::spot('BB', 'CO', ['Ah','3h'], 'CALL', [18,54,28], 'A3s en BB contra CO puede 3betear, pero con buen precio realiza suficiente equity pagando. No hace falta convertirlo siempre en bluff.', 'ax_3bet_bluff', '3Bet bluff con Ax suited'),
+            self::spot('BTN', 'HJ', ['Ac','5c'], 'CALL', [14,52,34], 'A5s en BTN contra HJ puede mezclarse como 3Bet bluff, pero el call en posición conserva jugabilidad y evita aislarse contra rango fuerte.', 'ax_3bet_bluff', '3Bet bluff con Ax suited'),
+
+            // Suited broadways / playable calls
+            self::spot('BTN', 'HJ', ['Qh','Jh'], 'CALL', [8,70,22], 'QJs en BTN contra HJ realiza muy bien equity en posición. 3Bet existe, pero call mantiene dentro manos dominadas.', 'suited_broadway', 'Broadways suited'),
+            self::spot('BB', 'CO', ['Ks','Js'], 'CALL', [4,72,24], 'KJs en BB contra CO es defensa clara por jugabilidad y precio. 3Bet puede mezclarse, pero call es una base sólida.', 'suited_broadway', 'Broadways suited'),
+            self::spot('SB', 'CO', ['Kc','Jc'], '3BET', [20,16,64], 'KJs desde SB contra CO suele preferir 3Bet antes que call: tiene blocker, equity y evita invitar a BB al bote.', 'suited_broadway', 'Broadways suited'),
+            self::spot('BTN', 'UTG', ['Ah','Th'], 'CALL', [18,64,18], 'ATs en BTN contra UTG tiene suficiente jugabilidad para pagar. 3Bet demasiado frecuente se aísla contra mejores Ax.', 'suited_broadway', 'Broadways suited'),
+            self::spot('CO', 'UTG', ['Kd','Qd'], 'CALL', [16,60,24], 'KQs CO vs UTG es demasiado fuerte para foldear. Call controla el bote y mantiene dominadas peores; 3Bet puede mezclarse.', 'suited_broadway', 'Broadways suited'),
+
+            // Pocket pairs
+            self::spot('BTN', 'CO', ['8s','8d'], 'CALL', [6,76,18], '88 en BTN contra CO defiende muy bien pagando por posición y valor de set. 3Bet puede existir, pero no debe ser automático.', 'pocket_pairs', 'Pocket pairs'),
+            self::spot('CO', 'HJ', ['7h','7d'], 'CALL', [18,74,8], '77 CO vs HJ juega mejor como call por set value. 3Bet sin blockers suele aislarte contra una parte fuerte del rango.', 'pocket_pairs', 'Pocket pairs'),
+            self::spot('BB', 'BTN', ['6c','6d'], 'CALL', [10,84,6], '66 en BB contra BTN tiene precio y suficiente equity para pagar. 3Bet bluff con pares bajos no es necesario en micro-límites.', 'pocket_pairs', 'Pocket pairs'),
+            self::spot('SB', 'BTN', ['8c','8h'], '3BET', [18,26,56], '88 desde SB contra BTN puede funcionar mejor como 3Bet por protección que como call OOP. Evita regalar equity a BB y simplifica la mano.', 'pocket_pairs', 'Pocket pairs'),
+            self::spot('BTN', 'UTG', ['2s','2d'], 'CALL', [32,66,2], '22 en BTN contra UTG es call marginal por set value si el tamaño es estándar y stacks son profundos. 3Bet sin blockers no aporta mucho.', 'pocket_pairs', 'Pocket pairs'),
+
         ];
     }
 

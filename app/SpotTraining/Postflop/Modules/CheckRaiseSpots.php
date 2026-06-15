@@ -21,6 +21,8 @@ class CheckRaiseSpots
             self::avoidCheckRaiseBottomPair(),
             self::avoidCheckRaisePureAir(),
             self::avoidCheckRaiseWeakTopPair(),
+            self::checkRaisePairPlusFlushDraw(),
+            self::avoidCheckRaiseSecondPairNoBackdoor(),
         ];
     }
 
@@ -417,4 +419,120 @@ class CheckRaiseSpots
             88
         );
     }
+
+
+    protected static function checkRaisePairPlusFlushDraw(): array
+    {
+        return self::spot(
+            'pf_xraise_973ss_bb_vs_btn_9s8s_pair_fd',
+            'check_raise',
+            'Check-Raise Flop',
+            'pair_plus_draw_pressure',
+            'Pareja + proyecto fuerte',
+            'BB vs BTN · Pareja media + flush draw',
+            'BB',
+            'BTN',
+            ['9s', '8s'],
+            ['9h', '7s', '3s'],
+            8.5,
+            6.5,
+            49.0,
+            'Board medio con flush draw',
+            'BTN tiene ventaja general, pero BB conecta muchas parejas, dobles y proyectos.',
+            'BB tiene más dobles, sets bajos y proyectos fuertes.',
+            [
+                'BTN opens 2.5 BB',
+                'BB calls',
+                'Flop: 9♥ 7♠ 3♠',
+                'BB checks',
+                'BTN bets 3 BB',
+                'Action on Hero BB'
+            ],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'Pareja + flush draw tiene mucha equity contra overpairs, top pairs y overcards. El check-raise cobra fold equity y protege contra cartas altas del turn.',
+            'GTO simplificado: manos con pareja + draw fuerte pueden mezclar call y raise, especialmente en boards donde BB conecta bien.',
+            [
+                'RAISE' => [
+                    'grade' => 'best',
+                    'frequency' => 58,
+                    'ev_score' => 86,
+                    'feedback' => 'Muy bien. Tienes equity real y haces difícil que BTN realice gratis sus overcards.'
+                ],
+                'CALL' => [
+                    'grade' => 'good',
+                    'frequency' => 48,
+                    'ev_score' => 78,
+                    'feedback' => 'Call también es correcto; realizas equity y mantienes bluffs dentro.'
+                ],
+                'FOLD' => [
+                    'grade' => 'blunder',
+                    'frequency' => 0,
+                    'ev_score' => 4,
+                    'feedback' => 'Fold es demasiado tight con pareja y proyecto de color.'
+                ],
+            ],
+            'Pareja + proyecto fuerte es una mano excelente para presionar sin depender solo del farol.',
+            'En NL2-NL10 este raise funciona mejor cuando el rival c-betea demasiado o paga con overcards. Si es calling station extremo, sigue siendo bueno porque tienes equity.',
+            84
+        );
+    }
+
+    protected static function avoidCheckRaiseSecondPairNoBackdoor(): array
+    {
+        return self::spot(
+            'pf_no_xraise_a84r_bb_vs_btn_8c7c_second_pair',
+            'check_raise',
+            'Check-Raise Flop',
+            'avoid_overplaying_second_pair',
+            'No sobrejugar segunda pareja',
+            'BB vs BTN · Segunda pareja sin backdoors',
+            'BB',
+            'BTN',
+            ['8c', '7c'],
+            ['As', '8d', '4h'],
+            8.5,
+            6.5,
+            49.0,
+            'A-high seco rainbow',
+            'BTN tiene ventaja clara de Ax y broadways fuertes.',
+            'BTN tiene más top pairs fuertes; BB tiene algunas dobles y sets bajos.',
+            [
+                'BTN opens 2.5 BB',
+                'BB calls',
+                'Flop: A♠ 8♦ 4♥',
+                'BB checks',
+                'BTN bets 3 BB',
+                'Action on Hero BB'
+            ],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Segunda pareja tiene valor de showdown y puede pagar una c-bet, pero hacer check-raise convierte una mano media en farol caro contra un rango lleno de Ax.',
+            'GTO simplificado: las parejas medias suelen defender pagando; subirlas sin backdoors ni blockers fuertes es sobrejugar la mano.',
+            [
+                'CALL' => [
+                    'grade' => 'best',
+                    'frequency' => 74,
+                    'ev_score' => 82,
+                    'feedback' => 'Correcto. Pagas una vez y evalúas turn sin inflar el bote.'
+                ],
+                'FOLD' => [
+                    'grade' => 'marginal',
+                    'frequency' => 18,
+                    'ev_score' => 58,
+                    'feedback' => 'Fold puede ser aceptable contra un rival muy tight, pero en BTN vs BB suele ser demasiado conservador.'
+                ],
+                'RAISE' => [
+                    'grade' => 'mistake',
+                    'frequency' => 8,
+                    'ev_score' => 30,
+                    'feedback' => 'Mala subida. Haces foldear manos peores y te aíslas contra Ax, dobles, sets y proyectos mejores.'
+                ],
+            ],
+            'Las manos medias ganan más dinero controlando el bote que intentando representar fuerza máxima.',
+            'En microlímites no conviertas segunda pareja en farol: pagan demasiado con Ax y no foldean lo suficiente.',
+            86
+        );
+    }
+
 }
