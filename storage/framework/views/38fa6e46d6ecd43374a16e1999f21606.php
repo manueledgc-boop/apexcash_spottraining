@@ -212,28 +212,28 @@
                 <span>COMPLETO</span>
                 <h3>Preflop</h3>
                 <p>Open Raise, defensa de ciegas, 3Bet pots y decisiones base para entrar fuerte a la mano.</p>
-                <strong>≈100 spots</strong>
+                
             </article>
 
             <article class="mode-card active">
                 <span>COMPLETO</span>
                 <h3>Flop</h3>
                 <p>C-Bet IP, check back, defensa vs c-bet, check raise, value bet y semi bluff.</p>
-                <strong>56 spots</strong>
+                
             </article>
 
             <article class="mode-card active">
                 <span>COMPLETO</span>
                 <h3>Turn</h3>
                 <p>Barrels, probes, defensa, value bets y check raises en la calle donde los rangos se definen.</p>
-                <strong>50 spots</strong>
+                
             </article>
 
             <article class="mode-card active">
                 <span>COMPLETO</span>
                 <h3>River</h3>
                 <p>Value bet, thin value, bluff, bluff catch y overbet. La calle donde más dinero se gana o se pierde.</p>
-                <strong>50 spots</strong>
+                
             </article>
         </div>
     </section>

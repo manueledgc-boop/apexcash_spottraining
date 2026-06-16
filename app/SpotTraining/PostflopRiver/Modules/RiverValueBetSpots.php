@@ -21,6 +21,16 @@ class RiverValueBetSpots
             self::topPairSmallValueVsMissedDraws(),
             self::tripsKickerValue(),
             self::threeBetPotOverpairRiver(),
+            self::valueBetTopTwoVsStation(),
+            self::valueBetSetOnMissedFlush(),
+            self::valueBetNutStraightPairedBoard(),
+            self::valueBetFlushVsWorseFlushes(),
+            self::valueBetFullHouseVsTrips(),
+            self::smallValueBetTopPairWeakRange(),
+            self::valueBetOverpairVsCappedRiver(),
+            self::valueBetTripsOnBrickRiver(),
+            self::valueBetStraightVsTwoPairHeavyRange(),
+            self::valueBetRiverAfterDelayedCbet(),
         ];
     }
 
@@ -371,6 +381,356 @@ class RiverValueBetSpots
             'En river, las overpairs fuertes en botes 3bet siguen siendo apuestas de valor en muchos runouts bajos.',
             'En NL2-NL10 la gente paga demasiados 3bet pots con top pair y JJ/QQ. Apuesta por valor y no te asustes antes de tiempo.',
             82
+        );
+    }
+
+    protected static function valueBetTopTwoVsStation(): array
+    {
+        return self::spot(
+            'river_value_btn_vs_bb_ak_a96_k_3_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'top_two_vs_station',
+            'Top two contra jugador pagador',
+            'BTN vs BB · AK en A96-K-3',
+            'BTN',
+            'BB',
+            ['Ah', 'Kd'],
+            ['As', '9c', '6d', 'Kh', '3s'],
+            31.0,
+            1.3,
+            44.0,
+            'River blank después de ligar top two',
+            'BTN tiene Ax fuertes y dobles; BB llega con Ax peores, 9x y draws fallidos.',
+            'BB tiene muchas manos que pagan demasiado en microlímites.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♣ 6♦', 'BB checks', 'BTN bets 4 BB', 'BB calls', 'Turn: K♥', 'BB checks', 'BTN bets 10 BB', 'BB calls', 'River: 3♠', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'AK tiene valor muy claro contra Ax peores y dobles inferiores. En este runout hay que apostar grande porque muchos rivales pagan por curiosidad con cualquier As.',
+            'GTO simplificado: top two en river blank debe apostar grande contra rangos que contienen muchos bluff catchers peores.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 91, 'feedback' => 'Excelente. Cobras máximo a Ax peores y dobles inferiores.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 32, 'ev_score' => 80, 'feedback' => 'Correcto, aunque dejas valor contra calling stations.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 6, 'ev_score' => 28, 'feedback' => 'Check pierde demasiado valor.'],
+            ],
+            'Top two en river blank es una mano de valor grande, no de control de bote.',
+            'En NL2-NL10 apuesta grande: Ax peor paga muchísimo más de lo que debería.',
+            91
+        );
+    }
+
+    protected static function valueBetSetOnMissedFlush(): array
+    {
+        return self::spot(
+            'river_value_co_vs_bb_99_k94_2_7_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'set_on_missed_flush',
+            'Set cuando falla el color',
+            'CO vs BB · 99 en K94ss-2-7',
+            'CO',
+            'BB',
+            ['9h', '9d'],
+            ['Ks', '9s', '4c', '2h', '7d'],
+            34.0,
+            1.2,
+            43.0,
+            'River blank, proyecto de color fallido',
+            'CO tiene sets y Kx fuertes; BB llega con Kx, pares y missed draws.',
+            'BB puede bluffcatchear demasiado con Kx y pares medios.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: K♠ 9♠ 4♣', 'BB checks', 'CO bets 4 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO bets 11 BB', 'BB calls', 'River: 7♦', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'El color falló y BB tendrá muchos Kx que no foldean. Set quiere tamaño grande por valor; check es perder una calle enorme.',
+            'GTO simplificado: sets en rivers blank apuestan grande cuando el rango rival tiene top pair y bluff catchers suficientes.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 74, 'ev_score' => 94, 'feedback' => 'Perfecto. Máximo valor contra Kx y bluff catchers.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 26, 'ev_score' => 82, 'feedback' => 'Bien, pero el rival pagador permite más grande.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 3, 'ev_score' => 12, 'feedback' => 'No puedes dejar de apostar set aquí.'],
+            ],
+            'Cuando los proyectos fallan, tus manos fuertes cobran mucho más valor.',
+            'En micros, no slowplayees sets en river: la gente paga top pair.',
+            94
+        );
+    }
+
+    protected static function valueBetNutStraightPairedBoard(): array
+    {
+        return self::spot(
+            'river_value_bb_vs_btn_qj_t98_2_t_bet50',
+            'river_value_bet',
+            'River Value Bet',
+            'nut_straight_paired_board',
+            'Escalera en board emparejado',
+            'BB vs BTN · QJ en T98-2-T',
+            'BB',
+            'BTN',
+            ['Qh', 'Jd'],
+            ['Ts', '9c', '8d', '2h', 'Tc'],
+            29.0,
+            1.6,
+            46.0,
+            'River empareja top card',
+            'BB tiene escaleras y algunos full houses; BTN tiene Tx, overpairs y bluff catchers.',
+            'Hero tiene escalera fuerte pero el board emparejado reduce algo el valor absoluto.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♣ 8♦', 'BB checks', 'BTN checks back', 'Turn: 2♥', 'BB bets 6 BB', 'BTN calls', 'River: T♣', 'Action on Hero BB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'La escalera sigue ganando a Tx y overpairs, pero el board emparejado permite full houses. El tamaño medio cobra valor sin aislarse demasiado contra manos mejores.',
+            'GTO simplificado: manos fuertes no-nut en boards emparejados suelen preferir tamaño medio.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 84, 'feedback' => 'Correcto. Cobras a Tx y evitas polarizar demasiado.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 62, 'feedback' => 'Check pierde valor contra Tx.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 22, 'ev_score' => 76, 'feedback' => 'Puede valer contra rivales que pagan demasiado, pero es más thin.'],
+            ],
+            'No todas las manos fuertes deben usar tamaño máximo: el board importa.',
+            'En NL2-NL10 apuesta medio si el river empareja y hay full houses posibles.',
+            84
+        );
+    }
+
+    protected static function valueBetFlushVsWorseFlushes(): array
+    {
+        return self::spot(
+            'river_value_btn_vs_bb_a5s_k82_q_3_bet75_flush',
+            'river_value_bet',
+            'River Value Bet',
+            'flush_vs_worse_flushes',
+            'Color alto contra colores peores',
+            'BTN vs BB · A5s color river',
+            'BTN',
+            'BB',
+            ['As', '5s'],
+            ['Ks', '8s', '2d', 'Qh', '3s'],
+            37.0,
+            1.1,
+            42.0,
+            'River completa color',
+            'BTN tiene nut flushes; BB tiene muchos colores peores y Kx con spade.',
+            'BB puede pagar con cualquier color y algunos bluff catchers con As bloqueado no existen porque Hero lo tiene.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 8♠ 2♦', 'BB checks', 'BTN bets 4 BB', 'BB calls', 'Turn: Q♥', 'BB checks', 'BTN bets 11 BB', 'BB calls', 'River: 3♠', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Con el As de espadas tienes el color máximo. BB llega con muchos suited spades peores y Kx con spade que no foldean. Apuesta grande.',
+            'GTO simplificado: nut flushes apuestan grande en river cuando el rival conserva muchos flushes peores.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 93, 'feedback' => 'Excelente. El rival puede pagar muchísimos colores peores.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 82, 'feedback' => 'Bien, pero dejas dinero contra colores peores.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 8, 'feedback' => 'No apostar el nut flush aquí es un error grave.'],
+            ],
+            'Cuando tienes las nuts y el rival tiene muchas segundas mejores manos, aumenta el tamaño.',
+            'En microlímites los colores no se foldean. Apuesta fuerte por valor.',
+            93
+        );
+    }
+
+    protected static function valueBetFullHouseVsTrips(): array
+    {
+        return self::spot(
+            'river_value_sb_vs_bb_77_a72_7_a_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'full_house_vs_trips',
+            'Full house contra trips',
+            'SB vs BB · 77 en A727A',
+            'SB',
+            'BB',
+            ['7h', '7d'],
+            ['As', '7c', '2h', '7s', 'Ad'],
+            45.0,
+            1.0,
+            40.0,
+            'River dobla el As',
+            'SB tiene full houses enormes; BB tiene muchos Ax y algunos 7x.',
+            'BB no foldea trips de As en microlímites.',
+            ['SB opens 3 BB', 'BB calls', 'Flop: A♠ 7♣ 2♥', 'SB bets 3 BB', 'BB calls', 'Turn: 7♠', 'SB bets 9 BB', 'BB calls', 'River: A♦', 'Action on Hero SB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Hero tiene full house muy fuerte y BB puede tener Ax que ahora se siente invencible. Hay que apostar grande por valor.',
+            'GTO simplificado: full houses altos apuestan grande frente a rangos con trips abundantes.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 96, 'feedback' => 'Perfecto. Ax te paga muchísimo en este river.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 22, 'ev_score' => 84, 'feedback' => 'Correcto, pero el spot permite más grande.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 1, 'ev_score' => 4, 'feedback' => 'Check pierde una apuesta enorme.'],
+            ],
+            'Las manos monstruo deben pensar en qué segundas mejores manos pagan.',
+            'En NL2-NL10 nadie foldea trips de As. Cobra caro.',
+            96
+        );
+    }
+
+    protected static function smallValueBetTopPairWeakRange(): array
+    {
+        return self::spot(
+            'river_value_btn_vs_bb_qj_q83_2_5_bet50',
+            'river_value_bet',
+            'River Value Bet',
+            'small_value_top_pair_weak_range',
+            'Value pequeño con top pair',
+            'BTN vs BB · QJ en Q8325',
+            'BTN',
+            'BB',
+            ['Qh', 'Jc'],
+            ['Qs', '8d', '3c', '2h', '5s'],
+            21.0,
+            2.0,
+            46.0,
+            'River bajo sin proyectos obvios',
+            'BTN tiene Qx fuertes; BB tiene Qx peores, 8x y pares medios.',
+            'BB está capado tras check-call/check-check.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♦ 3♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN checks back', 'River: 5♠', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'QJ gana a muchas Qx peores y 8x, pero no quiere polarizar demasiado. Tamaño medio/pequeño cobra valor de rango débil.',
+            'GTO simplificado: top pair buen kicker puede apostar pequeño/medio contra rangos capados.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 80, 'feedback' => 'Bien. Value claro sin asustar manos peores.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 62, 'feedback' => 'Check pierde valor contra Qx peor y 8x curioso.'],
+                'BET_75' => ['grade' => 'marginal', 'frequency' => 14, 'ev_score' => 56, 'feedback' => 'Grande puede aislarte demasiado contra mejores Qx.'],
+            ],
+            'Value bet no siempre significa apostar grande; a veces el tamaño pequeño cobra más calls peores.',
+            'En microlímites apuesta tamaños que te paguen manos peores, no tamaños que solo pagan mejores.',
+            80
+        );
+    }
+
+    protected static function valueBetOverpairVsCappedRiver(): array
+    {
+        return self::spot(
+            'river_value_co_vs_bb_qq_j64_2_2_bet50',
+            'river_value_bet',
+            'River Value Bet',
+            'overpair_vs_capped_range',
+            'Overpair contra rango capado',
+            'CO vs BB · QQ en J6422',
+            'CO',
+            'BB',
+            ['Qh', 'Qc'],
+            ['Js', '6d', '4c', '2h', '2s'],
+            27.0,
+            1.6,
+            45.0,
+            'River dobla carta baja',
+            'CO tiene overpairs; BB llega con Jx, pares medios y algunos 6x.',
+            'BB está relativamente capado porque no subió calles anteriores.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: J♠ 6♦ 4♣', 'BB checks', 'CO bets 4 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO bets 8 BB', 'BB calls', 'River: 2♠', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'QQ gana a Jx y pares medios. El river 2 no cambia mucho y permite una apuesta de valor media.',
+            'GTO simplificado: overpairs contra rangos capados siguen valuebeteando en runouts bajos.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 84, 'feedback' => 'Correcto. Jx paga y casi no cambió la textura.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 24, 'ev_score' => 76, 'feedback' => 'Puede funcionar contra calling stations.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 18, 'ev_score' => 44, 'feedback' => 'Check pierde valor contra Jx.'],
+            ],
+            'Cuando el river no cambia el rango relativo, las overpairs fuertes siguen apostando por valor.',
+            'En NL2-NL10 apuesta: Jx paga mucho más de lo correcto.',
+            84
+        );
+    }
+
+    protected static function valueBetTripsOnBrickRiver(): array
+    {
+        return self::spot(
+            'river_value_bb_vs_sb_k9_994_2_6_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'trips_on_brick_river',
+            'Trips en river ladrillo',
+            'BB vs SB · K9 en 99426',
+            'BB',
+            'SB',
+            ['Kh', '9h'],
+            ['9s', '9d', '4c', '2h', '6s'],
+            25.0,
+            1.8,
+            47.0,
+            'River blank con trips fuertes',
+            'BB tiene muchos 9x defendidos; SB puede tener overpairs y A-high curiosos.',
+            'SB abrió rango amplio y puede pagar con pares altos.',
+            ['SB opens 3 BB', 'BB calls', 'Flop: 9♠ 9♦ 4♣', 'SB bets 2 BB', 'BB calls', 'Turn: 2♥', 'SB checks', 'BB bets 6 BB', 'SB calls', 'River: 6♠', 'Action on Hero BB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'K9 es trips con kicker alto y SB puede pagar con TT-AA o 4x desconfiando. Hay que apostar grande por valor.',
+            'GTO simplificado: trips fuertes en river blank son value bet grande contra rangos con overpairs.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 68, 'ev_score' => 90, 'feedback' => 'Muy bien. Overpairs pagan muchísimo.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 78, 'feedback' => 'Correcto, pero puedes cobrar más.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 7, 'ev_score' => 30, 'feedback' => 'Check pierde valor claro.'],
+            ],
+            'Trips fuerte debe construir bote cuando el rival tiene muchas manos segundas mejores.',
+            'En microlímites la gente no abandona overpairs fácilmente. Apuesta fuerte.',
+            90
+        );
+    }
+
+    protected static function valueBetStraightVsTwoPairHeavyRange(): array
+    {
+        return self::spot(
+            'river_value_btn_vs_bb_jt_987_2_q_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'straight_vs_two_pair_range',
+            'Escalera contra rango de dobles',
+            'BTN vs BB · JT en 987-2-Q',
+            'BTN',
+            'BB',
+            ['Jh', 'Tc'],
+            ['9s', '8d', '7c', '2h', 'Qs'],
+            33.0,
+            1.3,
+            44.0,
+            'River completa escalera alta para Hero',
+            'BTN tiene JT/T6; BB llega con dobles, sets y pares fuertes.',
+            'BB puede pagar grande con 9x, dobles y sets en microlímites.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♦ 7♣', 'BB checks', 'BTN bets 4 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN checks back', 'River: Q♠', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Hero tiene escalera fuerte y BB conserva muchas manos hechas que pagan. El check back turn induce calls curiosos en river.',
+            'GTO simplificado: escaleras fuertes valuebetean grande cuando el rival tiene muchas dobles/sets peores.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 89, 'feedback' => 'Excelente. Cobras a sets, dobles y pares tercos.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 80, 'feedback' => 'Bien, aunque dejas valor si el rival paga de más.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 32, 'feedback' => 'Check pierde demasiado valor con una mano fuerte.'],
+            ],
+            'Piensa qué manos peores pagan antes de decidir el tamaño.',
+            'En NL2-NL10 muchos no foldean dobles ni sets: apuesta grande.',
+            89
+        );
+    }
+
+    protected static function valueBetRiverAfterDelayedCbet(): array
+    {
+        return self::spot(
+            'river_value_btn_vs_bb_aq_q74_2_a_bet75',
+            'river_value_bet',
+            'River Value Bet',
+            'river_value_after_delayed_cbet',
+            'Valor tras delayed c-bet',
+            'BTN vs BB · AQ en Q74-2-A',
+            'BTN',
+            'BB',
+            ['Ah', 'Qd'],
+            ['Qs', '7c', '4h', '2d', 'As'],
+            24.0,
+            1.7,
+            45.0,
+            'River mejora Hero a dobles',
+            'BTN chequeó flop y apostó turn, por lo que BB puede pagar con Qx y Ax curiosos.',
+            'BB tiene muchas Qx peores después de pagar turn.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♣ 4♥', 'BB checks', 'BTN checks back', 'Turn: 2♦', 'BB checks', 'BTN bets 5 BB', 'BB calls', 'River: A♠', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'AQ mejora a top two y la línea de check flop mantiene al rival con Qx peores. El As también puede hacer que Ax pague. Hay que apostar por valor grande.',
+            'GTO simplificado: cuando una carta de river mejora tu rango y tu mano a valor fuerte, apuesta grande contra rangos capados.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 90, 'feedback' => 'Muy bien. Top two cobra a Qx y Ax peores.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 80, 'feedback' => 'Correcto, aunque más pequeño pierde valor.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 7, 'ev_score' => 30, 'feedback' => 'Check pierde una apuesta clara de valor.'],
+            ],
+            'Las líneas retrasadas también generan oportunidades de valor fuerte en river.',
+            'En microlímites, cuando mejoras a dobles contra rango capado, apuesta: te pagan Qx y Ax.',
+            90
         );
     }
 }

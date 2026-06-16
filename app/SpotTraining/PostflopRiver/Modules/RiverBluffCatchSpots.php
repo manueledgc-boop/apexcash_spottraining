@@ -21,6 +21,16 @@ class RiverBluffCatchSpots
             self::straightBlockerCall(),
             self::topPairNoBlockersFold(),
             self::underbluffedLineFold(),
+            self::missedFlushDrawGoodBlockerCall(),
+            self::missedStraightDrawNoBlockerFold(),
+            self::pairedRiverTripsBlockerCall(),
+            self::fourFlushNoBlockerFold(),
+            self::aceHighBlocksNutFlushCall(),
+            self::topPairFacingTripleBarrelFold(),
+            self::secondPairVsSmallBlockBetCall(),
+            self::overpairOnFourLinerFold(),
+            self::boatBlockerHeroCall(),
+            self::catchVsMissedComboDrawCall(),
         ];
     }
 
@@ -371,6 +381,356 @@ class RiverBluffCatchSpots
             'El mejor bluff catch no es el que parece bonito, sino el que gana suficiente contra la línea real del rival.',
             'En límites bajos, las líneas grandes de river en boards doblados están muy underbluffed. Foldea más.',
             79
+        );
+    }
+
+    protected static function missedFlushDrawGoodBlockerCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_btn_vs_bb_kt_q84_2_7_call',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'missed_flush_good_blocker_call',
+            'Call con blocker a valor y missed flush',
+            'BTN vs BB · KT en Q84ss-2-7',
+            'BTN',
+            'BB',
+            ['Ks', 'Th'],
+            ['Qd', '8s', '4s', '2c', '7h'],
+            32.0,
+            1.4,
+            45.0,
+            'River blank después de fallar el color',
+            'BTN mantiene algunas Qx, overpairs y bluff catchers con blocker.',
+            'BB tiene draws de color fallidos y algunas manos de valor como dobles/sets.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♦ 8♠ 4♠', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♣', 'BB checks', 'BTN checks back', 'River: 7♥', 'BB bets 20 BB', 'Action on Hero BTN'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'K♠ bloquea parte de los proyectos de color fuertes y reduce combinaciones de valor con K-high spades. Aunque solo tienes K high, la línea de BB contiene suficientes missed draws si el rival es capaz de farolear.',
+            'GTO simplificado: algunos bluff catchers sin pareja pueden pagar cuando bloquean valor y desbloquean faroles naturales.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 36, 'ev_score' => 74, 'feedback' => 'Buen call selectivo. No pagas por fuerza absoluta, pagas por blockers y línea.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 56, 'ev_score' => 68, 'feedback' => 'Fold explotativo está bien contra pasivos que no farolean missed draws.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 5, 'ev_score' => 26, 'feedback' => 'Raise innecesario. Tu mano gana a faroles y pierde contra calls.'],
+            ],
+            'Los blockers importan más que la fuerza visual de la mano en bluff catch river.',
+            'En NL2-NL10 este call solo es bueno contra rivales que sí farolean proyectos fallidos. Contra pasivos, fold.',
+            74
+        );
+    }
+
+    protected static function missedStraightDrawNoBlockerFold(): array
+    {
+        return self::spot(
+            'river_bluffcatch_co_vs_bb_qj_t96_2_3_fold',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'missed_straight_no_blocker_fold',
+            'Fold sin blockers contra apuesta grande',
+            'CO vs BB · QJ en T96-2-3',
+            'CO',
+            'BB',
+            ['Qh', 'Jc'],
+            ['Ts', '9d', '6c', '2h', '3s'],
+            34.0,
+            1.5,
+            44.0,
+            'River blank en board conectado',
+            'CO tiene overcards fallidas; BB conserva pares, dobles y sets.',
+            'BB puede tener algunos draws fallidos, pero Hero no bloquea valor importante.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♦ 6♣', 'BB checks', 'CO bets 4 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO checks back', 'River: 3♠', 'BB bets 24 BB', 'Action on Hero CO'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'QJ falló su equity y no bloquea suficientes manos de valor de BB. Pagar aquí es justificar una mano perdida por curiosidad.',
+            'GTO simplificado: los bluff catchers sin pareja necesitan blockers muy específicos; sin ellos se foldean mucho ante tamaños grandes.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 80, 'feedback' => 'Correcto. No tienes showdown suficiente ni blockers buenos.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 14, 'ev_score' => 30, 'feedback' => 'Call demasiado optimista. Vas perdiendo contra demasiadas manos.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 3, 'ev_score' => 8, 'feedback' => 'Farol sin blockers claros. Malo.'],
+            ],
+            'No todos los missed draws se convierten automáticamente en bluff catchers.',
+            'En micros, cuando no tienes blockers y enfrentas bet grande, foldear es imprimir dinero a largo plazo.',
+            80
+        );
+    }
+
+    protected static function pairedRiverTripsBlockerCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_bb_vs_btn_a8_a82_5_8_call',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'paired_river_trips_blocker_call',
+            'Call con trips y blocker al full',
+            'BB vs BTN · A8 en A82-5-8',
+            'BB',
+            'BTN',
+            ['8h', '7h'],
+            ['As', '8d', '2c', '5s', '8c'],
+            40.0,
+            1.0,
+            42.0,
+            'River empareja y Hero mejora a trips',
+            'BTN sigue polarizado entre Ax fuerte/full houses y faroles fallidos.',
+            'BB bloquea 88/8x y tiene una mano muy alta dentro de su rango de check-call.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 8♦ 2♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 5♠', 'BB checks', 'BTN bets 9 BB', 'BB calls', 'River: 8♣', 'BB checks', 'BTN bets 28 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Hero mejora a trips y bloquea full houses relevantes. Aunque BTN puede tener Ax fuerte, foldear esta mano sería demasiado tight.',
+            'GTO simplificado: trips con blockers al valor fuerte se defienden contra apuestas polarizadas.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 74, 'ev_score' => 88, 'feedback' => 'Correcto. Estás demasiado arriba en tu rango para foldear.'],
+                'RAISE' => ['grade' => 'marginal', 'frequency' => 12, 'ev_score' => 58, 'feedback' => 'Raise se aísla mucho contra full houses y Ax fuerte.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 8, 'ev_score' => 22, 'feedback' => 'Fold muy débil. Tienes blocker y mano fuerte.'],
+            ],
+            'En river, la posición dentro de tu rango importa: esta mano está demasiado alta para tirarla.',
+            'En NL2-NL10 paga. Solo foldea si el rival es extremadamente nit y jamás farolea river.',
+            88
+        );
+    }
+
+    protected static function fourFlushNoBlockerFold(): array
+    {
+        return self::spot(
+            'river_bluffcatch_btn_vs_bb_kq_q95_2_3_fold_fourflush',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'four_flush_no_blocker_fold',
+            'Fold sin blocker en cuarto color',
+            'BTN vs BB · KQ sin trébol en Q95cc-2c-3c',
+            'BTN',
+            'BB',
+            ['Kh', 'Qd'],
+            ['Qs', '9c', '5c', '2c', '3c'],
+            30.0,
+            1.5,
+            43.0,
+            'River completa cuarto trébol',
+            'BTN tiene top pair, pero no bloquea colores.',
+            'BB tiene muchos floats y calls con trébol que llegan al river.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 9♣ 5♣', 'BB checks', 'BTN bets 4 BB', 'BB calls', 'Turn: 2♣', 'BB checks', 'BTN checks back', 'River: 3♣', 'BB bets 22 BB', 'Action on Hero BTN'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'Top pair parece bonita, pero sin trébol bloqueas cero valor y el rival tiene demasiados colores. Pagar aquí contra pool pasivo es quemar dinero.',
+            'GTO simplificado: en runouts de cuatro cartas del mismo palo, los bluff catchers sin blocker al color foldean mucho.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 72, 'ev_score' => 84, 'feedback' => 'Buen fold. Sin blocker al color, tu top pair cae muchísimo.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 22, 'ev_score' => 36, 'feedback' => 'Call malo salvo rival muy agresivo.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 8, 'feedback' => 'No representas suficiente y no bloqueas valor.'],
+            ],
+            'Top pair sin blocker no es un héroe call automático en rivers de cuatro colores.',
+            'En microlímites este bet suele ser color. Foldea sin drama.',
+            84
+        );
+    }
+
+    protected static function aceHighBlocksNutFlushCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_bb_vs_btn_asj_q84_6_2_call',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'ace_high_blocks_nut_flush_call',
+            'A high con blocker al nut flush',
+            'BB vs BTN · A♠J bloquea nuts',
+            'BB',
+            'BTN',
+            ['As', 'Jd'],
+            ['Qh', '8s', '4s', '6c', '2d'],
+            28.0,
+            2.0,
+            46.0,
+            'River blank y draws fallidos',
+            'BTN puede tener valor fino, pero también muchos spades fallidos.',
+            'BB bloquea el nut flush draw fallido y algunas apuestas de valor con As.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♥ 8♠ 4♠', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 6♣', 'BB checks', 'BTN checks back', 'River: 2♦', 'BB checks', 'BTN bets 18 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'A♠ bloquea parte del rango fuerte de proyectos y puede ganar a missed draws con KJ/JT/T9. No es un call masivo, pero sí un buen bluff catcher selectivo.',
+            'GTO simplificado: A high con blocker relevante puede defender frente a tamaños polarizados cuando los draws fallan.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 38, 'ev_score' => 72, 'feedback' => 'Call correcto contra agresivos: tienes blocker útil y showdown contra faroles.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 58, 'ev_score' => 66, 'feedback' => 'Fold explotativo también está bien contra población pasiva.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 4, 'ev_score' => 22, 'feedback' => 'No conviertas siempre tus blockers en raises.'],
+            ],
+            'Los mejores calls con A high necesitan blockers y una línea con faroles naturales.',
+            'En NL2-NL10 selecciona bien: contra pasivos fold, contra agresivos call.',
+            72
+        );
+    }
+
+    protected static function topPairFacingTripleBarrelFold(): array
+    {
+        return self::spot(
+            'river_bluffcatch_bb_vs_utg_kj_k74_2_9_fold',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'top_pair_vs_utg_triple_fold',
+            'Top pair vs triple barrel de UTG',
+            'BB vs UTG · KJ en K74-2-9',
+            'BB',
+            'UTG',
+            ['Kh', 'Jc'],
+            ['Ks', '7d', '4c', '2h', '9s'],
+            52.0,
+            1.1,
+            38.0,
+            'Triple barrel de rango fuerte',
+            'UTG tiene rango preflop fuerte y puede valuebetear AK/KQ/sets.',
+            'BB tiene muchos Kx dominados y pocos raises de valor.',
+            ['UTG opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♦ 4♣', 'BB checks', 'UTG bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'UTG bets 10 BB', 'BB calls', 'River: 9♠', 'BB checks', 'UTG bets 36 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'KJ es una mano fuerte en apariencia, pero contra triple barrel grande de UTG queda dominada por muchos Kx mejores y sets. Los faroles naturales son escasos.',
+            'GTO simplificado: top pair kicker medio puede foldear contra rangos fuertes y líneas muy polarizadas de early position.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 82, 'feedback' => 'Buen fold disciplinado. No estás obligado a pagar tres calles con KJ.'],
+                'CALL' => ['grade' => 'marginal', 'frequency' => 34, 'ev_score' => 55, 'feedback' => 'Call solo contra rivales capaces de triple barrel bluff.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 1, 'ev_score' => 6, 'feedback' => 'Raise absurdo: no te pagan manos peores.'],
+            ],
+            'Una mano bonita no justifica pagar una línea que casi siempre es valor.',
+            'En micros, triple barrel grande de UTG suele ser muy honesto. Foldea más.',
+            82
+        );
+    }
+
+    protected static function secondPairVsSmallBlockBetCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_btn_vs_bb_99_j92_5_4_call_small',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'second_pair_vs_small_block_call',
+            'Call vs apuesta pequeña de bloqueo',
+            'BTN vs BB · 99 contra block bet river',
+            'BTN',
+            'BB',
+            ['9h', '9c'],
+            ['Js', '9d', '2c', '5h', '4s'],
+            26.0,
+            2.8,
+            50.0,
+            'River blank y apuesta pequeña',
+            'BB apuesta pequeño con muchas manos medias y algunos faroles baratos.',
+            'BTN tiene valor suficiente y no necesita convertir en raise.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 9♦ 2♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 5♥', 'BB checks', 'BTN checks back', 'River: 4♠', 'BB bets 6 BB', 'Action on Hero BTN'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Con set en river frente a apuesta pequeña, pagar es mínimo obligatorio. Subir puede ser mejor a veces, pero como ejercicio de bluff catch la prioridad es no foldear una mano muy fuerte.',
+            'GTO simplificado: contra block bets pequeñas se defiende amplio y se sube polarizado; manos fuertes pueden mezclar call/raise.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 45, 'ev_score' => 86, 'feedback' => 'Correcto. Nunca foldees una mano tan alta contra tamaño pequeño.'],
+                'RAISE' => ['grade' => 'good', 'frequency' => 50, 'ev_score' => 84, 'feedback' => 'Raise también es muy bueno por valor, especialmente contra calling stations.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Fold imposible.'],
+            ],
+            'El tamaño de la apuesta cambia radicalmente tus pot odds y tu rango de defensa.',
+            'En NL2-NL10, contra apuesta pequeña, no sobrefoldees manos hechas fuertes.',
+            86
+        );
+    }
+
+    protected static function overpairOnFourLinerFold(): array
+    {
+        return self::spot(
+            'river_bluffcatch_co_vs_bb_aa_t98_7_6_fold',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'overpair_four_liner_fold',
+            'Overpair en cuatro cartas a escalera',
+            'CO vs BB · AA en T9876',
+            'CO',
+            'BB',
+            ['Ah', 'Ad'],
+            ['Ts', '9d', '8c', '7h', '6s'],
+            44.0,
+            1.3,
+            40.0,
+            'River completa cuatro cartas a escalera',
+            'BB tiene muchísimos 6x/Jx y manos conectadas defendidas.',
+            'CO tiene overpair pero su mano se degrada mucho.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♦ 8♣', 'BB checks', 'CO bets 5 BB', 'BB calls', 'Turn: 7♥', 'BB checks', 'CO checks back', 'River: 6♠', 'BB bets 30 BB', 'Action on Hero CO'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'AA era fuerte preflop/flop, pero en T9876 es solo una pareja en un board donde BB tiene demasiadas escaleras. Sin blocker relevante, fold.',
+            'GTO simplificado: overpairs bajan muchísimo de valor en runouts con cuatro cartas conectadas que favorecen a BB.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 85, 'feedback' => 'Correcto. No te cases con AA cuando el board cambia por completo.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 18, 'ev_score' => 32, 'feedback' => 'Call por apego a la mano inicial. Malo.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 6, 'feedback' => 'No tienes blockers ni fold equity suficiente.'],
+            ],
+            'La fuerza de AA depende del board; en river muchas veces ya no es una mano fuerte.',
+            'En microlímites, cuando completan boards obvios y apuestan grande, suele ser valor.',
+            85
+        );
+    }
+
+    protected static function boatBlockerHeroCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_btn_vs_bb_aq_aa7_4_7_call',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'boat_blocker_hero_call',
+            'Hero call bloqueando full houses',
+            'BTN vs BB · AQ en AA7-4-7',
+            'BTN',
+            'BB',
+            ['Ah', 'Qd'],
+            ['As', 'Ac', '7d', '4h', '7s'],
+            48.0,
+            1.2,
+            42.0,
+            'Board doblemente emparejado',
+            'BTN bloquea Ax fuertes y reduce combos de full con As.',
+            'BB representa 7x/full, pero también puede convertir pares en farol.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ A♣ 7♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 4♥', 'BB checks', 'BTN checks back', 'River: 7♠', 'BB bets 34 BB', 'Action on Hero BTN'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'AQ bloquea muchos Ax fuertes y está muy arriba en el rango de BTN. El board da miedo, pero foldear Ax fuerte contra una apuesta polarizada sería excesivo.',
+            'GTO simplificado: en boards doblados, manos que bloquean full houses y están altas en rango deben defender.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 84, 'feedback' => 'Buen call. Tu mano bloquea valor y está alta en tu rango.'],
+                'FOLD' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 58, 'feedback' => 'Fold solo contra rival extremadamente pasivo.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 4, 'ev_score' => 20, 'feedback' => 'Raise se aísla contra full houses.'],
+            ],
+            'No foldees automáticamente por miedo cuando bloqueas gran parte del valor rival.',
+            'En NL2-NL10 call contra agresivos; contra pasivos extremos se puede foldear explotativamente.',
+            84
+        );
+    }
+
+    protected static function catchVsMissedComboDrawCall(): array
+    {
+        return self::spot(
+            'river_bluffcatch_sb_vs_btn_qt_qj8_2_3_call',
+            'river_bluff_catch',
+            'River Bluff Catch',
+            'catch_vs_missed_combo_draw',
+            'Call contra combo draws fallidos',
+            'SB vs BTN · QT en QJ8ss-2-3',
+            'SB',
+            'BTN',
+            ['Qh', 'Td'],
+            ['Qs', 'Jh', '8s', '2c', '3d'],
+            38.0,
+            1.3,
+            41.0,
+            'River blank tras muchos proyectos fallidos',
+            'BTN tiene missed spades, KT, T9 y floats agresivos.',
+            'SB tiene top pair medio que desbloquea faroles y bloquea algunas escaleras.',
+            ['BTN opens 2.5 BB', 'SB calls', 'Flop: Q♠ J♥ 8♠', 'SB checks', 'BTN bets 4 BB', 'SB calls', 'Turn: 2♣', 'SB checks', 'BTN bets 11 BB', 'SB calls', 'River: 3♦', 'SB checks', 'BTN bets 26 BB', 'Action on Hero SB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'QT no es top kicker, pero el runout deja demasiados combo draws fallidos. Además T bloquea algunas escaleras de valor como T9/KT.',
+            'GTO simplificado: top pair con blockers útiles puede pagar en rivers blank cuando los draws principales fallan.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 50, 'ev_score' => 80, 'feedback' => 'Correcto. Buen bluff catcher contra rango con muchos draws fallidos.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 66, 'feedback' => 'Fold explotativo aceptable contra población muy pasiva.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 8, 'feedback' => 'No conviertas top pair en bluff sin necesidad.'],
+            ],
+            'Cuando el river no completa proyectos, revisa cuántos faroles naturales quedan en el rango rival.',
+            'En microlímites paga solo contra rivales que sí apuestan draws fallidos; contra pasivos, foldea más.',
+            80
         );
     }
 }

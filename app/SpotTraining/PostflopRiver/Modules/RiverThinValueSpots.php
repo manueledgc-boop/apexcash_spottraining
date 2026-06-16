@@ -21,6 +21,16 @@ class RiverThinValueSpots
             self::checkBackTooThinVsAggro(),
             self::smallBetTripsKicker(),
             self::thinValueOnPairedRiver(),
+            self::thinValueSecondPairVsCheckDown(),
+            self::thinValueTopPairWeakKickerSmall(),
+            self::thinValuePocketPairUnderTopCard(),
+            self::thinValueAceHighOnPairedLowBoard(),
+            self::thinValueThirdPairVsMissedDraws(),
+            self::avoidThinValueIntoStrongRange(),
+            self::thinValueBlockBetRiverOop(),
+            self::thinValueOverpairOnScaryRiverSmall(),
+            self::thinValueTripsWeakKickerSmall(),
+            self::thinValueTopPairVsRecreational(),
         ];
     }
 
@@ -371,6 +381,356 @@ class RiverThinValueSpots
             'El river emparejado reduce el techo de tu mano, no elimina su valor.',
             'En NL2-NL10 apuesta pequeño: los Ax peores pagan muchísimo, pero un raise suele ser trips o mejor.',
             85
+        );
+    }
+
+    protected static function thinValueSecondPairVsCheckDown(): array
+    {
+        return self::spot(
+            'river_thin_value_btn_vs_bb_88_k82_4_3_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'second_pair_vs_checkdown',
+            'Segunda pareja tras línea pasiva',
+            'BTN vs BB · 88 en K8243',
+            'BTN',
+            'BB',
+            ['8h', '8c'],
+            ['Ks', '8d', '2c', '4h', '3s'],
+            16.0,
+            3.0,
+            58.0,
+            'River bajo tras turn check/check',
+            'BTN tiene algunas Kx y pares medios; BB llega con muchos pares peores y A-high.',
+            'BB está capado después de no apostar turn ni river.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 8♦ 2♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 4♥', 'BB checks', 'BTN checks back', 'River: 3♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            '88 ahora es set y cobra valor de Kx, 8x peores y pares curiosos. El tamaño pequeño mantiene dentro manos peores.',
+            'GTO simplificado: manos fuertes pero no polarizadas pueden apostar pequeño contra rangos capados.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 86, 'feedback' => 'Correcto. Tamaño pequeño cobra de muchas manos peores.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 28, 'ev_score' => 78, 'feedback' => 'También puede valer contra rivales muy pagadores.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 34, 'feedback' => 'Check pierde valor claro.'],
+            ],
+            'Thin value no significa mano débil; significa elegir el tamaño que recibe calls peores.',
+            'En NL2-NL10, apuesta pequeño cuando quieres que te paguen manos marginales.',
+            86
+        );
+    }
+
+    protected static function thinValueTopPairWeakKickerSmall(): array
+    {
+        return self::spot(
+            'river_thin_value_co_vs_bb_qt_q73_2_6_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'top_pair_weak_kicker_small',
+            'Top pair kicker medio apuesta pequeño',
+            'CO vs BB · QT en Q7326',
+            'CO',
+            'BB',
+            ['Qh', 'Tc'],
+            ['Qs', '7d', '3c', '2h', '6s'],
+            22.0,
+            2.2,
+            52.0,
+            'River blank sin proyectos completados',
+            'CO tiene Qx; BB tiene Qx peores, 7x y pares medios.',
+            'QT gana a suficientes manos peores, pero no quiere inflar demasiado.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♦ 3♣', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO checks back', 'River: 6♠', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'QT puede cobrar una apuesta pequeña de Qx peor, 7x y pares curiosos. Apostar grande convierte la mano en una apuesta demasiado fina.',
+            'GTO simplificado: top pair kicker medio usa tamaños pequeños contra rangos capados.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 79, 'feedback' => 'Bien. Sacas valor sin aislarte contra Qx mejores.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 68, 'feedback' => 'Check es aceptable, pero dejas valor contra jugadores pagadores.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 32, 'feedback' => 'Demasiado grande para kicker medio.'],
+            ],
+            'El thin value exige tamaño coherente: pequeño para cobrar manos peores.',
+            'En microlímites la gente paga 7x y pares medios ante sizes pequeños.',
+            79
+        );
+    }
+
+    protected static function thinValuePocketPairUnderTopCard(): array
+    {
+        return self::spot(
+            'river_thin_value_btn_vs_bb_tt_a84_2_5_check',
+            'river_thin_value',
+            'River Thin Value',
+            'pocket_pair_under_top_card',
+            'No value con par medio bajo As',
+            'BTN vs BB · TT en A8425',
+            'BTN',
+            'BB',
+            ['Th', 'Tc'],
+            ['As', '8d', '4c', '2h', '5s'],
+            24.0,
+            2.0,
+            52.0,
+            'River bajo pero board A-high',
+            'BTN tiene Ax fuertes; BB tiene Ax, 8x y pares medios.',
+            'TT tiene showdown value, pero pocas peores pagan una apuesta.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 8♦ 4♣', 'BB checks', 'BTN checks back', 'Turn: 2♥', 'BB checks', 'BTN bets 5 BB', 'BB calls', 'River: 5♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'CHECK',
+            'TT gana a algunos pares peores, pero si apuestas te pagan demasiados Ax y 8x fuertes. Es mejor tomar showdown.',
+            'GTO simplificado: manos medias con showdown value que no reciben suficientes calls peores prefieren check back.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 76, 'feedback' => 'Correcto. Realizas showdown value sin convertirte en value cut.'],
+                'BET_33' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 54, 'feedback' => 'Muy fino; solo contra calling stations que pagan pares peores.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 3, 'ev_score' => 10, 'feedback' => 'Grande es pésimo: solo te pagan mejores.'],
+            ],
+            'Thin value no es apostar cualquier mano media; debe haber peores que paguen.',
+            'En NL2-NL10 evita valuecutearte contra rangos llenos de Ax.',
+            76
+        );
+    }
+
+    protected static function thinValueAceHighOnPairedLowBoard(): array
+    {
+        return self::spot(
+            'river_thin_value_bb_vs_sb_aq_662_9_3_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'ace_high_paired_low_board',
+            'A-high como value muy fino',
+            'BB vs SB · AQ en 66293',
+            'BB',
+            'SB',
+            ['Ah', 'Qd'],
+            ['6s', '6d', '2c', '9h', '3s'],
+            13.0,
+            4.0,
+            55.0,
+            'River bajo tras doble check',
+            'BB tiene algunos 6x, pares y A-high fuertes.',
+            'SB puede pagar demasiado con K-high, Q-high y pares pequeños.',
+            ['SB opens 3 BB', 'BB calls', 'Flop: 6♠ 6♦ 2♣', 'SB checks', 'BB checks back', 'Turn: 9♥', 'SB checks', 'BB checks back', 'River: 3♠', 'SB checks', 'Action on Hero BB'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'AQ high puede apostar muy pequeño contra un rival que paga demasiado con peores A-high/K-high o foldea equity. Es un thin value/bluff híbrido.',
+            'GTO simplificado: en líneas muy capadas, algunos A-high fuertes pueden usar size pequeño con EV marginal.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 36, 'ev_score' => 68, 'feedback' => 'Bien como thin value explotativo contra rangos débiles.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 60, 'ev_score' => 66, 'feedback' => 'Check también es muy razonable; realizas showdown.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 4, 'ev_score' => 20, 'feedback' => 'Grande no tiene sentido con A-high.'],
+            ],
+            'Algunos thin values son muy marginales y dependen del rival.',
+            'En microlímites solo haz esto contra rivales que pagan/foldéan mal ante tamaños pequeños.',
+            68
+        );
+    }
+
+    protected static function thinValueThirdPairVsMissedDraws(): array
+    {
+        return self::spot(
+            'river_thin_value_btn_vs_bb_77_j72_9_4_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'third_pair_vs_missed_draws',
+            'Tercera pareja vs proyectos fallidos',
+            'BTN vs BB · 77 en J7294',
+            'BTN',
+            'BB',
+            ['7h', '7c'],
+            ['Js', '7d', '2s', '9h', '4c'],
+            20.0,
+            2.5,
+            54.0,
+            'River blank con draws fallidos',
+            'BTN tiene manos fuertes y pares medios; BB tiene Jx, 7x peores y missed spades.',
+            'Hero tiene set y puede cobrar pequeño a Jx y pares tercos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 7♦ 2♠', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 9♥', 'BB checks', 'BTN checks back', 'River: 4♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'Aunque la línea de turn fue pasiva, Hero tiene set y puede sacar valor pequeño de Jx y bluff catchers. El tamaño pequeño maximiza calls peores.',
+            'GTO simplificado: cuando el rival está capado y los draws fallan, manos fuertes pueden apostar pequeño para recibir calls amplios.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 84, 'feedback' => 'Correcto. El size pequeño captura calls ligeros.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 78, 'feedback' => 'Grande también sirve contra stations, pero puede tirar Jx débil.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 30, 'feedback' => 'Check pierde valor con una mano demasiado fuerte.'],
+            ],
+            'El tamaño pequeño no significa debilidad; puede ser la mejor forma de cobrar thin value.',
+            'En NL2-NL10 usa pequeño cuando quieres que Jx y pares curiosos paguen.',
+            84
+        );
+    }
+
+    protected static function avoidThinValueIntoStrongRange(): array
+    {
+        return self::spot(
+            'river_thin_value_co_vs_bb_kq_k98_t_j_check',
+            'river_thin_value',
+            'River Thin Value',
+            'avoid_value_into_strong_range',
+            'Evitar value cut en runout malo',
+            'CO vs BB · KQ en K98-T-J',
+            'CO',
+            'BB',
+            ['Kh', 'Qd'],
+            ['Ks', '9d', '8c', 'Th', 'Js'],
+            36.0,
+            1.3,
+            45.0,
+            'River completa muchas escaleras',
+            'BB tiene muchas manos conectadas: Qx, 7x y dobles.',
+            'KQ ya no domina suficiente rango de call.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: K♠ 9♦ 8♣', 'BB checks', 'CO bets 4 BB', 'BB calls', 'Turn: T♥', 'BB checks', 'CO checks back', 'River: J♠', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'CHECK',
+            'KQ parece top pair fuerte, pero el river J completa muchas escaleras y dobles. Apostar fino aquí se convierte en value cut.',
+            'GTO simplificado: cuando el runout mejora mucho al rango defensor, muchas top pairs pasan a check back.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 78, 'feedback' => 'Correcto. Tomas showdown y evitas aislarte contra mejores.'],
+                'BET_33' => ['grade' => 'marginal', 'frequency' => 22, 'ev_score' => 50, 'feedback' => 'Muy fino; necesitas rival extremadamente calling station.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 3, 'ev_score' => 8, 'feedback' => 'Grande es un value cut claro.'],
+            ],
+            'El thin value muere cuando casi no hay peores que paguen.',
+            'En micros, aunque paguen mucho, no apuestes top pair en runouts que completan todo.',
+            78
+        );
+    }
+
+    protected static function thinValueBlockBetRiverOop(): array
+    {
+        return self::spot(
+            'river_thin_value_bb_vs_btn_q9_q84_2_6_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'block_bet_oop_top_pair',
+            'Block bet OOP con top pair',
+            'BB vs BTN · Q9 en Q8426',
+            'BB',
+            'BTN',
+            ['Qh', '9h'],
+            ['Qs', '8d', '4c', '2s', '6d'],
+            18.0,
+            3.0,
+            50.0,
+            'River blank estando fuera de posición',
+            'BB tiene Qx y pares; BTN chequeó turn y está capado.',
+            'BTN puede pagar pequeño con 8x, pares medios y Qx peores.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♦ 4♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♠', 'BB checks', 'BTN checks back', 'River: 6♦', 'Action on Hero BB'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'Fuera de posición, Q9 puede hacer block bet pequeño para cobrar a peores y evitar que BTN tome showdown gratis.',
+            'GTO simplificado: algunas top pairs medias OOP usan block bet en river contra rangos capados.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 76, 'feedback' => 'Bien. Cobras fino y controlas el tamaño del bote.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 40, 'ev_score' => 68, 'feedback' => 'Check-call o check-evaluate también es jugable.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 34, 'feedback' => 'Grande te aísla contra mejores Qx.'],
+            ],
+            'La block bet permite extraer valor fino y reducir decisiones difíciles.',
+            'En NL2-NL10 funciona bien contra rivales pasivos que pagan pequeño y no bluffean suficiente.',
+            76
+        );
+    }
+
+    protected static function thinValueOverpairOnScaryRiverSmall(): array
+    {
+        return self::spot(
+            'river_thin_value_sb_vs_btn_qq_j74_8_9_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'overpair_scary_river_small',
+            'Overpair en river peligroso',
+            'SB vs BTN · QQ en J7489',
+            'SB',
+            'BTN',
+            ['Qh', 'Qc'],
+            ['Js', '7d', '4c', '8h', '9s'],
+            42.0,
+            1.2,
+            42.0,
+            'River conecta muchas manos, pero BTN está capado',
+            'SB tiene overpairs; BTN tiene Jx, TT, 9x y algunas escaleras.',
+            'QQ todavía gana a muchas manos, pero debe elegir tamaño pequeño.',
+            ['BTN opens 2.5 BB', 'SB 3bets 10 BB', 'BTN calls', 'Flop: J♠ 7♦ 4♣', 'SB bets 7 BB', 'BTN calls', 'Turn: 8♥', 'SB checks', 'BTN checks back', 'River: 9♠', 'Action on Hero SB'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'QQ aún cobra de Jx y TT, pero el river conecta T9/T6/65. Tamaño pequeño evita aislarse demasiado.',
+            'GTO simplificado: overpair en runouts que empeoran puede usar block/value pequeño contra rangos capados.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 44, 'ev_score' => 72, 'feedback' => 'Bien. Value fino con tamaño prudente.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 46, 'ev_score' => 70, 'feedback' => 'Check también es sólido contra rivales agresivos.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 6, 'ev_score' => 28, 'feedback' => 'Grande de más en un river que conecta mucho.'],
+            ],
+            'Cuando el river empeora tu mano, si apuestas debe ser por valor fino y con size controlado.',
+            'En microlímites, pequeño cobra Jx; grande recibe demasiados calls mejores.',
+            72
+        );
+    }
+
+    protected static function thinValueTripsWeakKickerSmall(): array
+    {
+        return self::spot(
+            'river_thin_value_bb_vs_sb_96_992_4_7_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'trips_weak_kicker_small',
+            'Trips kicker débil apuesta pequeño',
+            'BB vs SB · 96 en 99247',
+            'BB',
+            'SB',
+            ['9h', '6h'],
+            ['9s', '9d', '2c', '4h', '7s'],
+            20.0,
+            2.5,
+            54.0,
+            'River blank con trips pero kicker bajo',
+            'BB tiene trips; SB puede tener overpairs, 2x/4x y algunos 9x mejores.',
+            'Hero gana a muchas manos peores pero no quiere polarizar.',
+            ['SB opens 3 BB', 'BB calls', 'Flop: 9♠ 9♦ 2♣', 'SB bets 2 BB', 'BB calls', 'Turn: 4♥', 'SB checks', 'BB bets 5 BB', 'SB calls', 'River: 7♠', 'Action on Hero BB'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'Trips con kicker débil quiere cobrar a overpairs y pares, pero si apuesta grande se aísla contra 9x mejores. Size pequeño es mejor.',
+            'GTO simplificado: trips con kicker bajo suele preferir value pequeño contra rangos que contienen trips mejores.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 78, 'feedback' => 'Correcto. Cobras a peores sin inflar contra mejores.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 62, 'feedback' => 'Check pierde valor contra overpairs.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 38, 'feedback' => 'Grande es demasiado thin con kicker bajo.'],
+            ],
+            'La misma categoría de mano cambia mucho según el kicker.',
+            'En NL2-NL10 overpairs pagan pequeño; 9x mejores te castigan si apuestas grande.',
+            78
+        );
+    }
+
+    protected static function thinValueTopPairVsRecreational(): array
+    {
+        return self::spot(
+            'river_thin_value_btn_vs_bb_a9_a73_2_8_bet33',
+            'river_thin_value',
+            'River Thin Value',
+            'top_pair_vs_recreational',
+            'Top pair débil vs recreacional',
+            'BTN vs BB · A9 en A7328',
+            'BTN',
+            'BB',
+            ['Ah', '9c'],
+            ['As', '7d', '3c', '2h', '8s'],
+            19.0,
+            2.6,
+            56.0,
+            'River blank contra rango débil',
+            'BTN tiene Ax; BB tiene Ax peores, 7x y pares curiosos.',
+            'Contra recreacional, muchas manos peores pagan tamaño pequeño.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♦ 3♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN checks back', 'River: 8♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_33', 'BET_75'],
+            'BET_33',
+            'A9 no es una mano enorme, pero contra recreacionales obtiene valor de Ax peores, 7x y pocket pairs. El tamaño pequeño es clave.',
+            'GTO simplificado: top pair kicker medio puede valuebetear pequeño contra rangos pasivos/capados.',
+            [
+                'BET_33' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 77, 'feedback' => 'Bien. Thin value explotativo con size adecuado.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 66, 'feedback' => 'Check es prudente, pero dejas dinero contra recreacionales.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 34, 'feedback' => 'Demasiado grande para kicker medio.'],
+            ],
+            'El rival importa: contra recreacionales hay más thin value que contra regulares.',
+            'En NL2-NL10 una apuesta pequeña recibe calls muy malos. Eso es dinero.',
+            77
         );
     }
 }

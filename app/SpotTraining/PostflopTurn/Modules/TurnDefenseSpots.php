@@ -21,6 +21,16 @@ class TurnDefenseSpots
             self::foldTopPairOnFourStraight(),
             self::callOverpairVsPolarBarrel(),
             self::foldAceHighNoEquity(),
+            self::callTopPairWeakKickerVsSmallBarrel(),
+            self::foldTopPairWeakKickerVsLargeBarrel(),
+            self::callOverpairOnCoordinatedTurn(),
+            self::callFlushDrawVsSeventyFivePot(),
+            self::foldGutshotWithoutImpliedOdds(),
+            self::callOesdOvercardsVsBarrel(),
+            self::raiseTwoPairOnDangerousTurn(),
+            self::callSetWhenFlushCompletes(),
+            self::foldPureBluffCatcherNoBlocker(),
+            self::foldTptkOnWorstRunout(),
         ];
     }
 
@@ -373,4 +383,355 @@ class TurnDefenseSpots
             78
         );
     }
+
+    protected static function callTopPairWeakKickerVsSmallBarrel(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_q74r_q9_turn_2_call_small',
+            'turn_defense',
+            'Turn Defense',
+            'top_pair_weak_kicker_vs_small_barrel',
+            'Top pair kicker débil vs apuesta pequeña',
+            'BB vs BTN · Q9 en Q74r · Turn 2',
+            'BB',
+            'BTN',
+            ['Qh', '9c'],
+            ['Qs', '7d', '4c', '2h'],
+            9.5,
+            4.8,
+            46.0,
+            'Q-high seco, turn blank y sizing pequeño',
+            'BTN puede apostar muchas Qx, pares medios y faroles baratos.',
+            'BB tiene Qx defendidos, sets y pares medios.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♦ 4♣', 'BB checks', 'BTN bets 1.5 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Q9 no es una mano para inflar el bote, pero contra apuesta pequeña tiene precio suficiente. Foldear top pair aquí es demasiado tight.',
+            'GTO simplificado: frente a sizings pequeños se defiende más ancho, incluso con top pair kicker medio/débil.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 72, 'ev_score' => 82, 'feedback' => 'Correcto. Pagas por precio y mantienes faroles dentro.'],
+                'RAISE' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 38, 'feedback' => 'Raise convierte una mano media en una mano demasiado grande.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 34, 'feedback' => 'Fold demasiado débil contra un sizing pequeño.'],
+            ],
+            'Top pair débil no siempre es fold; el tamaño de apuesta importa mucho.',
+            'En NL2-NL10 paga apuestas pequeñas con top pair, pero no te cases si river viene grande.',
+            82
+        );
+    }
+
+    protected static function foldTopPairWeakKickerVsLargeBarrel(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_co_a83r_a5_turn_k_fold_large',
+            'turn_defense',
+            'Turn Defense',
+            'top_pair_weak_kicker_vs_large_barrel',
+            'Top pair kicker débil vs barrel grande',
+            'BB vs CO · A5 en A83r · Turn K',
+            'BB',
+            'CO',
+            ['Ah', '5c'],
+            ['As', '8d', '3c', 'Kh'],
+            12.5,
+            3.0,
+            45.0,
+            'A-high con K turn favorable al agresor',
+            'CO tiene muchos Ax mejores, AK, AQ, sets y dobles.',
+            'El K mejora mucho la parte fuerte del rango de CO.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: A♠ 8♦ 3♣', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: K♥', 'BB checks', 'CO bets 9 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'A5 parece top pair, pero contra barrel grande en K turn está dominada por demasiados Ax mejores. Sin proyecto ni buen kicker, continuar es caro.',
+            'GTO simplificado: top pair kicker débil reduce mucha defensa frente a tamaños grandes en turns que favorecen al agresor.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 80, 'feedback' => 'Bien. Disciplina: top pair no significa pagar siempre.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 30, 'ev_score' => 42, 'feedback' => 'Call demasiado optimista contra rango fuerte y sizing grande.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 3, 'ev_score' => 12, 'feedback' => 'Raise sin valor ni fold equity real.'],
+            ],
+            'La fuerza relativa manda más que la fuerza absoluta.',
+            'En microlímites, segundo barrel grande en A-high/K turn suele ser valor. Foldea Ax débil sin drama.',
+            82
+        );
+    }
+
+    protected static function callOverpairOnCoordinatedTurn(): array
+    {
+        return self::spot(
+            'turn_defense_co_vs_bb_t86ss_aa_turn_2_call',
+            'turn_defense',
+            'Turn Defense',
+            'overpair_on_coordinated_turn',
+            'Overpair en turn coordinado',
+            'CO vs BB · AA en T86ss · Turn 2',
+            'CO',
+            'BB',
+            ['Ah', 'Ac'],
+            ['Ts', '8s', '6d', '2c'],
+            14.0,
+            3.4,
+            50.0,
+            'Board conectado con muchos proyectos',
+            'BB tiene dobles, sets, escaleras y muchos draws.',
+            'CO conserva overpairs fuertes; BB conecta mejor con la textura.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: T♠ 8♠ 6♦', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: 2♣', 'BB checks', 'CO bets 8 BB', 'BB raises', 'Action on Hero CO'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'AA sigue siendo fuerte, pero el raise de BB en textura dinámica representa valor y semi-bluffs. Call controla bote y permite evaluar river.',
+            'GTO simplificado: overpair fuerte continúa, pero no necesita 3betear siempre ante raise turn en board favorable a BB.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 82, 'feedback' => 'Correcto. Continúas sin aislarte contra manos mejores.'],
+                'RAISE' => ['grade' => 'marginal', 'frequency' => 22, 'ev_score' => 62, 'feedback' => 'Puede ser demasiado ambicioso; BB tiene muchas manos fuertes.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 36, 'feedback' => 'Fold demasiado débil con overpair premium.'],
+            ],
+            'Overpair fuerte no es fold automático en boards dinámicos, pero tampoco es all-in automático.',
+            'En NL2-NL10 pagar suele ser mejor que stackearte sin lectura clara.',
+            82
+        );
+    }
+
+    protected static function callFlushDrawVsSeventyFivePot(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_k92ss_js_turn_5_call_fd',
+            'turn_defense',
+            'Turn Defense',
+            'flush_draw_vs_75_pot',
+            'Proyecto de color vs apuesta 75%',
+            'BB vs BTN · J9s en K92ss · Turn 5',
+            'BB',
+            'BTN',
+            ['Js', '9s'],
+            ['Ks', '9d', '2s', '5c'],
+            12.5,
+            3.7,
+            48.0,
+            'K-high con pareja + flush draw',
+            'BTN apuesta fuerte con Kx, overpairs, draws y algunos bluffs.',
+            'BB tiene pares, draws y algunas dobles/sets.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 9♦ 2♠', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 5♣', 'BB checks', 'BTN bets 7 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Pareja + flush draw tiene equity suficiente para pagar. Raise puede existir, pero en micro límites el call realiza equity y evita meterte contra rangos fuertes.',
+            'GTO simplificado: combo draw con valor de showdown continúa contra sizing medio/grande.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 84, 'feedback' => 'Bien. Tienes outs al color y algo de showdown value.'],
+                'RAISE' => ['grade' => 'good', 'frequency' => 20, 'ev_score' => 72, 'feedback' => 'Semi-bluff válido contra rivales capaces de foldear.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 30, 'feedback' => 'Fold demasiado tight con tanta equity.'],
+            ],
+            'Los draws con pareja tienen más valor que un draw desnudo.',
+            'En microlímites paga y cobra cuando completes; no conviertas todos los draws en farol.',
+            84
+        );
+    }
+
+    protected static function foldGutshotWithoutImpliedOdds(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_a95r_qt_turn_2_fold_gutshot',
+            'turn_defense',
+            'Turn Defense',
+            'gutshot_without_implied_odds',
+            'Gutshot sin odds suficientes',
+            'BB vs BTN · QT en A95r · Turn 2',
+            'BB',
+            'BTN',
+            ['Qh', 'Tc'],
+            ['As', '9d', '5c', '2h'],
+            12.5,
+            3.2,
+            44.0,
+            'A-high seco, turn blank',
+            'BTN tiene muchos Ax y value claro.',
+            'BB tiene algunas parejas y draws débiles, pero QT solo necesita una J.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♦ 5♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN bets 8 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'QT solo tiene gutshot a la J y no siempre cobra cuando completa. Contra apuesta grande, el call no tiene odds suficientes.',
+            'GTO simplificado: gutshots desnudos abandonan mucho frente a segunda barrel grande.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 78, 'feedback' => 'Correcto. No persigas cuatro outs caros.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 16, 'ev_score' => 32, 'feedback' => 'Call malo: pocas outs y poca recompensa.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 10, 'feedback' => 'Farol sin blockers suficientes al valor de Ax.'],
+            ],
+            'Un proyecto existe, pero no todos los proyectos se pagan.',
+            'En NL2-NL10 este call quema dinero: foldea los gutshots caros sin implied odds.',
+            80
+        );
+    }
+
+    protected static function callOesdOvercardsVsBarrel(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_987r_qj_turn_2_call_oesd',
+            'turn_defense',
+            'Turn Defense',
+            'oesd_plus_overcards_vs_barrel',
+            'OESD + overcards vs barrel',
+            'BB vs BTN · QJ en 987r · Turn 2',
+            'BB',
+            'BTN',
+            ['Qh', 'Jc'],
+            ['9s', '8d', '7c', '2h'],
+            13.5,
+            3.5,
+            46.0,
+            'Board conectado con proyecto fuerte',
+            'BTN puede seguir apostando overpairs, Tx, sets y bluffs.',
+            'BB conecta mucho con esta textura y tiene muchas escaleras/proyectos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♦ 7♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN bets 7 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'QJ tiene OESD a T/6 y overcards ocasionales. Call realiza equity con buen precio; raise puede existir, pero no es obligatorio.',
+            'GTO simplificado: proyectos abiertos con equity suficiente defienden contra segunda barrel razonable.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 80, 'feedback' => 'Correcto. Tienes equity real y buenos rivers.'],
+                'RAISE' => ['grade' => 'good', 'frequency' => 26, 'ev_score' => 72, 'feedback' => 'Semi-bluff válido si el rival foldea overpairs o A-high.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 36, 'feedback' => 'Fold demasiado tight con OESD fuerte.'],
+            ],
+            'Los proyectos abiertos fuertes no deben foldearse por sistema.',
+            'En micros paga cuando tienes outs claras; farolea solo si esperas folds reales.',
+            80
+        );
+    }
+
+    protected static function raiseTwoPairOnDangerousTurn(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_j96ss_j9_turn_7_raise',
+            'turn_defense',
+            'Turn Defense',
+            'two_pair_on_dangerous_turn',
+            'Dobles parejas en board peligroso',
+            'BB vs BTN · J9 en J96ss · Turn 7',
+            'BB',
+            'BTN',
+            ['Jh', '9h'],
+            ['Js', '9s', '6d', '7c'],
+            13.5,
+            3.2,
+            46.0,
+            'Board muy conectado con muchos draws',
+            'BTN puede tener overpairs, Jx, draws de color y escalera.',
+            'BB tiene dobles, sets y muchas escaleras/draws.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 9♠ 6♦', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 7♣', 'BB checks', 'BTN bets 8 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'RAISE',
+            'Dobles son fuertes pero vulnerables. En una textura con tantos proyectos, subir cobra valor y niega equity a draws que pagarían mal.',
+            'GTO simplificado: dobles vulnerables pueden check-raisear turn en boards dinámicos.',
+            [
+                'RAISE' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 88, 'feedback' => 'Excelente. Proteges y cobras a draws/manos peores.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 78, 'feedback' => 'Call es viable, pero dejas demasiadas cartas malas river.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 4, 'feedback' => 'Fold imposible con dobles fuertes.'],
+            ],
+            'Manos fuertes vulnerables deben construir bote antes de que el river complique todo.',
+            'En NL2-NL10 sube por valor; te pagan demasiados draws y top pair.',
+            88
+        );
+    }
+
+    protected static function callSetWhenFlushCompletes(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_co_q73ss_77_turn_ks_call',
+            'turn_defense',
+            'Turn Defense',
+            'set_when_flush_completes',
+            'Set cuando se completa color',
+            'BB vs CO · 77 en Q73ss · Turn K♠',
+            'BB',
+            'CO',
+            ['7h', '7c'],
+            ['Qs', '7s', '3d', 'Ks'],
+            13.5,
+            3.4,
+            48.0,
+            'Turn completa color y añade overcard',
+            'CO tiene colores, KQ, AQ y barrels con blockers.',
+            'BB tiene sets y algunos colores defendidos.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♠ 3♦', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: K♠', 'BB checks', 'CO bets 8 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'CALL',
+            'Set medio sigue teniendo mucha equity por redraw a full, pero raisear cuando se completa color puede aislarte contra flushes. Call es sólido.',
+            'GTO simplificado: sets con redraw a full continúan, pero mezclan más call cuando el draw principal se completa.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 84, 'feedback' => 'Correcto. No foldeas una mano fuerte y evitas aislarte.'],
+                'RAISE' => ['grade' => 'good', 'frequency' => 20, 'ev_score' => 72, 'feedback' => 'Raise puede valer contra rivales que pagan KQ/AQ, pero es más arriesgado.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 8, 'feedback' => 'Fold demasiado débil con set y redraw a full.'],
+            ],
+            'Cuando se completa color, las manos fuertes sin color bajan de agresividad, no de valor absoluto.',
+            'En micros paga y deja que el rival siga apostando; raise solo con lectura clara.',
+            84
+        );
+    }
+
+    protected static function foldPureBluffCatcherNoBlocker(): array
+    {
+        return self::spot(
+            'turn_defense_bb_vs_btn_a72ss_77_turn_q_fold',
+            'turn_defense',
+            'Turn Defense',
+            'pure_bluffcatcher_no_blocker',
+            'Bluffcatcher puro sin blocker',
+            'BB vs BTN · 77 en A72ss · Turn Q',
+            'BB',
+            'BTN',
+            ['7h', '7c'],
+            ['As', '7s', '2d', 'Qh'],
+            12.5,
+            3.1,
+            44.0,
+            'A-high con Q turn favorable al agresor',
+            'BTN tiene muchos Ax fuertes, AQ, QQ, sets y barrels de color.',
+            'BB tiene algunos sets, pero 77 sin blocker relevante sufre mucho.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♠ 2♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: Q♥', 'BB checks', 'BTN bets 9 BB', 'Action on Hero BB'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'Aunque hay pareja, la mano no bloquea valor fuerte ni mejora bien. Contra barrel grande, es un bluffcatcher pobre.',
+            'GTO simplificado: los bluffcatchers sin blockers buenos reducen defensa frente a apuestas grandes.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 78, 'feedback' => 'Bien. No todos los pares son bluffcatchers rentables.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 26, 'ev_score' => 40, 'feedback' => 'Call demasiado optimista contra sizing grande.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 12, 'feedback' => 'Raise sin blockers ni valor claro.'],
+            ],
+            'Para bluffcatchear necesitas algo más que una pareja: blockers, precio o lectura.',
+            'En NL2-NL10 los barrels grandes suelen estar cargados de valor. Foldea bluffcatchers malos.',
+            80
+        );
+    }
+
+    protected static function foldTptkOnWorstRunout(): array
+    {
+        return self::spot(
+            'turn_defense_co_vs_bb_ak_a98ss_turn_ts_fold',
+            'turn_defense',
+            'Turn Defense',
+            'tptk_worst_turn_fold',
+            'Fold disciplinado con TPTK en runout horrible',
+            'CO vs BB · AK en A98ss · Turn T♠',
+            'CO',
+            'BB',
+            ['Ah', 'Kc'],
+            ['As', '9s', '8d', 'Ts'],
+            14.0,
+            2.9,
+            52.0,
+            'Turn completa color y muchas escaleras',
+            'BB tiene colores, J7, QJ, dobles, sets y raises de valor.',
+            'CO tiene TPTK, pero la textura favorece mucho a BB.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 8♦', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: T♠', 'BB checks', 'CO bets 8 BB', 'BB raises', 'Action on Hero CO'],
+            ['FOLD', 'CALL', 'RAISE'],
+            'FOLD',
+            'AK era fuerte en flop, pero este turn completa color y muchas escaleras. Frente a check-raise, TPTK sin pica ni redraw es fold disciplinado.',
+            'GTO simplificado: top pair top kicker puede foldear ante agresión fuerte cuando el runout mejora masivamente al defensor.',
+            [
+                'FOLD' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 82, 'feedback' => 'Excelente fold. La textura destruyó el valor relativo de AK.'],
+                'CALL' => ['grade' => 'mistake', 'frequency' => 30, 'ev_score' => 42, 'feedback' => 'Call caro contra un rango muy fuerte.'],
+                'RAISE' => ['grade' => 'blunder', 'frequency' => 2, 'ev_score' => 8, 'feedback' => 'Meter más dinero aquí es quemar EV.'],
+            ],
+            'TPTK no es una mano invencible; en turns horribles puede ser fold.',
+            'En microlímites, check-raise turn en carta que completa todo casi siempre es valor. Foldea sin ego.',
+            84
+        );
+    }
+
 }

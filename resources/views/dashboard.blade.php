@@ -25,7 +25,7 @@
 
         $turnModules = [
             'turn_barrel',
-            'turn_probe_bet',
+            'turn_probe',
             'turn_defense',
             'turn_value_bet',
             'turn_check_raise',

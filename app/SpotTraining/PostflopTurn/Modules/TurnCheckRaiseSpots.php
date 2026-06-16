@@ -21,6 +21,16 @@ class TurnCheckRaiseSpots
             self::connectedBoardStraightPressure(),
             self::microlimitValueVsStation(),
             self::polarizedRaiseRiverSetup(),
+            self::straightValueVsSecondBarrel(),
+            self::comboDrawCheckRaiseOnScareCard(),
+            self::avoidCheckRaiseTopPairWeakKicker(),
+            self::avoidCheckRaiseWeakFlushDraw(),
+            self::checkRaiseTripsPairedBoard(),
+            self::checkRaiseNutBlockerBluff(),
+            self::checkCallOesdBetterThanRaise(),
+            self::checkRaiseTurnCardFavorsBb(),
+            self::avoidSpewVsOverbet(),
+            self::checkRaiseSmallValueVsStation(),
         ];
     }
 
@@ -375,4 +385,355 @@ class TurnCheckRaiseSpots
             83
         );
     }
+
+    protected static function straightValueVsSecondBarrel(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_btn_jt8r_q_9t_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'straight_value_raise',
+            'Escalera por valor contra second barrel',
+            'BB vs BTN · T9 en JT8r · Turn Q',
+            'BB',
+            'BTN',
+            ['Ts', '9s'],
+            ['Jh', 'Td', '8c', 'Qs'],
+            10.5,
+            4.1,
+            43.0,
+            'Turn completa muchas escaleras',
+            'BTN puede apostar overpairs, top pair fuerte y proyectos, pero BB conecta mucho con T9 y K9.',
+            'BB tiene más combos de escaleras defendidas; BTN conserva ventaja de overpairs y broadways fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♥ T♦ 8♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: Q♠', 'BB checks', 'BTN bets 7 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'Hero tiene escalera y el board es dinámico. Solo pagar deja demasiado valor contra dobles, sets, overpairs con draw y Kx que no foldean. El check-raise cobra y protege contra rivers que cortan acción.',
+            'GTO simplificado: en turns que completan una parte importante del rango de BB, las escaleras pueden subir por valor y equilibrarse con algunos proyectos fuertes.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 68, 'ev_score' => 93, 'feedback' => 'Correcto. Tu mano es muy fuerte y el rival aún puede pagar con muchas peores.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 80, 'feedback' => 'Call gana, pero deja valor y permite rivers incómodos.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Fold imposible con escalera.'],
+            ],
+            'Las manos muy fuertes en boards dinámicos prefieren construir bote antes de que el river frene la acción.',
+            'En NL2-NL10 sube por valor. Te pagan dobles, sets, top pair fuerte y proyectos más de lo que deberían.',
+            93
+        );
+    }
+
+    protected static function comboDrawCheckRaiseOnScareCard(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_co_q97ss_k_jts_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'combo_draw_scare_card',
+            'Combo draw en scary card',
+            'BB vs CO · JTs en Q97ss · Turn K',
+            'BB',
+            'CO',
+            ['Js', 'Ts'],
+            ['Qs', '9d', '7s', 'Kh'],
+            11.0,
+            4.0,
+            45.0,
+            'Turn K aumenta presión y equity',
+            'CO puede seguir apostando KQ, AQ, overpairs y faroles, pero BB gana muchos proyectos fuertes.',
+            'BB tiene escaleras, dobles y proyectos de color; CO mantiene manos altas que no siempre soportan un raise.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: Q♠ 9♦ 7♠', 'BB checks', 'CO bets 3.5 BB', 'BB calls', 'Turn: K♥', 'BB checks', 'CO bets 7.5 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'Hero tiene proyecto de color, gutshot y buena presión sobre una carta alta. Es un semi-bluff natural: cuando foldea ganas ya, y cuando paga aún tienes muchas outs.',
+            'GTO simplificado: los combo draws con equity alta pueden entrar en la parte de bluff del check-raise turn.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 46, 'ev_score' => 84, 'feedback' => 'Buen semi-bluff. Tienes equity real y fold equity.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 50, 'ev_score' => 78, 'feedback' => 'Call también realiza equity, pero presiona menos.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 4, 'ev_score' => 18, 'feedback' => 'Demasiado tight con un proyecto tan fuerte.'],
+            ],
+            'Los mejores faroles de check-raise turn no son aire: tienen equity y buenas cartas de river para continuar.',
+            'En microlímites úsalo mejor contra rivales capaces de foldear. Contra calling stations, call puede ser más estable.',
+            84
+        );
+    }
+
+    protected static function avoidCheckRaiseTopPairWeakKicker(): array
+    {
+        return self::spot(
+            'turn_no_xr_bb_vs_btn_a83r_6_a5_call',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'avoid_overplaying_top_pair',
+            'No sobrejugar top pair kicker débil',
+            'BB vs BTN · A5 en A83r · Turn 6',
+            'BB',
+            'BTN',
+            ['Ah', '5h'],
+            ['As', '8d', '3c', '6s'],
+            9.5,
+            4.4,
+            41.0,
+            'Board A-high seco',
+            'BTN tiene muchos Ax mejores y puede apostar thin value o protección.',
+            'BB tiene Ax débiles defendidos, pero no domina suficientes calls peores ante un raise.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 8♦ 3♣', 'BB checks', 'BTN bets 2.5 BB', 'BB calls', 'Turn: 6♠', 'BB checks', 'BTN bets 6.5 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CALL',
+            'A5 tiene showdown value, pero subir convierte una mano media en un bote enorme contra mejores Ax. El plan estándar es pagar y evaluar river.',
+            'GTO simplificado: top pair kicker débil suele defender como call, no como check-raise de valor.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 78, 'feedback' => 'Correcto. Controlas el bote con showdown value.'],
+                'FOLD' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 50, 'feedback' => 'Demasiado tight ante tamaños normales, aunque no es desastre contra nit extremo.'],
+                'CHECK_RAISE_3X' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 25, 'feedback' => 'Sobrejuegas una mano dominada por muchos Ax mejores.'],
+            ],
+            'No todo top pair merece check-raise. Valor fuerte significa cobrar a peores, no aislarse contra mejores.',
+            'En NL2-NL10 muchos rivales no foldean Ax mejor. Paga y evita inflar el bote sin necesidad.',
+            78
+        );
+    }
+
+    protected static function avoidCheckRaiseWeakFlushDraw(): array
+    {
+        return self::spot(
+            'turn_no_xr_bb_vs_co_k94ss_2_65s_call',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'avoid_weak_draw_raise',
+            'No check-raise con draw débil dominado',
+            'BB vs CO · 65s en K94ss · Turn 2',
+            'BB',
+            'CO',
+            ['6s', '5s'],
+            ['Ks', '9d', '4s', '2h'],
+            10.0,
+            4.2,
+            43.0,
+            'Flush draw bajo sin overcards',
+            'CO puede barrelear Kx, overpairs y proyectos mejores.',
+            'BB tiene draws, pero los colores bajos sufren reverse implied odds.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: K♠ 9♦ 4♠', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO bets 7 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CALL',
+            'El proyecto de color existe, pero es bajo y no bloquea los mejores calls del rival. Subir genera un bote grande con equity vulnerable. Call con odds razonables es mejor.',
+            'GTO simplificado: no todos los draws son buenos faroles de raise; los mejores tienen blockers, overcards o equity robusta.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 70, 'feedback' => 'Bien. Realizas equity sin convertir un draw vulnerable en farol grande.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 64, 'feedback' => 'Aceptable si el tamaño es grande o el rival no paga implícitas.'],
+                'CHECK_RAISE_3X' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 32, 'feedback' => 'Mal candidato de raise: color bajo y pocos blockers.'],
+            ],
+            'Los draws bajos pueden parecer bonitos, pero no siempre soportan agresión grande.',
+            'En microlímites, evita semi-bluffs caros con draws dominados. Juega más directo.',
+            70
+        );
+    }
+
+    protected static function checkRaiseTripsPairedBoard(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_btn_884r_8_a8_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'trips_paired_board_value',
+            'Trips en board emparejado',
+            'BB vs BTN · A8 en 884r · Turn 8',
+            'BB',
+            'BTN',
+            ['Ah', '8h'],
+            ['8s', '8d', '4c', '8c'],
+            8.5,
+            4.8,
+            45.0,
+            'Board muy emparejado y rango del rival capeado',
+            'BTN puede apostar overpairs, A-high y faroles pensando que BB tiene pocas manos fuertes.',
+            'BB tiene más 8x defendidos; BTN tiene overpairs pero pocos trips.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 8♠ 8♦ 4♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 8♣', 'BB checks', 'BTN bets 5 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'Con poker/trips máximo relativo, Hero debe construir bote. Muchos rivales no creen el raise en boards emparejados y pagan overpairs o A-high por curiosidad.',
+            'GTO simplificado: BB puede tener más 8x en defensa, así que el check-raise por valor es natural.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 94, 'feedback' => 'Correcto. Mano enorme y rango percibido poco creíble: cobra.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 82, 'feedback' => 'Call atrapa, pero puede perder valor contra overpairs.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Nunca puedes foldear aquí.'],
+            ],
+            'Los boards emparejados permiten trampas, pero en límites bajos el valor directo suele ganar más.',
+            'En NL2-NL10 apuesta/sube tus monstruos. La gente paga por incredulidad.',
+            94
+        );
+    }
+
+    protected static function checkRaiseNutBlockerBluff(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_btn_aq7ss_3_as5c_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'nut_blocker_bluff',
+            'Bluff con blocker al nut flush',
+            'BB vs BTN · A5 con As en Q7xss · Turn 3',
+            'BB',
+            'BTN',
+            ['As', '5c'],
+            ['Qs', '7s', '2d', '3h'],
+            10.5,
+            4.0,
+            42.0,
+            'Turn blank con proyecto de color presente',
+            'BTN apuesta mucho valor medio y draws, pero Hero bloquea el nut flush draw.',
+            'BB puede representar sets, dobles y algunos proyectos fuertes; As bloquea continuaciones fuertes del rival.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♠ 2♦', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 3♥', 'BB checks', 'BTN bets 7 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'A♠ bloquea los proyectos de color más fuertes que continuarían. Hero no tiene gran showdown value, así que puede convertir la mano en bluff contra rivales capaces de foldear Qx débil.',
+            'GTO simplificado: los blockers al nut draw son candidatos razonables para la parte de bluff del check-raise.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 34, 'ev_score' => 76, 'feedback' => 'Buen bluff selectivo con blocker relevante.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 44, 'ev_score' => 66, 'feedback' => 'Fold es prudente contra rivales calling station.'],
+                'CALL' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 48, 'feedback' => 'Call sin equity suficiente puede ser débil.'],
+            ],
+            'Los bluffs de check-raise deben bloquear continuaciones fuertes y tener historia creíble.',
+            'En microlímites este bluff no es automático. Úsalo contra rivales que sí foldean second pair/top pair débil.',
+            76
+        );
+    }
+
+    protected static function checkCallOesdBetterThanRaise(): array
+    {
+        return self::spot(
+            'turn_no_xr_bb_vs_btn_t98r_2_qj_call',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'oesd_call_not_raise',
+            'OESD: call mejor que raise',
+            'BB vs BTN · QJ en T98r · Turn 2',
+            'BB',
+            'BTN',
+            ['Qh', 'Jc'],
+            ['Ts', '9d', '8c', '2h'],
+            11.5,
+            4.1,
+            44.0,
+            'Board muy conectado con proyecto fuerte',
+            'BTN puede tener overpairs, sets, dobles y escaleras; BB tiene muchos proyectos.',
+            'QJ tiene muchas outs, pero algunas pueden estar dominadas o partir bote.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♦ 8♣', 'BB checks', 'BTN bets 3.5 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'BTN bets 7.5 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CALL',
+            'QJ tiene proyecto fuerte, pero subir puede aislar contra escaleras hechas, sets y manos que no foldean. Call conserva implícitas y evita inflar con equity no realizada.',
+            'GTO simplificado: algunos proyectos fuertes prefieren call cuando el rango rival continúa demasiado bien contra raise.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 76, 'feedback' => 'Correcto. Realizas equity sin sobreexponerte.'],
+                'CHECK_RAISE_3X' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 70, 'feedback' => 'Puede mezclarse, pero no es obligatorio.'],
+                'FOLD' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 24, 'feedback' => 'Demasiado tight con OESD fuerte.'],
+            ],
+            'No todos los proyectos buenos deben raisear. A veces call captura más EV y evita varianza innecesaria.',
+            'En NL2-NL10, si el rival no foldea overpair ni set, toma odds y cobra cuando completes.',
+            76
+        );
+    }
+
+    protected static function checkRaiseTurnCardFavorsBb(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_co_765r_4_a5_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'turn_card_favors_bb',
+            'Carta de turn favorece muchísimo a BB',
+            'BB vs CO · A5 en 765r · Turn 4',
+            'BB',
+            'CO',
+            ['Ah', '5h'],
+            ['7s', '6d', '5c', '4h'],
+            12.0,
+            3.8,
+            46.0,
+            'Turn 4 completa muchas escaleras de BB',
+            'CO tiene overpairs, pero BB defiende muchos 8x, 3x, 65, 54 y pares + draw.',
+            'El 4 mejora más al rango de BB que al de CO.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: 7♠ 6♦ 5♣', 'BB checks', 'CO bets 4 BB', 'BB calls', 'Turn: 4♥', 'BB checks', 'CO bets 8 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'Hero tiene escalera y la carta de turn golpea muy fuerte la defensa de BB. Check-raise castiga overpairs y sets que no quieren creer la historia.',
+            'GTO simplificado: cuando una carta favorece mucho al caller preflop, el rango de check-raise aumenta con valor y algunos bluffs.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 72, 'ev_score' => 95, 'feedback' => 'Excelente. Valor fuerte en carta que favorece tu rango.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 26, 'ev_score' => 82, 'feedback' => 'Call gana, pero deja valor contra overpairs.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Fold absurdo con escalera.'],
+            ],
+            'Reconocer cartas que favorecen tu rango permite subir por valor con más confianza.',
+            'En microlímites, los overpairs pagan demasiado en boards bajos. Sube fuerte por valor.',
+            95
+        );
+    }
+
+    protected static function avoidSpewVsOverbet(): array
+    {
+        return self::spot(
+            'turn_no_xr_bb_vs_btn_kq6ss_2_qj_overbet_call',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'avoid_spew_vs_overbet',
+            'No hacer spew contra overbet',
+            'BB vs BTN · QJ en KQ6ss · Turn 2',
+            'BB',
+            'BTN',
+            ['Qh', 'Jh'],
+            ['Ks', 'Qd', '6s', '2c'],
+            11.0,
+            8.0,
+            40.0,
+            'BTN overbetea turn',
+            'La overbet polariza el rango de BTN hacia valor fuerte y faroles con equity.',
+            'BB tiene segunda pareja, pero no quiere convertirla en raise grande.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ Q♦ 6♠', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 2♣', 'BB checks', 'BTN bets 11 BB into 8 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CALL',
+            'QJ bloquea parte de valor y tiene showdown value, pero check-raise contra overbet es spew: solo te pagan mejores o proyectos fuertes. Call o fold según rival es mejor.',
+            'GTO simplificado: contra overbets, las manos medias defienden con call o fold; el raise se reserva para rangos muy polarizados.',
+            [
+                'CALL' => ['grade' => 'best', 'frequency' => 42, 'ev_score' => 68, 'feedback' => 'Call es razonable si el rival overbetea de más.'],
+                'FOLD' => ['grade' => 'good', 'frequency' => 38, 'ev_score' => 64, 'feedback' => 'Fold es correcto contra rivales muy honestos.'],
+                'CHECK_RAISE_3X' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 8, 'feedback' => 'Spew caro. No conviertas una mano media en farol gigante.'],
+            ],
+            'El check-raise contra overbet necesita una mano muy fuerte o un bluff excelente. No improvises con pares medios.',
+            'En NL2-NL10 las overbets suelen estar cargadas de valor. No te inmoles por orgullo.',
+            68
+        );
+    }
+
+    protected static function checkRaiseSmallValueVsStation(): array
+    {
+        return self::spot(
+            'turn_xr_bb_vs_btn_a86hh_8_a8_raise',
+            'turn_check_raise',
+            'Turn Check Raise',
+            'small_value_raise_vs_station',
+            'Raise pequeño por valor contra calling station',
+            'BB vs BTN · A8 en A86hh · Turn 8',
+            'BB',
+            'BTN',
+            ['Ad', '8d'],
+            ['Ah', '8h', '6c', '8s'],
+            10.0,
+            3.9,
+            50.0,
+            'Turn mejora a full house',
+            'BTN puede seguir apostando Ax, proyectos de color, 6x y faroles automáticos.',
+            'BB tiene full y trips; BTN tiene Ax fuertes que pagarán demasiado.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♥ 8♥ 6♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 8♠', 'BB checks', 'BTN bets 7 BB', 'Action on Hero BB'],
+            ['CALL', 'CHECK_RAISE_3X', 'FOLD'],
+            'CHECK_RAISE_3X',
+            'Contra rivales pagadores, full house quiere subir ya. Hay Ax, proyectos y manos curiosas que pagan demasiado. Call es rentable, pero deja mucho dinero en la mesa.',
+            'GTO simplificado: las manos muy fuertes mezclan call y raise; explotativamente el raise gana contra jugadores que pagan Ax en exceso.',
+            [
+                'CHECK_RAISE_3X' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 96, 'feedback' => 'Perfecto. Máximo valor contra un rango que paga demasiado.'],
+                'CALL' => ['grade' => 'good', 'frequency' => 28, 'ev_score' => 84, 'feedback' => 'Call atrapa, pero en micro pierdes valor.'],
+                'FOLD' => ['grade' => 'blunder', 'frequency' => 0, 'ev_score' => 0, 'feedback' => 'Nunca foldees full house.'],
+            ],
+            'La explotación clara contra calling stations es subir más por valor y farolear menos.',
+            'En NL2-NL10 este spot es imprimir valor: sube y deja que el rival cometa el error pagando.',
+            96
+        );
+    }
+
 }

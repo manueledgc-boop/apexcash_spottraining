@@ -21,6 +21,16 @@ class TurnValueBetSpots
             self::valueStraightCompletedTurn(),
             self::valueNutFlushTurn(),
             self::thinValueTopPairWeakKickerDryTurn(),
+            self::valueOverpairProtectionVsDraws(),
+            self::valueTripsOnPairedTurn(),
+            self::thinValueTopPairVsPassiveCaller(),
+            self::valueSetWhenFlushCompletes(),
+            self::valueTwoPairOnScaryBroadway(),
+            self::betFoldTopPairVsPassiveRaise(),
+            self::smallValueSecondPairVsMissedCbet(),
+            self::checkBackTopPairBadKickerOnFourLiner(),
+            self::valueBigWithStraightVsStation(),
+            self::valueOverpairInThreeBetPotBlankTurn(),
         ];
     }
 
@@ -375,4 +385,359 @@ class TurnValueBetSpots
             80
         );
     }
+
+    protected static function valueOverpairProtectionVsDraws(): array
+    {
+        return self::spot(
+            'turn_value_btn_vs_bb_t74tt_kk_turn_2_bet75',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'overpair_value_protection_vs_draws',
+            'Overpair por valor y protección',
+            'BTN vs BB · KK en T74tt · Turn 2',
+            'BTN',
+            'BB',
+            ['Kh', 'Kc'],
+            ['Ts', '7s', '4d', '2h'],
+            10.0,
+            4.5,
+            44.0,
+            'Turn blank en board con proyectos',
+            'BTN conserva overpairs fuertes y BB tiene muchos pares + draw.',
+            'BTN tiene ventaja de overpairs; BB tiene más combos conectados y proyectos.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 7♠ 4♦', 'BB checks', 'BTN bets 3.5 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'KK va claramente por delante de Tx, 7x, pares con proyecto y flush draws. El turn no completa nada, así que apostar grande cobra valor y niega equity.',
+            'GTO simplificado: overpairs fuertes en turns blank de boards dinámicos siguen apostando a frecuencia alta con tamaño medio/grande.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 88, 'feedback' => 'Correcto. Cobras valor y proteges contra muchos proyectos.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 32, 'ev_score' => 78, 'feedback' => 'Bien, aunque das mejor precio a draws.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 42, 'feedback' => 'Demasiado pasivo. Dejas realizar equity gratis.'],
+            ],
+            'Cuando el turn no completa proyectos y tienes overpair fuerte, apuesta por valor/protección.',
+            'En NL2-NL10 te pagan Tx, pares y proyectos. Apostar grande es mejor que regalar carta.',
+            88
+        );
+    }
+
+    protected static function valueTripsOnPairedTurn(): array
+    {
+        return self::spot(
+            'turn_value_bb_vs_btn_q84_q_qt_bet75',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'trips_paired_turn_value',
+            'Trips por valor en turn emparejado',
+            'BB vs BTN · QT en Q84r · Turn Q',
+            'BB',
+            'BTN',
+            ['Qh', 'Tc'],
+            ['Qs', '8d', '4c', 'Qd'],
+            7.5,
+            5.6,
+            42.0,
+            'Turn empareja top card',
+            'BTN chequeó flop y su rango queda algo capado.',
+            'BB tiene muchas Qx defendidas y ahora trips fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 8♦ 4♣', 'BB checks', 'BTN checks back', 'Turn: Q♦', 'Action on Hero BB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Trips con QT quiere construir bote contra 8x, pares, Ax curiosos y Qx peores. El check back del flop hace que muchos rivales paguen porque no creen tanta fuerza.',
+            'GTO simplificado: cuando el defensor mejora fuerte tras check back, puede liderar turn con tamaño grande por valor.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 91, 'feedback' => 'Excelente. Hay valor claro y mano escondida.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 28, 'ev_score' => 80, 'feedback' => 'Correcto, aunque puedes cobrar más.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 36, 'feedback' => 'Slowplay innecesario. Pierdes valor.'],
+            ],
+            'Trips ocultos después de check back deben apostar con frecuencia alta.',
+            'En microlímites apuesta fuerte. Muchos no foldean pares medios ni Ax.',
+            91
+        );
+    }
+
+    protected static function thinValueTopPairVsPassiveCaller(): array
+    {
+        return self::spot(
+            'turn_value_co_vs_bb_j62r_jt_turn_5_bet50',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'thin_top_pair_vs_passive_caller',
+            'Top pair valor fino vs pasivo',
+            'CO vs BB · JT en J62r · Turn 5',
+            'CO',
+            'BB',
+            ['Jh', 'Tc'],
+            ['Js', '6d', '2c', '5h'],
+            9.0,
+            4.8,
+            43.0,
+            'Turn bajo que no cambia demasiado',
+            'BB tiene Jx peores, 6x, pocket pairs y algunos floats.',
+            'CO mantiene mejores Jx; BB tiene muchas manos medias que pagan una apuesta razonable.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: J♠ 6♦ 2♣', 'BB checks', 'CO bets 3 BB', 'BB calls', 'Turn: 5♥', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'JT tiene valor, pero no quiere inflar demasiado porque BB también tiene Jx mejores ocasionalmente. Medio bote cobra a peores sin aislarte tanto.',
+            'GTO simplificado: top pair kicker medio mezcla apuesta pequeña/media y check; el tamaño grande baja frecuencia.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 82, 'feedback' => 'Correcto. Valor fino con tamaño adecuado.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 72, 'feedback' => 'Check controla bote, pero pierdes valor contra pasivos.'],
+                'BET_75' => ['grade' => 'marginal', 'frequency' => 16, 'ev_score' => 56, 'feedback' => 'Algo grande para kicker medio.'],
+            ],
+            'El valor fino necesita tamaños pagables por manos peores.',
+            'En NL2-NL10 apuesta medio contra pasivos: pagan demasiado con pares peores.',
+            82
+        );
+    }
+
+    protected static function valueSetWhenFlushCompletes(): array
+    {
+        return self::spot(
+            'turn_value_btn_vs_bb_954hh_99_turn_2h_bet50',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'set_flush_completes_value_careful',
+            'Set cuando completa color',
+            'BTN vs BB · 99 en 954hh · Turn 2h',
+            'BTN',
+            'BB',
+            ['9s', '9d'],
+            ['9h', '5h', '4c', '2h'],
+            10.5,
+            4.1,
+            45.0,
+            'Turn completa color',
+            'BB tiene muchos corazones defendidos, pero también pares, dobles y draws peores.',
+            'BB tiene más flushes pequeños; BTN conserva sets y overpairs con corazón.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♥ 5♥ 4♣', 'BB checks', 'BTN bets 3.5 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'Set sigue teniendo mucho valor y redraw a full, pero el color completado exige tamaño más controlado. Apostar medio cobra a pares con corazón, dobles y proyectos peores.',
+            'GTO simplificado: sets sin color en turn que completa flush suelen apostar a tamaño medio o mezclar check, no siempre polarizar grande.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 52, 'ev_score' => 84, 'feedback' => 'Bien. Sigues cobrando valor sin inflar demasiado.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 76, 'feedback' => 'Check también protege tu rango y controla bote.'],
+                'BET_75' => ['grade' => 'marginal', 'frequency' => 14, 'ev_score' => 58, 'feedback' => 'Grande puede aislarte contra colores.'],
+            ],
+            'Cuando se completa color, el set no desaparece, pero el sizing debe ser más cuidadoso.',
+            'En microlímites puedes apostar medio porque pagan con muchas manos peores, pero respeta raises fuertes.',
+            84
+        );
+    }
+
+    protected static function valueTwoPairOnScaryBroadway(): array
+    {
+        return self::spot(
+            'turn_value_sb_vs_btn_aq7_k_aq_bet75',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'two_pair_on_broadway_scare_card',
+            'Dobles en carta Broadway peligrosa',
+            'SB vs BTN · AQ en AQ7 · Turn K',
+            'SB',
+            'BTN',
+            ['As', 'Qd'],
+            ['Ah', 'Qc', '7s', 'Kh'],
+            14.0,
+            3.3,
+            46.0,
+            'Turn K añade proyectos y manos dominadas',
+            'BTN tiene muchos Ax, Qx, KQ, JT y pares con gutshot.',
+            'SB tiene ventaja fuerte en bote 3bet con AK/AQ/AA/QQ.',
+            ['BTN opens 2.5 BB', 'SB 3bets 10 BB', 'BTN calls', 'Flop: A♥ Q♣ 7♠', 'SB bets 4 BB', 'BTN calls', 'Turn: K♥', 'Action on Hero SB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'AQ sigue siendo valor enorme. El K puede asustar, pero también mejora muchas manos peores que pagan: AK, AJ, AT con gutshot, KQ y draws.',
+            'GTO simplificado: dobles fuertes en bote 3bet siguen apostando por valor incluso en cartas que traen más conexión.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 90, 'feedback' => 'Correcto. Muchísimas manos peores continúan.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 80, 'feedback' => 'Bien, aunque el stack-pot permite presionar más.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 42, 'feedback' => 'Demasiado temeroso. Pierdes valor claro.'],
+            ],
+            'No confundas carta peligrosa con carta mala para apostar si tu mano sigue dominando el rango de call.',
+            'En NL2-NL10 dobles fuertes en bote 3bet deben apostar. Pagan demasiados Ax y broadways.',
+            90,
+            'three_bet_pot',
+            '3Bet Pot'
+        );
+    }
+
+    protected static function betFoldTopPairVsPassiveRaise(): array
+    {
+        return self::spot(
+            'turn_value_hj_vs_bb_k83r_ak_turn_6_bet50',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'bet_fold_top_pair_passive_pool',
+            'Bet/fold con top pair fuerte',
+            'HJ vs BB · AK en K83r · Turn 6',
+            'HJ',
+            'BB',
+            ['Ah', 'Kd'],
+            ['Ks', '8d', '3c', '6h'],
+            9.5,
+            4.6,
+            44.0,
+            'Turn bajo semi blank',
+            'BB tiene Kx peores y pares, pero sus raises en turn suelen ser muy fuertes.',
+            'HJ domina top pair; BB tiene sets/dobles ocasionales.',
+            ['HJ opens 2.5 BB', 'BB calls', 'Flop: K♠ 8♦ 3♣', 'BB checks', 'HJ bets 3 BB', 'BB calls', 'Turn: 6♥', 'BB checks', 'Action on Hero HJ'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'AK debe apostar por valor contra KQ, KJ, 8x y pares. Pero contra un check-raise grande de un rival pasivo, el plan explotativo suele ser bet/fold.',
+            'GTO simplificado: TPTK apuesta turn con frecuencia alta en blank; frente a raise se evalúa rango y tamaño.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 86, 'feedback' => 'Correcto. Extraes valor sin crear un bote absurdo.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 78, 'feedback' => 'También válido contra calling stations.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 58, 'feedback' => 'Pierdes valor contra muchos Kx peores.'],
+            ],
+            'Apostar por valor no significa casarte con la mano si recibes raise fuerte.',
+            'En NL2-NL10 apuesta AK por valor, pero foldea tranquilo ante raise grande de pasivo.',
+            86
+        );
+    }
+
+    protected static function smallValueSecondPairVsMissedCbet(): array
+    {
+        return self::spot(
+            'turn_value_bb_vs_co_q73r_7x_turn_2_bet50',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'small_value_second_pair_after_missed_cbet',
+            'Valor pequeño con segunda pareja',
+            'BB vs CO · 76 en Q73r · Turn 2',
+            'BB',
+            'CO',
+            ['7h', '6h'],
+            ['Qs', '7d', '3c', '2s'],
+            5.5,
+            8.0,
+            45.0,
+            'Flop check/check y turn bajo',
+            'CO chequeó flop y queda con muchos A-high, pockets y aire con equity.',
+            'BB tiene muchas parejas medias y puede apostar fino.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♦ 3♣', 'BB checks', 'CO checks back', 'Turn: 2♠', 'Action on Hero BB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'Segunda pareja puede apostar pequeño/medio por valor y protección. Cobras a 3x, pockets, A-high con backdoor y niegas equity a overcards.',
+            'GTO simplificado: tras missed c-bet, BB lidera turn con parte de sus manos medias y valor fino.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 80, 'feedback' => 'Bien. Valor fino y protección.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 40, 'ev_score' => 72, 'feedback' => 'Check también realiza equity, pero deja cartas gratis.'],
+                'BET_75' => ['grade' => 'marginal', 'frequency' => 10, 'ev_score' => 48, 'feedback' => 'Demasiado grande para segunda pareja.'],
+            ],
+            'Las manos medias pueden apostar por valor fino cuando el agresor pierde iniciativa.',
+            'En microlímites apuesta medio: te pagan pockets y A-high más de la cuenta.',
+            80
+        );
+    }
+
+    protected static function checkBackTopPairBadKickerOnFourLiner(): array
+    {
+        return self::spot(
+            'turn_value_btn_vs_bb_987_6_a9_check',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'avoid_value_four_liner',
+            'No value bet en four-liner',
+            'BTN vs BB · A9 en 987 · Turn 6',
+            'BTN',
+            'BB',
+            ['Ah', '9c'],
+            ['9s', '8d', '7c', '6h'],
+            9.0,
+            4.8,
+            44.0,
+            'Turn completa muchas escaleras',
+            'BB defiende muchas manos conectadas que mejoran en este turn.',
+            'BB tiene ventaja de nuts con T9, T8, 65, 54; BTN conserva overpairs pero su 9x pierde valor.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♦ 7♣', 'BB checks', 'BTN bets 3 BB', 'BB calls', 'Turn: 6♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'A9 ya no tiene value bet claro. Muchas manos mejores pagan o suben, y pocas peores pagan dos calles en este runout. Check realiza showdown value y evita desastre.',
+            'GTO simplificado: top pair baja mucho su frecuencia de apuesta cuando el turn completa una four-liner favorable al defensor.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 82, 'feedback' => 'Correcto. Tu mano tiene showdown value pero no valor claro.'],
+                'BET_50' => ['grade' => 'mistake', 'frequency' => 20, 'ev_score' => 42, 'feedback' => 'Te pagan demasiadas manos mejores.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 6, 'ev_score' => 18, 'feedback' => 'Apuesta grande sin valor. Muy mala en este runout.'],
+            ],
+            'No apuestes por inercia cuando el turn cambia totalmente la jerarquía de manos.',
+            'En NL2-NL10 evita value bets suicidas en boards de cuatro cartas a escalera.',
+            82
+        );
+    }
+
+    protected static function valueBigWithStraightVsStation(): array
+    {
+        return self::spot(
+            'turn_value_bb_vs_btn_t98_7_jq_bet75',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'straight_vs_station_big_value',
+            'Escalera fuerte vs calling station',
+            'BB vs BTN · QJ en T98 · Turn 7',
+            'BB',
+            'BTN',
+            ['Qh', 'Jc'],
+            ['Ts', '9d', '8c', '7h'],
+            7.5,
+            5.5,
+            42.0,
+            'Turn completa muchas manos fuertes',
+            'BTN chequeó flop y puede tener overpairs, Tx, 9x y proyectos que pagan.',
+            'BB tiene muchas escaleras y ventaja de nuts.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♦ 8♣', 'BB checks', 'BTN checks back', 'Turn: 7♥', 'Action on Hero BB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'QJ es escalera alta y quiere cobrar a cualquier Jx, 6x, dobles, sets, overpairs y pares tercos. El check pierde valor contra rivales que pagan demasiado.',
+            'GTO simplificado: con nuts o casi nuts tras check back, el defensor lidera turn con tamaños grandes.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 94, 'feedback' => 'Perfecto. Mano enorme, apuesta grande.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 22, 'ev_score' => 82, 'feedback' => 'Bien, pero contra station deja dinero.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 20, 'feedback' => 'Slowplay malo. Hay demasiadas manos que pagan.'],
+            ],
+            'Las manos muy fuertes en turn deben construir bote antes de que river asuste o corte acción.',
+            'En microlímites apuesta grande tus escaleras. Te pagan con manos dominadas muy a menudo.',
+            94
+        );
+    }
+
+    protected static function valueOverpairInThreeBetPotBlankTurn(): array
+    {
+        return self::spot(
+            'turn_value_sb_vs_btn_q74r_kk_turn_2_bet75',
+            'turn_value_bet',
+            'Turn Value Bet',
+            'overpair_three_bet_pot_blank_turn',
+            'Overpair en bote 3bet turn blank',
+            'SB vs BTN · KK en Q74r · Turn 2',
+            'SB',
+            'BTN',
+            ['Kh', 'Kc'],
+            ['Qs', '7d', '4c', '2h'],
+            18.0,
+            2.5,
+            38.0,
+            'Bote 3bet, turn totalmente blank',
+            'SB mantiene ventaja de rango y overpairs fuertes.',
+            'BTN tiene Qx, JJ-TT, pares medios y floats; SB domina con KK.',
+            ['BTN opens 2.5 BB', 'SB 3bets 10 BB', 'BTN calls', 'Flop: Q♠ 7♦ 4♣', 'SB bets 5 BB', 'BTN calls', 'Turn: 2♥', 'Action on Hero SB'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'KK en bote 3bet sobre turn blank debe seguir apostando. Hay muchas Qx y pares medios que pagan, y el SPR permite preparar shove river.',
+            'GTO simplificado: overpairs en botes 3bet sobre blanks continúan apostando por valor con alta frecuencia.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 68, 'ev_score' => 90, 'feedback' => 'Correcto. Construyes bote con ventaja clara.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 80, 'feedback' => 'También correcto, aunque menos presión.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 38, 'feedback' => 'Pierdes valor en un spot muy favorable.'],
+            ],
+            'En botes 3bet, los overpairs fuertes deben pensar en construir bote por calles.',
+            'En NL2-NL10 apuesta fuerte: BTN paga Qx y pockets demasiadas veces.',
+            90,
+            'three_bet_pot',
+            '3Bet Pot'
+        );
+    }
+
 }
