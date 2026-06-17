@@ -1,0 +1,252 @@
+# recorderis2.txt
+
+Fecha: 16 Junio 2026
+
+# CERTIFICACIÓN APEXCASH
+
+Idea aprobada para implementación futura.
+
+La Certificación ApexCash NO formará parte del sistema de desbloqueo de módulos.
+
+Será completamente opcional.
+
+Su objetivo será reconocer a los usuarios que hayan completado satisfactoriamente el programa de formación ApexCash.
+
+---
+
+# Filosofía
+
+La certificación no debe sentirse como un examen escolar obligatorio.
+
+Debe sentirse como un reconocimiento académico opcional.
+
+El usuario puede completar todo ApexCash sin realizar la certificación.
+
+La certificación existe para quienes quieran demostrar que dominan el contenido del programa.
+
+---
+
+# Requisitos para presentarse
+
+El usuario deberá haber completado:
+
+✓ Preflop
+
+✓ Flop
+
+✓ Turn
+
+✓ River
+
+✓ Advanced Training
+
+Solo entonces podrá acceder a la Certificación ApexCash.
+
+---
+
+# Examen Final ApexCash
+
+Examen único.
+
+Sin ayudas.
+
+Sin feedback.
+
+Sin mostrar respuestas correctas.
+
+Sin explicaciones durante el examen.
+
+El usuario responderá todos los spots y recibirá el resultado únicamente al finalizar.
+
+---
+
+# Composición del examen
+
+Propuesta inicial:
+
+100 spots aleatorios.
+
+Distribución:
+
+20 Preflop
+
+20 Flop
+
+20 Turn
+
+20 River
+
+20 Advanced Training
+
+Objetivo:
+
+Evaluar el conocimiento global del alumno.
+
+---
+
+# Resultados posibles
+
+## NO APTO
+
+Resultado inferior al 75%.
+
+No se genera certificado.
+
+El usuario verá:
+
+"No se ha alcanzado la puntuación mínima requerida para obtener la Certificación ApexCash."
+
+---
+
+## APROBADO
+
+Resultado entre 75% y 89%.
+
+Se genera certificado oficial ApexCash.
+
+---
+
+## APROBADO CON DISTINCIÓN
+
+Resultado igual o superior al 90%.
+
+Se genera certificado especial ApexCash.
+
+Este reconocimiento representa un desempeño sobresaliente dentro del examen de certificación.
+
+---
+
+# Información que NO aparecerá en el certificado
+
+NO mostrar:
+
+* Porcentaje obtenido.
+* Nota numérica.
+* Ranking.
+* Nivel.
+* Beginner.
+* Intermediate.
+* Advanced.
+* Expert.
+* Master.
+
+Nada de eso debe aparecer.
+
+El certificado debe verse limpio, elegante y profesional.
+
+---
+
+# Contenido del certificado
+
+Título:
+
+CERTIFICACIÓN APEXCASH
+
+Texto:
+
+"Se certifica que:
+
+[NOMBRE DEL USUARIO]
+
+ha completado satisfactoriamente el programa de formación ApexCash y ha demostrado los conocimientos requeridos para obtener esta certificación."
+
+Resultado:
+
+APROBADO
+
+o
+
+APROBADO CON DISTINCIÓN
+
+Fecha de emisión.
+
+Firma ApexCash.
+
+Logo ApexCash.
+
+Diseño elegante tipo academia.
+
+---
+
+# Certificado PDF
+
+Implementación futura.
+
+El usuario podrá descargar un PDF oficial.
+
+Objetivo:
+
+Que pueda guardarlo, imprimirlo o compartirlo.
+
+---
+
+# Política de reintentos
+
+Para proteger el valor de la certificación:
+
+Si el usuario NO APRUEBA:
+
+No podrá repetir el examen inmediatamente.
+
+---
+
+# Tiempo de espera
+
+7 días completos.
+
+Ejemplo:
+
+Examen realizado:
+15/06/2026
+
+Próximo intento disponible:
+22/06/2026
+
+---
+
+# Límite de intentos
+
+Máximo:
+
+3 intentos cada 90 días.
+
+Ejemplo:
+
+Intento 1:
+Fallo
+
+Intento 2:
+Fallo
+
+Intento 3:
+Fallo
+
+Si vuelve a fallar:
+
+Deberá esperar hasta completar el período de 90 días para obtener nuevos intentos.
+
+---
+
+# Objetivo de esta política
+
+Evitar:
+
+* Aprobar por repetición.
+* Memorizar respuestas.
+* Hacer decenas de exámenes el mismo día.
+
+La certificación debe tener valor real.
+
+Debe incentivar el estudio y la mejora continua.
+
+---
+
+# Filosofía final
+
+ApexCash no certifica que una persona sea profesional del póker.
+
+ApexCash certifica que una persona ha completado satisfactoriamente el programa de formación ApexCash.
+
+Ese debe ser siempre el mensaje principal.
+
+La certificación representa dominio del contenido enseñado dentro de la plataforma.

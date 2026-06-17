@@ -24,7 +24,6 @@
         summaryWrong: document.getElementById('summaryWrong'),
         summaryAccuracy: document.getElementById('summaryAccuracy'),
         leaksList: document.getElementById('leaksList'),
-        practiceLeakBtn: document.getElementById('practiceLeakBtn'),
         moduleFilter: document.getElementById('moduleFilter'),
     };
 
@@ -221,15 +220,6 @@
 
     els.next.addEventListener('click', () => {
         nextSpot(state.currentModule);
-    });
-
-    els.practiceLeakBtn?.addEventListener('click', () => {
-        const module = getWorstLeakModule();
-
-        if (!module) return;
-
-        state.currentModule = module;
-        nextSpot(module);
     });
 
     els.moduleFilter?.querySelectorAll('button').forEach((button) => {

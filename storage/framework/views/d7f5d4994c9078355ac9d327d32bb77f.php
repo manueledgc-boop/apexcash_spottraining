@@ -21,48 +21,7 @@
         $levelBase = max(0, ($level - 1) * 250);
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
-        $worstLeak = $leaks->first();
-
-        $flopModules = $postflopModules ?? [
-            'cbet_ip',
-            'check_back_ip',
-            'defense_vs_cbet',
-            'check_raise',
-            'value_bet',
-            'semi_bluff',
-        ];
-
-        $turnModules = [
-            'turn_barrel',
-            'turn_probe',
-            'turn_defense',
-            'turn_value_bet',
-            'turn_check_raise',
-        ];
-
-        $riverModules = [
-            'river_value_bet',
-            'river_bluff_catch',
-            'river_bluff',
-            'river_thin_value',
-            'river_overbet',
-        ];
-
-        $trainingRouteForModule = function (?string $module) use ($flopModules, $turnModules, $riverModules) {
-            if (in_array($module, $flopModules, true)) {
-                return 'postflop-training.index';
-            }
-
-            if (in_array($module, $turnModules, true)) {
-                return 'postflop-turn.index';
-            }
-
-            if (in_array($module, $riverModules, true)) {
-                return 'postflop-river.index';
-            }
-
-            return 'spot-training.index';
-        };
+        
     ?>
 
     <main class="dashboard-page">
@@ -118,7 +77,7 @@
                         <em>Entrar</em>
                     </a>
 
-                    <?php if($flopUnlocked): ?>
+                    <?php if($flopUnlocked ?? false): ?>
                         <a href="<?php echo e(route('postflop-training.index')); ?>" class="stage-route-card is-open">
                             <span>02</span>
                             <div>
@@ -138,7 +97,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if($turnUnlocked): ?>
+                    <?php if($turnUnlocked ?? false): ?>
                         <a href="<?php echo e(route('postflop-turn.index')); ?>" class="stage-route-card is-open">
                             <span>03</span>
                             <div>
@@ -158,7 +117,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if($riverUnlocked): ?>
+                    <?php if($riverUnlocked ?? false): ?>
                         <a href="<?php echo e(route('postflop-river.index')); ?>" class="stage-route-card is-open">
                             <span>04</span>
                             <div>
@@ -177,17 +136,30 @@
                             <em>🔒</em>
                         </div>
                     <?php endif; ?>
+
+                    <?php if($masteryUnlocked): ?>
+                        <a href="<?php echo e(route('mastery-training.index')); ?>" class="stage-route-card is-open">
+                            <span>05</span>
+                            <div>
+                                <strong>Advanced Training · Mastery</strong>
+                                <small>
+                                    <?php echo e(number_format((float) ($masteryGlobal->accuracy ?? 0), 1)); ?>% accuracy
+                                </small>
+                            </div>
+                            <em>Entrar</em>
+                        </a>
+                    <?php else: ?>
+                        <div class="stage-route-card is-locked">
+                            <span>05</span>
+                            <div>
+                                <strong>Advanced Training · Mastery</strong>
+                                <small>Bloqueado por progreso</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
-                <?php if($worstLeak): ?>
-                    <?php
-                        $worstLeakRoute = $trainingRouteForModule($worstLeak->module);
-                    ?>
-
-                    <a href="<?php echo e(route($worstLeakRoute, ['module' => $worstLeak->module])); ?>" class="worst-leak-cta">
-                        Practicar peor leak →
-                    </a>
-                <?php endif; ?>
             </div>
         </section>
 
@@ -207,7 +179,7 @@
             </div>
 
             <?php
-                $criticalLeakRoute = $trainingRouteForModule($criticalLeak->module);
+                $criticalLeakRoute = $routeForModule($criticalLeak->module);
             ?>
 
             <a href="<?php echo e(route($criticalLeakRoute, ['module' => $criticalLeak->module])); ?>">
@@ -243,7 +215,7 @@
                     <span>Preflop</span>
                     <strong>
                         <?php echo e(number_format((float) ($preflopGlobal->accuracy ?? 0), 1)); ?>%
-                        <?php echo e($flopUnlocked ? '✅' : '🔒'); ?>
+                        <?php echo e($flopUnlocked ? '✅' : '⏳'); ?>
 
                     </strong>
                 </div>
@@ -252,8 +224,13 @@
                     <span>Flop</span>
                     <strong>
                         <?php echo e(number_format((float) ($flopGlobal->accuracy ?? 0), 1)); ?>%
-                        <?php echo e($turnUnlocked ? '✅' : '🔒'); ?>
-
+                        <?php if(!$flopUnlocked): ?>
+                            🔒
+                        <?php elseif(!$turnUnlocked): ?>
+                            ⏳
+                        <?php else: ?>
+                            ✅
+                        <?php endif; ?>
                     </strong>
                 </div>
 
@@ -261,8 +238,13 @@
                     <span>Turn</span>
                     <strong>
                         <?php echo e(number_format((float) ($turnGlobal->accuracy ?? 0), 1)); ?>%
-                        <?php echo e($riverUnlocked ? '✅' : '🔒'); ?>
-
+                        <?php if(!$turnUnlocked): ?>
+                            🔒
+                        <?php elseif(!$riverUnlocked): ?>
+                            ⏳
+                        <?php else: ?>
+                            ✅
+                        <?php endif; ?>
                     </strong>
                 </div>
 
@@ -270,8 +252,27 @@
                     <span>River</span>
                     <strong>
                         <?php echo e(number_format((float) ($riverGlobal->accuracy ?? 0), 1)); ?>%
-                        <?php echo e($masteryUnlocked ? '🏆' : '🔒'); ?>
+                        <?php if(!$riverUnlocked): ?>
+                            🔒
+                        <?php elseif(!$masteryUnlocked): ?>
+                            ⏳
+                        <?php else: ?>
+                            ✅
+                        <?php endif; ?>
+                    </strong>
+                </div>
 
+                <div class="metric-row">
+                    <span>Mastery</span>
+                    <strong>
+                        <?php echo e(number_format((float) ($masteryGlobal->accuracy ?? 0), 1)); ?>%
+                        <?php if(!$masteryUnlocked): ?>
+                            🔒
+                        <?php elseif(!($certificationUnlocked ?? false)): ?>
+                            ⏳
+                        <?php else: ?>
+                            🎓
+                        <?php endif; ?>
                     </strong>
                 </div>
             </article>
@@ -301,7 +302,7 @@
             </article>
 
             <article class="dashboard-card danger-card">
-                <span>Peor módulo</span>
+                <span>Módulo a Mejorar</span>
                 <h2>
                     <?php if($worstModule): ?>
                         <?php echo e($worstModule->module_label); ?>
@@ -337,7 +338,7 @@
                 <h2>Módulos débiles</h2>
                 <?php $__empty_1 = true; $__currentLoopData = $leaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $leak): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php
-                        $leakRoute = $trainingRouteForModule($leak->module);
+                        $leakRoute = $routeForModule($leak->module);
                     ?>
                     <a class="metric-row" href="<?php echo e(route($leakRoute, ['module' => $leak->module])); ?>">
                         <span><?php echo e($leak->module_label); ?></span>
@@ -354,7 +355,7 @@
 
                 <?php $__empty_1 = true; $__currentLoopData = $worstSpots; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $spot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php
-                        $spotRoute = $trainingRouteForModule($spot->module);
+                        $spotRoute = $routeForModule($spot->module);
                     ?>
                     <a class="metric-row" href="<?php echo e(route($spotRoute, ['spot_id' => $spot->spot_id])); ?>">
                         <span>
@@ -426,7 +427,7 @@
 
                 <?php $__empty_1 = true; $__currentLoopData = $conceptLeaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $concept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php
-                        $conceptRoute = $trainingRouteForModule($concept->module);
+                        $conceptRoute = $routeForModule($concept->module);
                     ?>
                     <a
                         class="metric-row"
@@ -531,6 +532,46 @@
                     <strong>🔒</strong>
 
                 </article>
+
+                <?php endif; ?>
+
+                <?php if($masteryUnlocked ?? false): ?>
+
+                    <a href="<?php echo e(route('mastery-training.index')); ?>"
+                    class="dashboard-card table-card active">
+
+                        <span>Advanced Training</span>
+
+                        <h2>Mastery</h2>
+
+                        <p>
+                            3-Bet Pots, 4-Bet Pots,
+                            Blind vs Blind Advanced,
+                            Multiway, Short Stack
+                            y Tournament Lab.
+                        </p>
+
+                        <strong>Entrar →</strong>
+
+                    </a>
+
+                <?php else: ?>
+
+                    <article class="dashboard-card table-card">
+
+                        <span>Bloqueado</span>
+
+                        <h2>Mastery</h2>
+
+                        <p>
+                            Necesitas completar River
+                            y alcanzar los requisitos
+                            de XP y precisión.
+                        </p>
+
+                        <strong>🔒</strong>
+
+                    </article>
 
                 <?php endif; ?>
 

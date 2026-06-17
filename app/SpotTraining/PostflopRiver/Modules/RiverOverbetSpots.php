@@ -387,7 +387,7 @@ class RiverOverbetSpots
     protected static function quadsRiverOverbet(): array
     {
         return self::spot(
-            'river_overbet_bb_vs_btn_99_992_4_9_bet125',
+            'river_overbet_bb_vs_btn_99_992_4_A_bet125',
             'river_overbet',
             'River Overbet',
             'quads_river_overbet',
@@ -396,7 +396,7 @@ class RiverOverbetSpots
             'BB',
             'BTN',
             ['9h', '9d'],
-            ['9s', '9c', '2h', '4d', '9c'],
+            ['9s', '9c', '2h', '4d', 'Ac'],
             38.0,
             1.4,
             62.0,

@@ -12,48 +12,7 @@
         $levelBase = max(0, ($level - 1) * 250);
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
-        $worstLeak = $leaks->first();
-
-        $flopModules = $postflopModules ?? [
-            'cbet_ip',
-            'check_back_ip',
-            'defense_vs_cbet',
-            'check_raise',
-            'value_bet',
-            'semi_bluff',
-        ];
-
-        $turnModules = [
-            'turn_barrel',
-            'turn_probe',
-            'turn_defense',
-            'turn_value_bet',
-            'turn_check_raise',
-        ];
-
-        $riverModules = [
-            'river_value_bet',
-            'river_bluff_catch',
-            'river_bluff',
-            'river_thin_value',
-            'river_overbet',
-        ];
-
-        $trainingRouteForModule = function (?string $module) use ($flopModules, $turnModules, $riverModules) {
-            if (in_array($module, $flopModules, true)) {
-                return 'postflop-training.index';
-            }
-
-            if (in_array($module, $turnModules, true)) {
-                return 'postflop-turn.index';
-            }
-
-            if (in_array($module, $riverModules, true)) {
-                return 'postflop-river.index';
-            }
-
-            return 'spot-training.index';
-        };
+        
     @endphp
 
     <main class="dashboard-page">
@@ -109,7 +68,7 @@
                         <em>Entrar</em>
                     </a>
 
-                    @if($flopUnlocked)
+                    @if($flopUnlocked ?? false)
                         <a href="{{ route('postflop-training.index') }}" class="stage-route-card is-open">
                             <span>02</span>
                             <div>
@@ -129,7 +88,7 @@
                         </div>
                     @endif
 
-                    @if($turnUnlocked)
+                    @if($turnUnlocked ?? false)
                         <a href="{{ route('postflop-turn.index') }}" class="stage-route-card is-open">
                             <span>03</span>
                             <div>
@@ -149,7 +108,7 @@
                         </div>
                     @endif
 
-                    @if($riverUnlocked)
+                    @if($riverUnlocked ?? false)
                         <a href="{{ route('postflop-river.index') }}" class="stage-route-card is-open">
                             <span>04</span>
                             <div>
@@ -168,17 +127,30 @@
                             <em>🔒</em>
                         </div>
                     @endif
+
+                    @if($masteryUnlocked)
+                        <a href="{{ route('mastery-training.index') }}" class="stage-route-card is-open">
+                            <span>05</span>
+                            <div>
+                                <strong>Advanced Training · Mastery</strong>
+                                <small>
+                                    {{ number_format((float) ($masteryGlobal->accuracy ?? 0), 1) }}% accuracy
+                                </small>
+                            </div>
+                            <em>Entrar</em>
+                        </a>
+                    @else
+                        <div class="stage-route-card is-locked">
+                            <span>05</span>
+                            <div>
+                                <strong>Advanced Training · Mastery</strong>
+                                <small>Bloqueado por progreso</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    @endif
                 </div>
 
-                @if ($worstLeak)
-                    @php
-                        $worstLeakRoute = $trainingRouteForModule($worstLeak->module);
-                    @endphp
-
-                    <a href="{{ route($worstLeakRoute, ['module' => $worstLeak->module]) }}" class="worst-leak-cta">
-                        Practicar peor leak →
-                    </a>
-                @endif
             </div>
         </section>
 
@@ -198,7 +170,7 @@
             </div>
 
             @php
-                $criticalLeakRoute = $trainingRouteForModule($criticalLeak->module);
+                $criticalLeakRoute = $routeForModule($criticalLeak->module);
             @endphp
 
             <a href="{{ route($criticalLeakRoute, ['module' => $criticalLeak->module]) }}">
@@ -234,7 +206,7 @@
                     <span>Preflop</span>
                     <strong>
                         {{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%
-                        {{ $flopUnlocked ? '✅' : '🔒' }}
+                        {{ $flopUnlocked ? '✅' : '⏳' }}
                     </strong>
                 </div>
 
@@ -242,7 +214,13 @@
                     <span>Flop</span>
                     <strong>
                         {{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}%
-                        {{ $turnUnlocked ? '✅' : '🔒' }}
+                        @if(!$flopUnlocked)
+                            🔒
+                        @elseif(!$turnUnlocked)
+                            ⏳
+                        @else
+                            ✅
+                        @endif
                     </strong>
                 </div>
 
@@ -250,7 +228,13 @@
                     <span>Turn</span>
                     <strong>
                         {{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}%
-                        {{ $riverUnlocked ? '✅' : '🔒' }}
+                        @if(!$turnUnlocked)
+                            🔒
+                        @elseif(!$riverUnlocked)
+                            ⏳
+                        @else
+                            ✅
+                        @endif
                     </strong>
                 </div>
 
@@ -258,7 +242,27 @@
                     <span>River</span>
                     <strong>
                         {{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}%
-                        {{ $masteryUnlocked ? '🏆' : '🔒' }}
+                        @if(!$riverUnlocked)
+                            🔒
+                        @elseif(!$masteryUnlocked)
+                            ⏳
+                        @else
+                            ✅
+                        @endif
+                    </strong>
+                </div>
+
+                <div class="metric-row">
+                    <span>Mastery</span>
+                    <strong>
+                        {{ number_format((float) ($masteryGlobal->accuracy ?? 0), 1) }}%
+                        @if(!$masteryUnlocked)
+                            🔒
+                        @elseif(!($certificationUnlocked ?? false))
+                            ⏳
+                        @else
+                            🎓
+                        @endif
                     </strong>
                 </div>
             </article>
@@ -288,7 +292,7 @@
             </article>
 
             <article class="dashboard-card danger-card">
-                <span>Peor módulo</span>
+                <span>Módulo a Mejorar</span>
                 <h2>
                     @if ($worstModule)
                         {{ $worstModule->module_label }}
@@ -323,7 +327,7 @@
                 <h2>Módulos débiles</h2>
                 @forelse ($leaks as $leak)
                     @php
-                        $leakRoute = $trainingRouteForModule($leak->module);
+                        $leakRoute = $routeForModule($leak->module);
                     @endphp
                     <a class="metric-row" href="{{ route($leakRoute, ['module' => $leak->module]) }}">
                         <span>{{ $leak->module_label }}</span>
@@ -340,7 +344,7 @@
 
                 @forelse ($worstSpots as $spot)
                     @php
-                        $spotRoute = $trainingRouteForModule($spot->module);
+                        $spotRoute = $routeForModule($spot->module);
                     @endphp
                     <a class="metric-row" href="{{ route($spotRoute, ['spot_id' => $spot->spot_id]) }}">
                         <span>
@@ -409,7 +413,7 @@
 
                 @forelse ($conceptLeaks as $concept)
                     @php
-                        $conceptRoute = $trainingRouteForModule($concept->module);
+                        $conceptRoute = $routeForModule($concept->module);
                     @endphp
                     <a
                         class="metric-row"
@@ -513,6 +517,46 @@
                     <strong>🔒</strong>
 
                 </article>
+
+                @endif
+
+                @if($masteryUnlocked ?? false)
+
+                    <a href="{{ route('mastery-training.index') }}"
+                    class="dashboard-card table-card active">
+
+                        <span>Advanced Training</span>
+
+                        <h2>Mastery</h2>
+
+                        <p>
+                            3-Bet Pots, 4-Bet Pots,
+                            Blind vs Blind Advanced,
+                            Multiway, Short Stack
+                            y Tournament Lab.
+                        </p>
+
+                        <strong>Entrar →</strong>
+
+                    </a>
+
+                @else
+
+                    <article class="dashboard-card table-card">
+
+                        <span>Bloqueado</span>
+
+                        <h2>Mastery</h2>
+
+                        <p>
+                            Necesitas completar River
+                            y alcanzar los requisitos
+                            de XP y precisión.
+                        </p>
+
+                        <strong>🔒</strong>
+
+                    </article>
 
                 @endif
 

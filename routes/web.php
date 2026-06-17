@@ -7,6 +7,7 @@ use App\Http\Controllers\PostflopTurnTrainingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpotTrainingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MasteryTrainingController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -101,6 +102,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::post('/postflop-river/reset', [PostflopRiverTrainingController::class, 'reset'])
             ->name('postflop-river.reset');
+    });
+
+    Route::middleware('training.unlocked:mastery')->group(function () {
+        Route::get('/mastery', [MasteryTrainingController::class, 'index'])
+            ->name('mastery-training.index');
+
+        Route::get('/mastery/api/next', [MasteryTrainingController::class, 'next'])
+            ->name('mastery-training.next');
+
+        Route::post('/mastery/api/answer', [MasteryTrainingController::class, 'answer'])
+            ->name('mastery-training.answer');
+
+        Route::post('/mastery/reset', [MasteryTrainingController::class, 'reset'])
+            ->name('mastery-training.reset');
     });
 });
 

@@ -54,13 +54,6 @@
 <?php unset($__componentOriginalc295f12dca9d42f28a259237a5724830); ?>
 <?php endif; ?>
 
-                <a href="<?php echo e(route('dashboard')); ?>#progress" class="apex-nav-simple">
-                    Progress
-                </a>
-
-                <a href="<?php echo e(route('dashboard')); ?>#leaks" class="apex-nav-simple">
-                    Leaks
-                </a>
             </div>
         </div>
 

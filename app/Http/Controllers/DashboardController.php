@@ -22,6 +22,7 @@ class DashboardController extends Controller
         $flopGlobal = $progression->stageStats($user, 'flop');
         $turnGlobal = $progression->stageStats($user, 'turn');
         $riverGlobal = $progression->stageStats($user, 'river');
+        $masteryGlobal = $progression->stageStats($user, 'mastery');
 
         $progress = $progression->summary($user);
 
@@ -29,18 +30,10 @@ class DashboardController extends Controller
         $turnUnlocked = (bool) $progress['turn']['unlocked'];
         $riverUnlocked = (bool) $progress['river']['unlocked'];
         $masteryUnlocked = (bool) $progress['mastery']['unlocked'];
+        $certificationUnlocked = (bool) $progress['certification']['unlocked'];
         $nextGoal = $progression->nextGoal($user);
 
         $stageModules = $progression->stageAggregateModules();
-        $flopModules = $progression->flopModules();
-        $turnModules = $progression->turnModules();
-        $riverModules = $progression->riverModules();
-
-        $postflopModules = array_values(array_unique(array_merge(
-            $flopModules,
-            $turnModules,
-            $riverModules,
-        )));
 
         $moduleStats = UserTrainingStat::query()
             ->where('user_id', $userId)
@@ -134,6 +127,8 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $routeForModule = fn (?string $module): string => $progression->routeForModule($module);
+
         return view('dashboard', compact(
             'global',
             'moduleStats',
@@ -153,11 +148,10 @@ class DashboardController extends Controller
             'turnUnlocked',
             'riverUnlocked',
             'masteryUnlocked',
-            'postflopModules',
-            'flopModules',
-            'turnModules',
-            'riverModules',
-            'nextGoal'
+            'nextGoal',
+            'masteryGlobal',
+            'certificationUnlocked',
+            'routeForModule',
         ));
     }
 }

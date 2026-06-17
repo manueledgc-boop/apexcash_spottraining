@@ -1,0 +1,358 @@
+# recorderis.txt
+
+Fecha: 16 Junio 2026
+
+## Estado del proyecto
+
+ApexCash ha completado satisfactoriamente la primera gran fase del Spot Training.
+
+### Librería actual
+
+#### Preflop
+
+* Open Raise
+* BB vs BTN
+* BB vs SB
+* SB vs BTN
+* BTN vs 3Bet
+* 3Bet vs Open
+
+Total aproximado:
+
+* 275 spots
+
+---
+
+#### Flop
+
+* CBet IP
+* Check Back IP
+* Check Raise
+* Defense vs CBet
+* Semi Bluff
+* Value Bet
+* Overbet
+* Donk Bet
+* Float
+
+Total:
+
+* 100 spots
+
+---
+
+#### Turn
+
+* Turn Barrel
+* Turn Defense
+* Turn Probe
+* Turn Probe Bet
+* Turn Value Bet
+* Turn Check Raise
+
+Total:
+
+* 100 spots
+
+---
+
+#### River
+
+* River Bluff Catch
+* River Value Bet
+* River Thin Value
+* River Bluff
+* River Overbet
+
+Total:
+
+* 100 spots
+
+---
+
+## Total actual
+
+Preflop:
+
+* 275
+
+Flop:
+
+* 100
+
+Turn:
+
+* 100
+
+River:
+
+* 100
+
+TOTAL:
+
+* 575 spots
+
+---
+
+# Decisión importante
+
+No seguir aumentando spots por cantidad.
+
+A partir de este punto ApexCash ya dispone de una librería suficientemente grande para una V1 seria.
+
+La prioridad futura debe centrarse en:
+
+* Calidad.
+* Progresión.
+* Experiencia de aprendizaje.
+* Modos de entrenamiento avanzados.
+
+---
+
+# Filosofía de progresión
+
+La estructura definitiva del aprendizaje será:
+
+Preflop
+↓
+Flop
+↓
+Turn
+↓
+River
+↓
+Advanced Training
+
+No se modificarán los requisitos actuales.
+
+Los porcentajes de precisión y XP actuales se mantienen exactamente como están.
+
+Cuando un usuario desbloquee River significa que ya ha superado todo el Core Training.
+
+Por lo tanto:
+
+NO crear nuevos requisitos.
+
+NO aumentar porcentajes.
+
+NO cambiar el sistema actual.
+
+Simplemente:
+
+# River desbloqueado
+
+Advanced Training desbloqueado
+
+---
+
+# Estructura futura
+
+## CORE TRAINING
+
+Preflop
+
+Flop
+
+Turn
+
+River
+
+---
+
+## ADVANCED TRAINING
+
+Nueva sección independiente.
+
+No pertenece a ninguna calle específica.
+
+Representa situaciones complejas que atraviesan varias calles.
+
+---
+
+# Módulos Advanced previstos
+
+## Advanced Level 1
+
+### 3Bet Pots
+
+Ejemplos:
+
+* BTN vs BB 3Bet Pot
+* CO vs BTN 3Bet Pot
+* SB vs BTN 3Bet Pot
+
+Objetivo:
+
+Aprender juego completo en botes 3beteados.
+
+---
+
+## Advanced Level 2
+
+### 4Bet Pots
+
+Ejemplos:
+
+* BTN vs SB 4Bet Pot
+* BB vs BTN 4Bet Pot
+* CO vs BTN 4Bet Pot
+
+Objetivo:
+
+Aprender SPR bajos y rangos comprimidos.
+
+---
+
+## Advanced Level 3
+
+### Blind vs Blind Advanced
+
+Ejemplos:
+
+* XR turn
+* XR river
+* Overbets
+* Líneas complejas
+
+Objetivo:
+
+Dominar los enfrentamientos más frecuentes de las ciegas.
+
+---
+
+## Advanced Level 4
+
+### Multiway
+
+Ejemplos:
+
+* 3 jugadores
+* 4 jugadores
+* Pots multiway
+
+Objetivo:
+
+Aprender estrategias donde existen varios rivales.
+
+Actualmente ApexCash es principalmente Heads Up.
+
+---
+
+## Advanced Level 5
+
+### Short Stack Lab
+
+Ejemplos:
+
+* 10 BB
+* 15 BB
+* 20 BB
+
+Conceptos:
+
+* Push/Fold
+* Reshove
+* Call vs shove
+
+Objetivo:
+
+Preparar al jugador para situaciones reales de torneo.
+
+---
+
+## Advanced Level 6
+
+### Tournament Lab
+
+Ejemplos:
+
+* Bubble
+* ITM
+* Mesa Final
+* ICM
+
+Objetivo:
+
+Entrenamiento específico para jugadores de torneos.
+
+Actualmente no existe contenido ICM en ApexCash.
+
+---
+
+# Arquitectura recomendada
+
+Nueva carpeta:
+
+app/SpotTraining/Advanced/
+
+Estructura:
+
+app/SpotTraining/Advanced/
+├── AdvancedSpotRepository.php
+├── Concerns/
+├── Modules/
+│
+├── ThreeBetPotSpots.php
+├── FourBetPotSpots.php
+├── BlindVsBlindAdvancedSpots.php
+├── MultiwaySpots.php
+├── ShortStackSpots.php
+└── TournamentSpots.php
+
+---
+
+# Controladores futuros
+
+AdvancedTrainingController
+
+AdvancedTrainingService
+
+Blade independiente:
+
+advanced-training/index.blade.php
+
+---
+
+# Desbloqueo
+
+Cuando River esté desbloqueado:
+
+Advanced Training se desbloquea automáticamente.
+
+No añadir nuevas restricciones.
+
+No modificar los porcentajes actuales.
+
+---
+
+# Visión final
+
+El objetivo es convertir ApexCash en un camino completo de aprendizaje:
+
+Principiante
+↓
+Preflop
+↓
+Flop
+↓
+Turn
+↓
+River
+↓
+3Bet Pots
+↓
+4Bet Pots
+↓
+Blind vs Blind Advanced
+↓
+Multiway
+↓
+Short Stack
+↓
+Tournament Lab
+
+De esta manera el usuario aprende paso a paso sin enfrentarse desde el inicio a conceptos demasiado avanzados.
+
+La progresión es obligatoria y guiada.
+
+Esta filosofía debe mantenerse en futuras versiones del proyecto.

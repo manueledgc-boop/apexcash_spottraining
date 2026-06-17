@@ -29,7 +29,6 @@
         summaryWrong: document.getElementById('summaryWrong'),
         summaryAccuracy: document.getElementById('summaryAccuracy'),
         leaksList: document.getElementById('leaksList'),
-        practiceLeakBtn: document.getElementById('practiceLeakBtn'),
         moduleFilter: document.getElementById('moduleFilter'),
         decisionResultBox: document.getElementById('decisionResultBox'),
         lowStakesInsightBox: document.getElementById('lowStakesInsightBox'),
@@ -308,15 +307,6 @@
             state.currentMode,
             state.currentConcept
         );
-    });
-
-    els.practiceLeakBtn?.addEventListener('click', () => {
-        const module = getWorstLeakModule();
-        if (!module) return;
-        state.currentModule = module;
-        state.currentMode = 'normal';
-        state.currentConcept = null;
-        nextSpot(module, state.currentMode, null);
     });
 
     els.moduleFilter?.querySelectorAll('button').forEach((button) => {

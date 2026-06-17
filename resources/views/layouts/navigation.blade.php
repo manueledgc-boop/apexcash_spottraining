@@ -18,13 +18,6 @@
                     Training
                 </x-nav-link>
 
-                <a href="{{ route('dashboard') }}#progress" class="apex-nav-simple">
-                    Progress
-                </a>
-
-                <a href="{{ route('dashboard') }}#leaks" class="apex-nav-simple">
-                    Leaks
-                </a>
             </div>
         </div>
 

@@ -9,14 +9,17 @@ use Illuminate\Support\Collection;
 class TrainingProgressionService
 {
     public const FLOP_XP_REQUIRED = 1000;
-    public const TURN_XP_REQUIRED = 3000;
-    public const RIVER_XP_REQUIRED = 6000;
-    public const MASTERY_XP_REQUIRED = 10000;
+    public const TURN_XP_REQUIRED = 3000; //3000
+    public const RIVER_XP_REQUIRED = 6000; //6000
+    public const MASTERY_XP_REQUIRED = 10000; //10000
+    public const CERTIFICATION_XP_REQUIRED = 14000; //14000
+
 
     public const PREFLOP_ACCURACY_REQUIRED = 70.0;
     public const FLOP_ACCURACY_REQUIRED = 70.0;
     public const TURN_ACCURACY_REQUIRED = 70.0;
-    public const RIVER_ACCURACY_REQUIRED = 75.0;
+    public const RIVER_ACCURACY_REQUIRED = 70.0;
+    public const MASTERY_ACCURACY_REQUIRED = 70.0;
 
     /*
      * Evita el bug clásico:
@@ -78,6 +81,7 @@ class TrainingProgressionService
             'flop' => 'postflop_flop',
             'turn' => 'postflop_turn',
             'river' => 'postflop_river',
+            'mastery' => 'mastery_global',
             default => null,
         };
     }
@@ -89,6 +93,7 @@ class TrainingProgressionService
             $this->flopModules(),
             $this->turnModules(),
             $this->riverModules(),
+            $this->masteryModules(),
         )));
     }
 
@@ -100,6 +105,7 @@ class TrainingProgressionService
             'postflop_flop',
             'postflop_turn',
             'postflop_river',
+            'mastery_global',
         ];
     }
 
@@ -117,6 +123,10 @@ class TrainingProgressionService
             return 'postflop-river.index';
         }
 
+        if (in_array($module, $this->masteryModules(), true)) {
+            return 'mastery-training.index';
+        }
+
         return 'spot-training.index';
     }
 
@@ -132,6 +142,10 @@ class TrainingProgressionService
 
         if (in_array($module, $this->riverModules(), true)) {
             return 'river';
+        }
+
+        if (in_array($module, $this->masteryModules(), true)) {
+            return 'mastery';
         }
 
         return 'preflop';
@@ -181,6 +195,7 @@ class TrainingProgressionService
             'flop' => $this->flopModules(),
             'turn' => $this->turnModules(),
             'river' => $this->riverModules(),
+            'mastery' => $this->masteryModules(),
             default => [],
         };
 
@@ -204,11 +219,14 @@ class TrainingProgressionService
         $flop = $this->stageStats($user, 'flop');
         $turn = $this->stageStats($user, 'turn');
         $river = $this->stageStats($user, 'river');
+        $mastery = $this->stageStats($user, 'mastery');
+        
 
         $flopUnlocked = $this->passes($xp, self::FLOP_XP_REQUIRED, $preflop, self::PREFLOP_ACCURACY_REQUIRED);
         $turnUnlocked = $this->passes($xp, self::TURN_XP_REQUIRED, $flop, self::FLOP_ACCURACY_REQUIRED);
         $riverUnlocked = $this->passes($xp, self::RIVER_XP_REQUIRED, $turn, self::TURN_ACCURACY_REQUIRED);
         $masteryUnlocked = $this->passes($xp, self::MASTERY_XP_REQUIRED, $river, self::RIVER_ACCURACY_REQUIRED);
+        $certificationUnlocked = $this->passes($xp, self::CERTIFICATION_XP_REQUIRED, $mastery, self::MASTERY_ACCURACY_REQUIRED);
 
         return [
             'xp' => $xp,
@@ -246,12 +264,22 @@ class TrainingProgressionService
             ],
 
             'mastery' => [
-                'stats' => $river,
+                'stats' => $mastery,
+                'previous_stats' => $river,
                 'unlocked' => $masteryUnlocked,
                 'required_xp' => self::MASTERY_XP_REQUIRED,
                 'required_accuracy' => self::RIVER_ACCURACY_REQUIRED,
                 'required_stage' => 'River',
             ],
+
+            'certification' => [
+                'stats' => $mastery,
+                'previous_stats' => $mastery,
+                'unlocked' => $certificationUnlocked,
+                'required_xp' => self::CERTIFICATION_XP_REQUIRED,
+                'required_accuracy' => self::MASTERY_ACCURACY_REQUIRED,
+                'required_stage' => 'Mastery',
+            ],  
         ];
     }
 
@@ -265,6 +293,7 @@ class TrainingProgressionService
             'turn' => (bool) $summary['turn']['unlocked'],
             'river' => (bool) $summary['river']['unlocked'],
             'mastery' => (bool) $summary['mastery']['unlocked'],
+            'certification' => (bool) $summary['certification']['unlocked'],
             default => false,
         };
     }
@@ -319,6 +348,34 @@ class TrainingProgressionService
             );
         }
 
+        if ($stage === 'mastery') {
+            $current = $this->stageStats($user, 'river');
+
+            return sprintf(
+                'Mastery bloqueado. Necesitas %d XP global, mínimo %d spots de River y %.1f%% de precisión en River. Ahora tienes %d XP, %d spots y %.1f%%.',
+                self::MASTERY_XP_REQUIRED,
+                self::MIN_STAGE_SAMPLE,
+                self::RIVER_ACCURACY_REQUIRED,
+                $summary['xp'],
+                $current->total_spots,
+                $current->accuracy
+            );
+        }
+
+        if ($stage === 'certification') {
+            $current = $this->stageStats($user, 'mastery');
+
+            return sprintf(
+                'Certificación bloqueada. Necesitas %d XP global, mínimo %d spots de Mastery y %.1f%% de precisión en Mastery. Ahora tienes %d XP, %d spots y %.1f%%.',
+                self::CERTIFICATION_XP_REQUIRED,
+                self::MIN_STAGE_SAMPLE,
+                self::MASTERY_ACCURACY_REQUIRED,
+                $summary['xp'],
+                $current->total_spots,
+                $current->accuracy
+            );
+        }
+
         return 'Todavía no has desbloqueado este módulo.';
     }
 
@@ -337,10 +394,14 @@ class TrainingProgressionService
         }
 
         if (!$this->canAccess($user, 'mastery')) {
-            return 'Siguiente objetivo: Mastery. Mejora tu precisión en River y acumula más XP.';
+            return $this->lockedMessage($user, 'mastery');
         }
 
-        return 'Mastery desbloqueado. Sigue entrenando tus leaks más caros.';
+        if (!$this->canAccess($user, 'certification')) {
+            return $this->lockedMessage($user, 'certification');
+        }
+
+        return 'Certificación desbloqueada. Ya puedes presentar el examen final ApexCash cuando quieras.';
     }
 
     private function passes(int $xp, int $requiredXp, object $stageStats, float $requiredAccuracy): bool
@@ -387,4 +448,18 @@ class TrainingProgressionService
     {
         return max(1, intdiv($xp, 250) + 1);
     }
+
+    public function masteryModules(): array
+    {
+        return [
+            'three_bet_pots',
+            'four_bet_pots',
+            'blind_vs_blind_advanced',
+            'multiway',
+            'short_stack_lab',
+            'tournament_lab',
+        ];
+    }
+
+
 }
