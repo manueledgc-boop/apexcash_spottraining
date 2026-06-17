@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpotTrainingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MasteryTrainingController;
+use App\Http\Controllers\CertificationController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -117,6 +118,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/mastery/reset', [MasteryTrainingController::class, 'reset'])
             ->name('mastery-training.reset');
     });
+
+    Route::middleware('training.unlocked:certification')->group(function () {
+        Route::get('/certification', [CertificationController::class, 'index'])
+            ->name('certification.index');
+
+        Route::post('/certification/start', [CertificationController::class, 'start'])
+            ->middleware('training.unlocked:certification')
+            ->name('certification.start');
+    });
+
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -1,118 +1,27 @@
-# recorderis.txt
+# RECORDERIS - CERTIFICATION V1
 
-Fecha: 16 Junio 2026
+Fecha: 17/06/2026
 
-## Estado del proyecto
+## Estado actual
 
-ApexCash ha completado satisfactoriamente la primera gran fase del Spot Training.
+Completado:
 
-### Librería actual
-
-#### Preflop
-
-* Open Raise
-* BB vs BTN
-* BB vs SB
-* SB vs BTN
-* BTN vs 3Bet
-* 3Bet vs Open
-
-Total aproximado:
-
-* 275 spots
+* Tabla certification_attempts creada.
+* Modelo CertificationAttempt creado.
+* CertificationController creado.
+* Rutas básicas creadas.
+* Pantalla inicial de Certification funcionando.
+* Desbloqueo conectado a TrainingProgressionService.
+* Sistema de bloqueo de 7 días preparado.
+* Preparado para registrar intentos futuros.
 
 ---
 
-#### Flop
+# Objetivo
 
-* CBet IP
-* Check Back IP
-* Check Raise
-* Defense vs CBet
-* Semi Bluff
-* Value Bet
-* Overbet
-* Donk Bet
-* Float
+Añadir la etapa final de ApexCash:
 
-Total:
-
-* 100 spots
-
----
-
-#### Turn
-
-* Turn Barrel
-* Turn Defense
-* Turn Probe
-* Turn Probe Bet
-* Turn Value Bet
-* Turn Check Raise
-
-Total:
-
-* 100 spots
-
----
-
-#### River
-
-* River Bluff Catch
-* River Value Bet
-* River Thin Value
-* River Bluff
-* River Overbet
-
-Total:
-
-* 100 spots
-
----
-
-## Total actual
-
-Preflop:
-
-* 275
-
-Flop:
-
-* 100
-
-Turn:
-
-* 100
-
-River:
-
-* 100
-
-TOTAL:
-
-* 575 spots
-
----
-
-# Decisión importante
-
-No seguir aumentando spots por cantidad.
-
-A partir de este punto ApexCash ya dispone de una librería suficientemente grande para una V1 seria.
-
-La prioridad futura debe centrarse en:
-
-* Calidad.
-* Progresión.
-* Experiencia de aprendizaje.
-* Modos de entrenamiento avanzados.
-
----
-
-# Filosofía de progresión
-
-La estructura definitiva del aprendizaje será:
-
+```text
 Preflop
 ↓
 Flop
@@ -121,238 +30,272 @@ Turn
 ↓
 River
 ↓
-Advanced Training
+Advanced Training · Mastery
+↓
+Certification
+```
 
-No se modificarán los requisitos actuales.
-
-Los porcentajes de precisión y XP actuales se mantienen exactamente como están.
-
-Cuando un usuario desbloquee River significa que ya ha superado todo el Core Training.
-
-Por lo tanto:
-
-NO crear nuevos requisitos.
-
-NO aumentar porcentajes.
-
-NO cambiar el sistema actual.
-
-Simplemente:
-
-# River desbloqueado
-
-Advanced Training desbloqueado
+La Certification debe ser visible desde el principio igual que el resto de etapas.
 
 ---
 
-# Estructura futura
+# Estados visuales
 
-## CORE TRAINING
+## Bloqueado
 
+```text
+🔒
+Bloqueado por progreso
+```
+
+---
+
+## Disponible
+
+```text
+⏳
+Disponible
+```
+
+---
+
+## Completado
+
+```text
+🎓
+Certificación obtenida
+```
+
+---
+
+# Pantalla Certification
+
+La pantalla actual es funcional pero debe rediseñarse.
+
+Objetivo:
+
+Convertirla en una pantalla profesional equivalente a una etapa importante de ApexCash.
+
+---
+
+## Añadir Ruta ApexCash visual
+
+Mostrar:
+
+```text
+Preflop           ✅
+Flop              ✅
+Turn              ✅
+River             ✅
+Mastery           ✅
+Certification     ⏳
+```
+
+---
+
+## Añadir mensaje principal
+
+Mostrar:
+
+"Has completado la ruta formativa ApexCash.
+
+La certificación es la evaluación final del programa y medirá tus conocimientos en Preflop, Flop, Turn, River y Advanced Training."
+
+---
+
+## Mostrar estructura del examen
+
+```text
+75 preguntas totales
+
+15 Preflop
+15 Flop
+15 Turn
+15 River
+15 Mastery
+```
+
+---
+
+## Mostrar requisitos
+
+```text
+75% mínimo global
+
+60% mínimo por bloque
+```
+
+Bloques:
+
+```text
 Preflop
-
 Flop
-
 Turn
-
 River
+Mastery
+```
+
+No se puede compensar un bloque muy débil con otro muy fuerte.
 
 ---
 
-## ADVANCED TRAINING
+## Mostrar política de reintentos
 
-Nueva sección independiente.
+```text
+Si suspendes:
 
-No pertenece a ninguna calle específica.
-
-Representa situaciones complejas que atraviesan varias calles.
-
----
-
-# Módulos Advanced previstos
-
-## Advanced Level 1
-
-### 3Bet Pots
-
-Ejemplos:
-
-* BTN vs BB 3Bet Pot
-* CO vs BTN 3Bet Pot
-* SB vs BTN 3Bet Pot
-
-Objetivo:
-
-Aprender juego completo en botes 3beteados.
+Debes esperar 7 días
+antes de volver a presentarte.
+```
 
 ---
 
-## Advanced Level 2
+## Mostrar resultados posibles
 
-### 4Bet Pots
+```text
+✅ Aprobado
 
-Ejemplos:
+🏆 Aprobado con Distinción
 
-* BTN vs SB 4Bet Pot
-* BB vs BTN 4Bet Pot
-* CO vs BTN 4Bet Pot
-
-Objetivo:
-
-Aprender SPR bajos y rangos comprimidos.
+❌ No aprobado
+```
 
 ---
 
-## Advanced Level 3
+## Mejorar botón principal
 
-### Blind vs Blind Advanced
+Botón grande y destacado:
 
-Ejemplos:
+```text
+COMENZAR CERTIFICACIÓN
+```
 
-* XR turn
-* XR river
-* Overbets
-* Líneas complejas
-
-Objetivo:
-
-Dominar los enfrentamientos más frecuentes de las ciegas.
+Debe ser el elemento visual principal de la pantalla.
 
 ---
 
-## Advanced Level 4
+## Nota legal
 
-### Multiway
+Mostrar al final:
 
-Ejemplos:
+"La Certificación ApexCash es una certificación privada emitida por ApexCash como reconocimiento interno de formación y evaluación.
 
-* 3 jugadores
-* 4 jugadores
-* Pots multiway
-
-Objetivo:
-
-Aprender estrategias donde existen varios rivales.
-
-Actualmente ApexCash es principalmente Heads Up.
+No constituye una titulación académica oficial ni una acreditación emitida por organismos públicos."
 
 ---
 
-## Advanced Level 5
+# Examen
 
-### Short Stack Lab
-
-Ejemplos:
-
-* 10 BB
-* 15 BB
-* 20 BB
-
-Conceptos:
-
-* Push/Fold
-* Reshove
-* Call vs shove
-
-Objetivo:
-
-Preparar al jugador para situaciones reales de torneo.
+Pendiente de implementar.
 
 ---
 
-## Advanced Level 6
+## Generación
 
-### Tournament Lab
+75 preguntas aleatorias:
 
-Ejemplos:
-
-* Bubble
-* ITM
-* Mesa Final
-* ICM
-
-Objetivo:
-
-Entrenamiento específico para jugadores de torneos.
-
-Actualmente no existe contenido ICM en ApexCash.
+```text
+15 Preflop
+15 Flop
+15 Turn
+15 River
+15 Mastery
+```
 
 ---
 
-# Arquitectura recomendada
+## Durante el examen
 
-Nueva carpeta:
+NO mostrar:
 
-app/SpotTraining/Advanced/
+```text
+Feedback
+Explicaciones
+GTO
+Exploit
+EV
+Frecuencias
+Notas
+Consejos
+```
 
-Estructura:
+Solo:
 
-app/SpotTraining/Advanced/
-├── AdvancedSpotRepository.php
-├── Concerns/
-├── Modules/
-│
-├── ThreeBetPotSpots.php
-├── FourBetPotSpots.php
-├── BlindVsBlindAdvancedSpots.php
-├── MultiwaySpots.php
-├── ShortStackSpots.php
-└── TournamentSpots.php
-
----
-
-# Controladores futuros
-
-AdvancedTrainingController
-
-AdvancedTrainingService
-
-Blade independiente:
-
-advanced-training/index.blade.php
+```text
+Pregunta actual
+Mesa
+Acciones
+Botones de respuesta
+```
 
 ---
 
-# Desbloqueo
+# Resultado final
 
-Cuando River esté desbloqueado:
+## No aprobado
 
-Advanced Training se desbloquea automáticamente.
+Menos de 75%.
 
-No añadir nuevas restricciones.
+Guardar:
 
-No modificar los porcentajes actuales.
+```text
+next_attempt_at = +7 días
+```
 
 ---
 
-# Visión final
+## Aprobado
 
-El objetivo es convertir ApexCash en un camino completo de aprendizaje:
+75% - 89%
 
-Principiante
-↓
-Preflop
-↓
-Flop
-↓
-Turn
-↓
-River
-↓
-3Bet Pots
-↓
-4Bet Pots
-↓
-Blind vs Blind Advanced
-↓
-Multiway
-↓
-Short Stack
-↓
-Tournament Lab
+Certificado:
 
-De esta manera el usuario aprende paso a paso sin enfrentarse desde el inicio a conceptos demasiado avanzados.
+```text
+APROBADO
+```
 
-La progresión es obligatoria y guiada.
+---
 
-Esta filosofía debe mantenerse en futuras versiones del proyecto.
+## Aprobado con Distinción
+
+90% o más.
+
+Certificado:
+
+```text
+APROBADO CON DISTINCIÓN
+```
+
+---
+
+# Certificado
+
+Debe incluir:
+
+* Nombre del usuario.
+* Fecha.
+* Número de certificado.
+* Resultado.
+* Logo ApexCash.
+* Firma ApexCash.
+
+No mostrar:
+
+* Porcentaje.
+* Nota.
+* Estadísticas.
+
+---
+
+# Mensaje final al usuario
+
+"La certificación marca el final de la formación.
+
+No el final del aprendizaje."
+
+Objetivo posterior:
+
+* Mantener nivel.
+* Detectar leaks.
+* Mejorar precisión.
+* Seguir entrenando.
