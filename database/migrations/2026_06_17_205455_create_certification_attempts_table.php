@@ -52,7 +52,9 @@ return new class extends Migration
             $table->json('answers_snapshot')->nullable();
 
             $table->timestamp('started_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('completed_at')->nullable();
+            $table->unsignedInteger('duration_seconds')->nullable();
             $table->timestamp('next_attempt_at')->nullable();
 
             $table->timestamps();

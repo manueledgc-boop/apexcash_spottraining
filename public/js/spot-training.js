@@ -1,4 +1,7 @@
 (function () {
+    const i18n = window.ApexSpotTraining?.i18n?.js || {};
+    const t = (key, fallback) => i18n[key] || fallback;
+
     const urlParams = new URLSearchParams(window.location.search);
 
     const state = {
@@ -94,8 +97,8 @@
 
         els.module.textContent = spot.module_label;
         els.title.textContent = spot.title;
-        els.meta.textContent = `Hero ${spot.hero_position} · Villano ${spot.villain_position || 'sin villano directo'} · Stacks ${spot.stacks.hero_bb} BB`;
-        els.pot.textContent = `Pot: ${spot.pot_bb} BB`;
+        els.meta.textContent = `${t('hero', 'Hero')} ${spot.hero_position} · ${t('villain', 'Villano')} ${spot.villain_position || t('villain_none', 'sin villano directo')} · ${t('stacks', 'Stacks')} ${spot.stacks.hero_bb} BB`;
+        els.pot.textContent = `${t('pot', 'Pot')}: ${spot.pot_bb} BB`;
         els.actions.innerHTML = spot.actions.map((action) => `<li>${action}</li>`).join('');
         els.heroCards.innerHTML = spot.hero_cards.map(cardHtml).join('');
         clearFeedback();
@@ -119,7 +122,7 @@
             els.gradeBox.style.display = 'block';
             els.gradeBox.className = `grade-box grade-${data.grade || 'unknown'}`;
             els.gradeBox.innerHTML = `
-                <span>Calidad de decisión</span>
+                <span>${t('decision_quality', 'Calidad de decisión')}</span>
                 <strong>${String(data.grade || 'unknown').toUpperCase()}</strong>
             `;
         }
@@ -128,7 +131,7 @@
             els.frequencyBox.removeAttribute('hidden');
             els.frequencyBox.style.display = 'block';
             els.frequencyBox.innerHTML = `
-                <span>Frecuencia GTO simplificada</span>
+                <span>${t('gto_frequency', 'Frecuencia GTO simplificada')}</span>
                 <strong>${data.selected_action || '-'}: ${data.frequency ?? '-'}%</strong>
             `;
         }
@@ -137,7 +140,7 @@
             els.evBox.removeAttribute('hidden');
             els.evBox.style.display = 'block';
             els.evBox.innerHTML = `
-                <span>EV relativo</span>
+                <span>${t('relative_ev', 'EV relativo')}</span>
                 <strong>${data.ev_score ?? 0}/100</strong>
             `;
         }
@@ -148,7 +151,7 @@
         els.leaksList.innerHTML = '';
 
         if (!Array.isArray(leaks) || leaks.length === 0) {
-            els.leaksList.innerHTML = `<p class="spot-meta">Aún no hay datos suficientes.</p>`;
+            els.leaksList.innerHTML = `<p class="spot-meta">${t('no_data', 'Aún no hay datos suficientes.')}</p>`;
             return;
         }
 
@@ -185,7 +188,7 @@
             els.feedback.removeAttribute('hidden');
             els.feedback.style.display = 'block';
             els.feedback.className = 'feedback wrong';
-            els.feedback.textContent = data.message || 'No se pudo evaluar el spot.';
+            els.feedback.textContent = data.message || t('eval_error', 'No se pudo evaluar el spot.');
             return;
         }
 
@@ -211,8 +214,8 @@
         els.feedback.className = `feedback ${data.correct ? 'correct' : 'wrong'}`;
         els.feedback.innerHTML = `
             <strong>${data.title}</strong><br>
-            Tu decisión: <strong>${data.selected_action}</strong><br>
-            Mejor acción: <strong>${data.correct_action}</strong><br><br>
+            ${t('your_decision', 'Tu decisión')}: <strong>${data.selected_action}</strong><br>
+            ${t('best_action', 'Mejor acción')}: <strong>${data.correct_action}</strong><br><br>
             ${data.explanation}
         `;
 
@@ -278,7 +281,7 @@
             els.lowStakesInsightBox.style.display = '';
             els.lowStakesInsightBox.innerHTML = `
                 <div class="insight-card">
-                    <div class="insight-title">💰 Pool NL2-NL10</div>
+                    <div class="insight-title">${t('low_stakes_pool', '💰 Pool NL2-NL10')}</div>
                     <p>${insights.low_stakes}</p>
                 </div>
             `;

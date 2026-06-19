@@ -12,77 +12,73 @@
         $levelBase = max(0, ($level - 1) * 250);
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
-        
     @endphp
 
     <main class="dashboard-page">
         <section class="dashboard-hero dashboard-hero-v2">
             <div class="dashboard-hero-main">
-                <span class="dashboard-badge">APEXCASH TRAINING DASHBOARD</span>
+                <span class="dashboard-badge">{{ __('dashboard.badge') }}</span>
 
-                <h1>Hola, {{ auth()->user()->name }}</h1>
+                <h1>{{ __('dashboard.hello', ['name' => auth()->user()->name]) }}</h1>
 
-                <p>
-                    Tu progreso ya está guardado: XP, precisión, módulos desbloqueados,
-                    leaks reales y errores concretos que debes corregir.
-                </p>
+                <p>{{ __('dashboard.hero_text') }}</p>
 
                 <div class="dashboard-hero-metrics">
                     <div>
-                        <span>Nivel</span>
+                        <span>{{ __('dashboard.level') }}</span>
                         <strong>{{ $level }}</strong>
                     </div>
 
                     <div>
-                        <span>XP Global</span>
+                        <span>{{ __('dashboard.global_xp') }}</span>
                         <strong>{{ $xp }}</strong>
                     </div>
 
                     <div>
-                        <span>Accuracy</span>
+                        <span>{{ __('dashboard.accuracy') }}</span>
                         <strong>{{ number_format($accuracy, 1) }}%</strong>
                     </div>
 
                     <div>
-                        <span>Spots</span>
+                        <span>{{ __('dashboard.spots') }}</span>
                         <strong>{{ $total }}</strong>
                     </div>
                 </div>
 
                 <div class="dashboard-next-goal">
-                    <span>Siguiente objetivo</span>
+                    <span>{{ __('dashboard.next_goal') }}</span>
                     <strong>{{ $nextGoal }}</strong>
                 </div>
             </div>
 
             <div class="dashboard-quick-panel">
-                <span class="quick-panel-title">Ruta ApexCash</span>
+                <span class="quick-panel-title">{{ __('dashboard.apexcash_route') }}</span>
 
                 <div class="stage-route-list">
                     <a href="{{ route('spot-training.index') }}" class="stage-route-card is-open">
                         <span>01</span>
                         <div>
-                            <strong>Preflop</strong>
-                            <small>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                            <strong>{{ __('dashboard.preflop') }}</strong>
+                            <small>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}% {{ __('dashboard.accuracy_lower') }}</small>
                         </div>
-                        <em>Entrar</em>
+                        <em>{{ __('dashboard.enter') }}</em>
                     </a>
 
                     @if($flopUnlocked ?? false)
                         <a href="{{ route('postflop-training.index') }}" class="stage-route-card is-open">
                             <span>02</span>
                             <div>
-                                <strong>Flop</strong>
-                                <small>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                                <strong>{{ __('dashboard.flop') }}</strong>
+                                <small>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}% {{ __('dashboard.accuracy_lower') }}</small>
                             </div>
-                            <em>Entrar</em>
+                            <em>{{ __('dashboard.enter') }}</em>
                         </a>
                     @else
                         <div class="stage-route-card is-locked">
                             <span>02</span>
                             <div>
-                                <strong>Flop</strong>
-                                <small>Bloqueado por progreso</small>
+                                <strong>{{ __('dashboard.flop') }}</strong>
+                                <small>{{ __('dashboard.locked_by_progress') }}</small>
                             </div>
                             <em>🔒</em>
                         </div>
@@ -92,17 +88,17 @@
                         <a href="{{ route('postflop-turn.index') }}" class="stage-route-card is-open">
                             <span>03</span>
                             <div>
-                                <strong>Turn</strong>
-                                <small>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                                <strong>{{ __('dashboard.turn') }}</strong>
+                                <small>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}% {{ __('dashboard.accuracy_lower') }}</small>
                             </div>
-                            <em>Entrar</em>
+                            <em>{{ __('dashboard.enter') }}</em>
                         </a>
                     @else
                         <div class="stage-route-card is-locked">
                             <span>03</span>
                             <div>
-                                <strong>Turn</strong>
-                                <small>Bloqueado por progreso</small>
+                                <strong>{{ __('dashboard.turn') }}</strong>
+                                <small>{{ __('dashboard.locked_by_progress') }}</small>
                             </div>
                             <em>🔒</em>
                         </div>
@@ -112,17 +108,17 @@
                         <a href="{{ route('postflop-river.index') }}" class="stage-route-card is-open">
                             <span>04</span>
                             <div>
-                                <strong>River</strong>
-                                <small>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}% accuracy</small>
+                                <strong>{{ __('dashboard.river') }}</strong>
+                                <small>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}% {{ __('dashboard.accuracy_lower') }}</small>
                             </div>
-                            <em>Entrar</em>
+                            <em>{{ __('dashboard.enter') }}</em>
                         </a>
                     @else
                         <div class="stage-route-card is-locked">
                             <span>04</span>
                             <div>
-                                <strong>River</strong>
-                                <small>Bloqueado por progreso</small>
+                                <strong>{{ __('dashboard.river') }}</strong>
+                                <small>{{ __('dashboard.locked_by_progress') }}</small>
                             </div>
                             <em>🔒</em>
                         </div>
@@ -132,19 +128,39 @@
                         <a href="{{ route('mastery-training.index') }}" class="stage-route-card is-open">
                             <span>05</span>
                             <div>
-                                <strong>Advanced Training · Mastery</strong>
+                                <strong>{{ __('dashboard.mastery_full') }}</strong>
                                 <small>
-                                    {{ number_format((float) ($masteryGlobal->accuracy ?? 0), 1) }}% accuracy
+                                    {{ number_format((float) ($masteryGlobal->accuracy ?? 0), 1) }}% {{ __('dashboard.accuracy_lower') }}
                                 </small>
                             </div>
-                            <em>Entrar</em>
+                            <em>{{ __('dashboard.enter') }}</em>
                         </a>
                     @else
                         <div class="stage-route-card is-locked">
                             <span>05</span>
                             <div>
-                                <strong>Advanced Training · Mastery</strong>
-                                <small>Bloqueado por progreso</small>
+                                <strong>{{ __('dashboard.mastery_full') }}</strong>
+                                <small>{{ __('dashboard.locked_by_progress') }}</small>
+                            </div>
+                            <em>🔒</em>
+                        </div>
+                    @endif
+
+                    @if($certificationUnlocked ?? false)
+                        <a href="{{ route('certification.index') }}" class="stage-route-card is-open">
+                            <span>06</span>
+                            <div>
+                                <strong>{{ __('dashboard.certification') }}</strong>
+                                <small>{{ __('dashboard.final_exam_available') }}</small>
+                            </div>
+                            <em>{{ __('dashboard.enter') }}</em>
+                        </a>
+                    @else
+                        <div class="stage-route-card is-locked">
+                            <span>06</span>
+                            <div>
+                                <strong>{{ __('dashboard.certification') }}</strong>
+                                <small>{{ __('dashboard.locked_by_progress') }}</small>
                             </div>
                             <em>🔒</em>
                         </div>
@@ -161,11 +177,14 @@
 
         <section class="critical-leak-panel">
             <div>
-                <span>🚨 LEAK CRÍTICO DETECTADO</span>
+                <span>{{ __('dashboard.critical_leak_detected') }}</span>
                 <h2>{{ $criticalLeak->module_label }}</h2>
                 <p>
-                    Accuracy {{ number_format((float) $criticalLeak->accuracy, 1) }}%.
-                    Has fallado {{ $criticalErrors }} de {{ $criticalLeak->total }} spots en este módulo.
+                    {{ __('dashboard.critical_leak_text', [
+                        'accuracy' => number_format((float) $criticalLeak->accuracy, 1),
+                        'errors' => $criticalErrors,
+                        'total' => $criticalLeak->total,
+                    ]) }}
                 </p>
             </div>
 
@@ -174,36 +193,36 @@
             @endphp
 
             <a href="{{ route($criticalLeakRoute, ['module' => $criticalLeak->module]) }}">
-                Practicar ahora
+                {{ __('dashboard.practice_now') }}
             </a>
         </section>
     @endif
 
         <section class="progress-panel">
             <div>
-                <span>Nivel {{ $level }}</span>
+                <span>{{ __('dashboard.level_with_number', ['level' => $level]) }}</span>
                 <strong>{{ $xp }} XP</strong>
-                <p>Siguiente objetivo: {{ $nextGoal }} </p>
+                <p>{{ __('dashboard.next_goal_with_value', ['goal' => $nextGoal]) }}</p>
             </div>
-            <div class="xp-bar" aria-label="Progreso de XP">
+            <div class="xp-bar" aria-label="{{ __('dashboard.xp_progress_aria') }}">
                 <span style="width: {{ $levelPercent }}%"></span>
             </div>
         </section>
 
         <section class="dashboard-stats">
-            <article><span>Spots completados</span><strong>{{ $total }}</strong></article>
-            <article><span>Precisión global</span><strong>{{ number_format($accuracy, 1) }}%</strong></article>
-            <article><span>Aciertos</span><strong>{{ $correct }}</strong></article>
-            <article><span>Errores</span><strong>{{ $wrong }}</strong></article>
+            <article><span>{{ __('dashboard.completed_spots') }}</span><strong>{{ $total }}</strong></article>
+            <article><span>{{ __('dashboard.global_accuracy') }}</span><strong>{{ number_format($accuracy, 1) }}%</strong></article>
+            <article><span>{{ __('dashboard.correct') }}</span><strong>{{ $correct }}</strong></article>
+            <article><span>{{ __('dashboard.errors') }}</span><strong>{{ $wrong }}</strong></article>
         </section>
 
         <section class="dashboard-grid two-cols">
             <article class="dashboard-card">
-                <span>Ruta ApexCash</span>
-                <h2>Progresión</h2>
+                <span>{{ __('dashboard.apexcash_route') }}</span>
+                <h2>{{ __('dashboard.progression') }}</h2>
 
                 <div class="metric-row">
-                    <span>Preflop</span>
+                    <span>{{ __('dashboard.preflop') }}</span>
                     <strong>
                         {{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%
                         {{ $flopUnlocked ? '✅' : '⏳' }}
@@ -211,7 +230,7 @@
                 </div>
 
                 <div class="metric-row">
-                    <span>Flop</span>
+                    <span>{{ __('dashboard.flop') }}</span>
                     <strong>
                         {{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}%
                         @if(!$flopUnlocked)
@@ -225,7 +244,7 @@
                 </div>
 
                 <div class="metric-row">
-                    <span>Turn</span>
+                    <span>{{ __('dashboard.turn') }}</span>
                     <strong>
                         {{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}%
                         @if(!$turnUnlocked)
@@ -239,7 +258,7 @@
                 </div>
 
                 <div class="metric-row">
-                    <span>River</span>
+                    <span>{{ __('dashboard.river') }}</span>
                     <strong>
                         {{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}%
                         @if(!$riverUnlocked)
@@ -253,7 +272,7 @@
                 </div>
 
                 <div class="metric-row">
-                    <span>Mastery</span>
+                    <span>{{ __('dashboard.mastery') }}</span>
                     <strong>
                         {{ number_format((float) ($masteryGlobal->accuracy ?? 0), 1) }}%
                         @if(!$masteryUnlocked)
@@ -265,82 +284,98 @@
                         @endif
                     </strong>
                 </div>
+
+                <div class="metric-row">
+                    <span>{{ __('dashboard.certification_short') }}</span>
+                    <strong>
+                        @if($certificationUnlocked ?? false)
+                            {{ __('dashboard.available') }} 🎓
+                        @else
+                            🔒
+                        @endif
+                    </strong>
+                </div>
             </article>
 
             <article class="dashboard-card">
-                <span>Precisión por etapa</span>
-                <h2>Entrenamiento</h2>
+                <span>{{ __('dashboard.accuracy_by_stage') }}</span>
+                <h2>{{ __('dashboard.training') }}</h2>
 
-                <div class="metric-row"><span>Preflop</span><strong>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%</strong></div>
-                <div class="metric-row"><span>Flop</span><strong>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}%</strong></div>
-                <div class="metric-row"><span>Turn</span><strong>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}%</strong></div>
-                <div class="metric-row"><span>River</span><strong>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>{{ __('dashboard.preflop') }}</span><strong>{{ number_format((float) ($preflopGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>{{ __('dashboard.flop') }}</span><strong>{{ number_format((float) ($flopGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>{{ __('dashboard.turn') }}</span><strong>{{ number_format((float) ($turnGlobal->accuracy ?? 0), 1) }}%</strong></div>
+                <div class="metric-row"><span>{{ __('dashboard.river') }}</span><strong>{{ number_format((float) ($riverGlobal->accuracy ?? 0), 1) }}%</strong></div>
             </article>
         </section>
 
         <section class="dashboard-grid">
             <article class="dashboard-card active">
-                <span>Mejor módulo</span>
-                <h2>{{ $bestModule->module_label ?? 'Sin muestra suficiente' }}</h2>
+                <span>{{ __('dashboard.best_module') }}</span>
+                <h2>{{ $bestModule->module_label ?? __('dashboard.not_enough_sample') }}</h2>
                 <p>
                     @if ($bestModule)
-                        {{ number_format((float) $bestModule->accuracy, 1) }}% de precisión en {{ $bestModule->total_spots }} spots.
+                        {{ __('dashboard.best_module_text', [
+                            'accuracy' => number_format((float) $bestModule->accuracy, 1),
+                            'spots' => $bestModule->total_spots,
+                        ]) }}
                     @else
-                        Necesitas al menos 10 spots por módulo para detectar fortalezas reales.
+                        {{ __('dashboard.need_10_spots_strengths') }}
                     @endif
                 </p>
             </article>
 
             <article class="dashboard-card danger-card">
-                <span>Módulo a Mejorar</span>
+                <span>{{ __('dashboard.module_to_improve') }}</span>
                 <h2>
                     @if ($worstModule)
                         {{ $worstModule->module_label }}
                     @elseif ($bestModule)
-                        Aún no disponible
+                        {{ __('dashboard.not_available_yet') }}
                     @else
-                        Sin muestra suficiente
+                        {{ __('dashboard.not_enough_sample') }}
                     @endif
                 </h2>
                 <p>
                     @if ($worstModule)
-                        {{ number_format((float) $worstModule->accuracy, 1) }}% de precisión. Este módulo debe entrenarse primero.
+                        {{ __('dashboard.worst_module_text', [
+                            'accuracy' => number_format((float) $worstModule->accuracy, 1),
+                        ]) }}
                     @elseif ($bestModule)
-                        Practica al menos otro módulo con 10 spots para comparar resultados.
+                        {{ __('dashboard.practice_another_module') }}
                     @else
-                        Necesitas al menos 10 spots en dos módulos distintos para detectar un módulo débil real.
+                        {{ __('dashboard.need_two_modules') }}
                     @endif
                 </p>
             </article>
 
             <a href="{{ route('spot-training.index') }}" class="dashboard-card active">
-                <span>Entrenamiento</span>
-                <h2>Spot Training Preflop</h2>
-                <p>Open Raise, BB vs BTN, BTN vs 3Bet, 3Bet vs Open, SB vs BTN y BB vs SB.</p>
-                <strong>Entrar →</strong>
+                <span>{{ __('dashboard.training') }}</span>
+                <h2>{{ __('dashboard.preflop_training_title') }}</h2>
+                <p>{{ __('dashboard.preflop_training_text') }}</p>
+                <strong>{{ __('dashboard.enter_arrow') }}</strong>
             </a>
         </section>
 
         <section class="dashboard-grid two-cols">
             <article class="dashboard-card table-card">
-                <span>Leaks persistentes</span>
-                <h2>Módulos débiles</h2>
+                <span>{{ __('dashboard.persistent_leaks') }}</span>
+                <h2>{{ __('dashboard.weak_modules') }}</h2>
                 @forelse ($leaks as $leak)
                     @php
                         $leakRoute = $routeForModule($leak->module);
                     @endphp
                     <a class="metric-row" href="{{ route($leakRoute, ['module' => $leak->module]) }}">
                         <span>{{ $leak->module_label }}</span>
-                        <strong>{{ number_format((float) $leak->accuracy, 1) }}% · {{ $leak->total }} spots</strong>
+                        <strong>{{ number_format((float) $leak->accuracy, 1) }}% · {{ $leak->total }} {{ __('dashboard.spots_lower') }}</strong>
                     </a>
                 @empty
-                    <p>Aún no hay suficientes respuestas guardadas.</p>
+                    <p>{{ __('dashboard.not_enough_answers') }}</p>
                 @endforelse
             </article>
 
             <article class="dashboard-card table-card">
-                <span>Peores spots</span>
-                <h2>Errores concretos</h2>
+                <span>{{ __('dashboard.worst_spots') }}</span>
+                <h2>{{ __('dashboard.concrete_errors') }}</h2>
 
                 @forelse ($worstSpots as $spot)
                     @php
@@ -348,7 +383,7 @@
                     @endphp
                     <a class="metric-row" href="{{ route($spotRoute, ['spot_id' => $spot->spot_id]) }}">
                         <span>
-                            {{ $spot->hero_cards ?: 'Spot' }}
+                            {{ $spot->hero_cards ?: __('dashboard.spot') }}
                             ·
                             {{ $spot->concept_label ?: ($spot->spot_title ?: $spot->spot_id) }}
                         </span>
@@ -356,21 +391,19 @@
                         <strong>
                             {{ number_format((float) $spot->accuracy, 1) }}%
                             ·
-                            {{ $spot->wrong }} errores
+                            {{ $spot->wrong }} {{ __('dashboard.errors_lower') }}
                         </strong>
                     </a>
                 @empty
-                    <p>Necesitas responder más spots para detectar errores concretos.</p>
+                    <p>{{ __('dashboard.need_more_spots_for_errors') }}</p>
                 @endforelse
             </article>
-
-            
         </section>
 
         <section class="dashboard-grid two-cols">
             <article class="dashboard-card table-card">
-                <span>Estadísticas por módulo</span>
-                <h2>Resumen técnico</h2>
+                <span>{{ __('dashboard.stats_by_module') }}</span>
+                <h2>{{ __('dashboard.technical_summary') }}</h2>
 
                 @forelse ($moduleStats->take(8) as $stat)
                     @php
@@ -378,13 +411,13 @@
 
                         if ($acc >= 85) {
                             $badgeClass = 'mastery-dominated';
-                            $badgeLabel = '🔥 Dominado';
+                            $badgeLabel = __('dashboard.status_dominated');
                         } elseif ($acc >= 60) {
                             $badgeClass = 'mastery-progress';
-                            $badgeLabel = '⚡ En progreso';
+                            $badgeLabel = __('dashboard.status_progress');
                         } else {
                             $badgeClass = 'mastery-weak';
-                            $badgeLabel = '🚨 Necesita trabajo';
+                            $badgeLabel = __('dashboard.status_weak');
                         }
                     @endphp
 
@@ -399,17 +432,17 @@
                         <strong>
                             {{ number_format((float) $stat->accuracy, 1) }}%
                             ·
-                            {{ $stat->total_spots }} spots
+                            {{ $stat->total_spots }} {{ __('dashboard.spots_lower') }}
                         </strong>
                     </div>
                 @empty
-                    <p>Cuando empieces a entrenar aparecerá aquí la precisión por módulo.</p>
+                    <p>{{ __('dashboard.module_accuracy_empty') }}</p>
                 @endforelse
             </article>
 
             <article class="dashboard-card table-card">
-                <span>Concept leaks</span>
-                <h2>Patrones débiles</h2>
+                <span>{{ __('dashboard.concept_leaks') }}</span>
+                <h2>{{ __('dashboard.weak_patterns') }}</h2>
 
                 @forelse ($conceptLeaks as $concept)
                     @php
@@ -430,22 +463,19 @@
                         <strong>
                             {{ number_format((float) $concept->accuracy, 1) }}%
                             ·
-                            {{ $concept->wrong }} errores
+                            {{ $concept->wrong }} {{ __('dashboard.errors_lower') }}
                         </strong>
                     </a>
                 @empty
-                    <p>Necesitas más respuestas con taxonomía para detectar patrones.</p>
+                    <p>{{ __('dashboard.taxonomy_empty') }}</p>
                 @endforelse
             </article>
 
             <a href="{{ route('postflop-training.index') }}" class="dashboard-card table-card active">
-                <span>Nuevo entrenamiento</span>
-                <h2>Spot Training Postflop</h2>
-                <p>
-                    Entrena decisiones en flop: c-bets, check back, defensa vs c-bet,
-                    check-raise, value bets, semi-bluffs y boards por textura.
-                </p>
-                <strong>Entrar →</strong>
+                <span>{{ __('dashboard.new_training') }}</span>
+                <h2>{{ __('dashboard.postflop_training_title') }}</h2>
+                <p>{{ __('dashboard.postflop_training_text') }}</p>
+                <strong>{{ __('dashboard.enter_arrow') }}</strong>
             </a>
 
             @if($turnUnlocked)
@@ -453,16 +483,12 @@
                 <a href="{{ route('postflop-turn.index') }}"
                 class="dashboard-card table-card active">
 
-                    <span>Nuevo entrenamiento</span>
-                    <h2>Postflop Turn</h2>
+                    <span>{{ __('dashboard.new_training') }}</span>
+                    <h2>{{ __('dashboard.postflop_turn_title') }}</h2>
 
-                    <p>
-                        Entrena second barrel, probe bets,
-                        defensa vs barrel, value bets
-                        y decisiones críticas de turn.
-                    </p>
+                    <p>{{ __('dashboard.postflop_turn_text') }}</p>
 
-                    <strong>Entrar →</strong>
+                    <strong>{{ __('dashboard.enter_arrow') }}</strong>
 
                 </a>
 
@@ -470,13 +496,10 @@
 
                 <article class="dashboard-card table-card">
 
-                    <span>Bloqueado</span>
-                    <h2>Postflop Turn</h2>
+                    <span>{{ __('dashboard.locked') }}</span>
+                    <h2>{{ __('dashboard.postflop_turn_title') }}</h2>
 
-                    <p>
-                        Necesitas alcanzar los requisitos
-                        de XP y precisión en Flop.
-                    </p>
+                    <p>{{ __('dashboard.unlock_turn_text') }}</p>
 
                     <strong>🔒</strong>
 
@@ -489,16 +512,12 @@
                 <a href="{{ route('postflop-river.index') }}"
                 class="dashboard-card table-card active">
 
-                    <span>Nuevo entrenamiento</span>
-                    <h2>Postflop River</h2>
+                    <span>{{ __('dashboard.new_training') }}</span>
+                    <h2>{{ __('dashboard.postflop_river_title') }}</h2>
 
-                    <p>
-                        Entrena value bets, thin value,
-                        bluff catchers, faroles polarizados
-                        y overbets de river.
-                    </p>
+                    <p>{{ __('dashboard.postflop_river_text') }}</p>
 
-                    <strong>Entrar →</strong>
+                    <strong>{{ __('dashboard.enter_arrow') }}</strong>
 
                 </a>
 
@@ -506,13 +525,10 @@
 
                 <article class="dashboard-card table-card">
 
-                    <span>Bloqueado</span>
-                    <h2>Postflop River</h2>
+                    <span>{{ __('dashboard.locked') }}</span>
+                    <h2>{{ __('dashboard.postflop_river_title') }}</h2>
 
-                    <p>
-                        Necesitas alcanzar los requisitos
-                        de XP y precisión en Turn.
-                    </p>
+                    <p>{{ __('dashboard.unlock_river_text') }}</p>
 
                     <strong>🔒</strong>
 
@@ -525,18 +541,13 @@
                     <a href="{{ route('mastery-training.index') }}"
                     class="dashboard-card table-card active">
 
-                        <span>Advanced Training</span>
+                        <span>{{ __('dashboard.advanced_training') }}</span>
 
-                        <h2>Mastery</h2>
+                        <h2>{{ __('dashboard.mastery') }}</h2>
 
-                        <p>
-                            3-Bet Pots, 4-Bet Pots,
-                            Blind vs Blind Advanced,
-                            Multiway, Short Stack
-                            y Tournament Lab.
-                        </p>
+                        <p>{{ __('dashboard.mastery_text') }}</p>
 
-                        <strong>Entrar →</strong>
+                        <strong>{{ __('dashboard.enter_arrow') }}</strong>
 
                     </a>
 
@@ -544,15 +555,42 @@
 
                     <article class="dashboard-card table-card">
 
-                        <span>Bloqueado</span>
+                        <span>{{ __('dashboard.locked') }}</span>
 
-                        <h2>Mastery</h2>
+                        <h2>{{ __('dashboard.mastery') }}</h2>
 
-                        <p>
-                            Necesitas completar River
-                            y alcanzar los requisitos
-                            de XP y precisión.
-                        </p>
+                        <p>{{ __('dashboard.unlock_mastery_text') }}</p>
+
+                        <strong>🔒</strong>
+
+                    </article>
+
+                @endif
+
+                @if($certificationUnlocked ?? false)
+
+                    <a href="{{ route('certification.index') }}"
+                    class="dashboard-card table-card active">
+
+                        <span>{{ __('dashboard.final_exam') }}</span>
+
+                        <h2>{{ __('dashboard.certification') }}</h2>
+
+                        <p>{{ __('dashboard.certification_text') }}</p>
+
+                        <strong>{{ __('dashboard.enter_arrow') }}</strong>
+
+                    </a>
+
+                @else
+
+                    <article class="dashboard-card table-card">
+
+                        <span>{{ __('dashboard.locked') }}</span>
+
+                        <h2>{{ __('dashboard.certification') }}</h2>
+
+                        <p>{{ __('dashboard.unlock_certification_text') }}</p>
 
                         <strong>🔒</strong>
 
@@ -561,15 +599,15 @@
                 @endif
 
             <article class="dashboard-card table-card">
-                <span>Últimos resultados</span>
-                    <h2>Actividad reciente</h2>
+                <span>{{ __('dashboard.latest_results') }}</span>
+                    <h2>{{ __('dashboard.recent_activity') }}</h2>
                     @forelse ($recentResults as $result)
                         <div class="metric-row">
                             <span>{{ $result->module_label }} · {{ $result->selected_action }}</span>
                             <strong class="grade-pill grade-{{ $result->grade }}">{{ strtoupper($result->grade) }}</strong>
                         </div>
                     @empty
-                        <p>Todavía no has respondido spots.</p>
+                        <p>{{ __('dashboard.no_spots_answered_yet') }}</p>
                     @endforelse
                 </article>
         </section>

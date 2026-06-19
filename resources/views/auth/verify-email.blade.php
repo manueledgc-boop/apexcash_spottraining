@@ -1,16 +1,13 @@
 <x-guest-layout>
     <div class="auth-form-header">
-        <span>Verificación</span>
-        <h2>Confirma tu email</h2>
-        <p>
-            Antes de empezar, verifica tu correo. Esto permite proteger tu cuenta,
-            guardar tu XP y mantener tu progreso de entrenamiento.
-        </p>
+        <span>{{ __('auth.verify.badge') }}</span>
+        <h2>{{ __('auth.verify.title') }}</h2>
+        <p>{{ __('auth.verify.subtitle') }}</p>
     </div>
 
     @if (session('status') == 'verification-link-sent')
         <div class="auth-success">
-            Te hemos enviado un nuevo enlace de verificación.
+            {{ __('auth.verify.sent') }}
         </div>
     @endif
 
@@ -19,7 +16,7 @@
             @csrf
 
             <button type="submit" class="auth-submit">
-                Reenviar email de verificación
+                {{ __('auth.verify.resend') }}
             </button>
         </form>
 
@@ -27,7 +24,7 @@
             @csrf
 
             <button type="submit" class="auth-link-button">
-                Cerrar sesión
+                {{ __('auth.verify.logout') }}
             </button>
         </form>
     </div>

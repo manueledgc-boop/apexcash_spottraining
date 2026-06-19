@@ -24,34 +24,31 @@
             </a>
 
             <div class="auth-brand-copy">
-                <span class="auth-kicker">Cash Game Training System</span>
-                <h1>Entrena decisiones. Detecta leaks. Sube de nivel.</h1>
-                <p>
-                    ApexCash convierte tu estudio de poker en un sistema medible:
-                    Preflop, Flop, Turn y River con XP, precisión, leaks y feedback inmediato.
-                </p>
+                <span class="auth-kicker">{{ __('auth.layout.kicker') }}</span>
+                <h1>{{ __('auth.layout.title') }}</h1>
+                <p>{{ __('auth.layout.subtitle') }}</p>
             </div>
 
             <div class="auth-stage-card">
                 <div class="auth-stage-row is-active">
                     <span>01</span>
-                    <strong>Preflop</strong>
-                    <small>Base sólida</small>
+                    <strong>{{ __('auth.layout.stages.preflop.title') }}</strong>
+                    <small>{{ __('auth.layout.stages.preflop.text') }}</small>
                 </div>
                 <div class="auth-stage-row">
                     <span>02</span>
-                    <strong>Flop</strong>
-                    <small>C-bets y defensa</small>
+                    <strong>{{ __('auth.layout.stages.flop.title') }}</strong>
+                    <small>{{ __('auth.layout.stages.flop.text') }}</small>
                 </div>
                 <div class="auth-stage-row">
                     <span>03</span>
-                    <strong>Turn</strong>
-                    <small>Barrels y probes</small>
+                    <strong>{{ __('auth.layout.stages.turn.title') }}</strong>
+                    <small>{{ __('auth.layout.stages.turn.text') }}</small>
                 </div>
                 <div class="auth-stage-row">
                     <span>04</span>
-                    <strong>River</strong>
-                    <small>Value, bluffs y calls</small>
+                    <strong>{{ __('auth.layout.stages.river.title') }}</strong>
+                    <small>{{ __('auth.layout.stages.river.text') }}</small>
                 </div>
             </div>
         </section>
@@ -62,7 +59,7 @@
             </div>
 
             <p class="auth-footer-note">
-                ApexCash V1 · Entrenamiento estructurado para Cash Games
+                {{ __('auth.layout.footer_note') }}
             </p>
         </section>
     </main>

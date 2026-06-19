@@ -1,8 +1,8 @@
 <x-guest-layout>
     <div class="auth-form-header">
-        <span>Recuperar acceso</span>
-        <h2>¿Olvidaste tu contraseña?</h2>
-        <p>Introduce tu email y te enviaremos un enlace para crear una nueva contraseña.</p>
+        <span>{{ __('auth.forgot.badge') }}</span>
+        <h2>{{ __('auth.forgot.title') }}</h2>
+        <p>{{ __('auth.forgot.subtitle') }}</p>
     </div>
 
     <x-auth-session-status class="auth-status" :status="session('status')" />
@@ -11,7 +11,7 @@
         @csrf
 
         <div class="auth-field">
-            <label for="email">Email</label>
+            <label for="email">{{ __('auth.fields.email') }}</label>
             <input
                 id="email"
                 type="email"
@@ -19,18 +19,18 @@
                 value="{{ old('email') }}"
                 required
                 autofocus
-                placeholder="tu@email.com"
+                placeholder="{{ __('auth.placeholders.email') }}"
             >
             <x-input-error :messages="$errors->get('email')" class="auth-error" />
         </div>
 
         <button type="submit" class="auth-submit">
-            Enviar enlace de recuperación
+            {{ __('auth.forgot.submit') }}
         </button>
 
         <div class="auth-switch">
-            <span>¿Ya recordaste tu contraseña?</span>
-            <a href="{{ route('login') }}">Volver al login</a>
+            <span>{{ __('auth.forgot.remembered') }}</span>
+            <a href="{{ route('login') }}">{{ __('auth.forgot.back_login') }}</a>
         </div>
     </form>
 </x-guest-layout>

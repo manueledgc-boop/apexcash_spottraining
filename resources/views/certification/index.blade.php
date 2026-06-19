@@ -1,119 +1,208 @@
 <x-app-layout>
+    <link href="{{ asset('assets/css/certification-index.css') }}" rel="stylesheet">
 
-    <div class="max-w-5xl mx-auto px-6 py-8">
-
-        <div class="bg-slate-900 rounded-xl p-8 border border-slate-700">
-
-            <h1 class="text-3xl font-bold mb-4">
-                ApexCash Certification
-            </h1>
-
+    <main class="cert-page">
+        <div class="cert-shell">
             @if(session('error'))
-                <div class="bg-red-900 text-red-100 p-4 rounded mb-4">
+                <div class="cert-alert cert-alert-error">
                     {{ session('error') }}
                 </div>
             @endif
 
             @if(session('success'))
-                <div class="bg-green-900 text-green-100 p-4 rounded mb-4">
+                <div class="cert-alert cert-alert-success">
                     {{ session('success') }}
                 </div>
             @endif
 
-            @if(!$certificationUnlocked)
-
-                <div class="text-center py-8">
-
-                    <div class="text-6xl mb-4">🔒</div>
-
-                    <h2 class="text-2xl font-semibold mb-2">
-                        Bloqueado por progreso
-                    </h2>
-
-                    <p class="text-slate-300">
-                        Debes completar la ruta ApexCash antes de acceder
-                        al examen de certificación.
+            <section class="cert-hero">
+                <div class="cert-hero-content">
+                    <span class="cert-kicker">{{ __('certification.kicker') }}</span>
+                    <h1>{{ __('certification.hero_title') }}</h1>
+                    <p>
+                        {!! __('certification.hero_text', [
+                            'stages' => __('certification.hero_stages'),
+                        ]) !!}
                     </p>
-
+                    <p class="cert-hero-note">
+                        {{ __('certification.hero_note') }}
+                    </p>
                 </div>
 
-            @else
+                <div class="cert-status-card">
+                    <div class="cert-status-icon">
+                        @if($passedAttempt)
+                            🎓
+                        @elseif(!$certificationUnlocked)
+                            🔒
+                        @elseif($activeAttempt)
+                            ⏳
+                        @else
+                            ✅
+                        @endif
+                    </div>
+                    <div class="cert-status-label">{{ __('certification.status') }}</div>
+                    <div class="cert-status-value">
+                        @if($passedAttempt)
+                            {{ __('certification.status_passed') }}
+                        @elseif(!$certificationUnlocked)
+                            {{ __('certification.status_locked') }}
+                        @elseif($activeAttempt)
+                            {{ __('certification.status_active') }}
+                        @else
+                            {{ __('certification.status_available') }}
+                        @endif
+                    </div>
+                </div>
+            </section>
 
-                <div class="text-center py-8">
+            @php
+                $stages = [
+                    [__('certification.stage_preflop'), '✅'],
+                    [__('certification.stage_flop'), '✅'],
+                    [__('certification.stage_turn'), '✅'],
+                    [__('certification.stage_river'), '✅'],
+                    [__('certification.stage_mastery'), '✅'],
+                    [__('certification.stage_certification'), $passedAttempt ? '🎓' : ($certificationUnlocked ? '⏳' : '🔒'), true],
+                ];
+            @endphp
 
-                    <div class="text-6xl mb-4">🎓</div>
+            <section class="cert-route-card">
+                <div class="cert-section-head">
+                    <span>{{ __('certification.route_title') }}</span>
+                    <strong>{{ __('certification.route_subtitle') }}</strong>
+                </div>
 
-                    <h2 class="text-2xl font-semibold mb-4">
-                        Examen Final ApexCash
-                    </h2>
+                <div class="cert-route">
+                    @foreach($stages as $stage)
+                        @php
+                            $label = $stage[0];
+                            $icon = $stage[1];
+                            $isFinal = $stage[2] ?? false;
+                        @endphp
 
-                    <div class="space-y-2 text-slate-300">
+                        <div class="cert-route-step {{ $isFinal ? 'is-final' : '' }}">
+                            <div class="cert-route-icon">{{ $icon }}</div>
+                            <div class="cert-route-title">{{ $label }}</div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
 
-                        <p>75 preguntas totales.</p>
+            <section class="cert-info-grid">
+                <article class="cert-info-card cert-exam-card">
+                    <div class="cert-card-icon">🧩</div>
+                    <h2>{{ __('certification.exam_structure') }}</h2>
+                    <div class="cert-big-number">75</div>
+                    <p>{{ __('certification.total_questions') }}</p>
 
-                        <p>15 Preflop</p>
-                        <p>15 Flop</p>
-                        <p>15 Turn</p>
-                        <p>15 River</p>
-                        <p>15 Mastery</p>
+                    <div class="cert-block-list">
+                        <span>15 {{ __('certification.stage_preflop') }}</span>
+                        <span>15 {{ __('certification.stage_flop') }}</span>
+                        <span>15 {{ __('certification.stage_turn') }}</span>
+                        <span>15 {{ __('certification.stage_river') }}</span>
+                        <span>15 {{ __('certification.stage_mastery') }}</span>
+                    </div>
+                </article>
 
-                        <br>
+                <article class="cert-info-card">
+                    <div class="cert-card-icon">🎯</div>
+                    <h2>{{ __('certification.passing_requirements') }}</h2>
 
-                        <p>75% mínimo global para aprobar.</p>
-
-                        <p>60% mínimo en cada bloque.</p>
-
-                        <p>
-                            Si suspendes deberás esperar
-                            7 días antes de volver a presentarte.
-                        </p>
-
+                    <div class="cert-requirements">
+                        <div>
+                            <strong>75%</strong>
+                            <span>{{ __('certification.global_minimum') }}</span>
+                        </div>
+                        <div>
+                            <strong>60%</strong>
+                            <span>{{ __('certification.block_minimum') }}</span>
+                        </div>
                     </div>
 
-                    <form
-                        method="POST"
-                        action="{{ route('certification.start') }}"
-                        class="mt-8"
-                    >
-                        @csrf
+                    <p class="cert-muted">
+                        {{ __('certification.block_warning') }}
+                    </p>
+                </article>
 
-                        <button
-                            type="submit"
-                            class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-bold"
-                        >
-                            Comenzar Examen
-                        </button>
+                <article class="cert-info-card">
+                    <div class="cert-card-icon">⏱️</div>
+                    <h2>{{ __('certification.exam_rules') }}</h2>
 
-                    </form>
+                    <ul class="cert-rules">
+                        <li>{{ __('certification.rule_60_minutes') }}</li>
+                        <li>{{ __('certification.rule_timer_visible') }}</li>
+                        <li>{{ __('certification.rule_answer_required') }}</li>
+                        <li>{{ __('certification.rule_can_correct') }}</li>
+                        <li>{{ __('certification.rule_no_back') }}</li>
+                        <li>{{ __('certification.rule_no_pause') }}</li>
+                        <li>{{ __('certification.rule_no_feedback') }}</li>
+                    </ul>
+                </article>
+            </section>
 
-                </div>
+            <section class="cert-action-card">
+                @if(!$certificationUnlocked)
+                    <div class="cert-action-center">
+                        <div class="cert-action-icon">🔒</div>
+                        <h2>{{ __('certification.locked_title') }}</h2>
+                        <p>{{ __('certification.locked_text') }}</p>
+                    </div>
+                @elseif($latestAttempt && $latestAttempt->isLockedForRetry())
+                    <div class="cert-action-center">
+                        <div class="cert-action-icon">⏳</div>
+                        <h2>{{ __('certification.retry_locked_title') }}</h2>
+                        <p>{{ __('certification.retry_locked_text', ['date' => $latestAttempt->next_attempt_at->format('d/m/Y H:i')]) }}</p>
+                    </div>
+                @elseif($activeAttempt)
+                    <div class="cert-action-split">
+                        <div>
+                            <span class="cert-kicker">{{ __('certification.active_kicker') }}</span>
+                            <h2>{{ __('certification.active_title') }}</h2>
+                            <p>{{ __('certification.active_text') }}</p>
+                        </div>
+                        <a href="{{ route('certification.exam', $activeAttempt) }}" class="cert-main-button">
+                            {{ __('certification.continue_exam') }}
+                        </a>
+                    </div>
+                @else
+                    <div class="cert-action-split">
+                        <div>
+                            <span class="cert-kicker">{{ __('certification.before_start') }}</span>
+                            <h2>{{ __('certification.start_title') }}</h2>
+                            <p>
+                                {{ __('certification.start_text') }}
+                            </p>
+                            <p class="cert-muted">
+                                {{ __('certification.possible_results') }}
+                            </p>
+                        </div>
 
-            @endif
+                        <form method="POST" action="{{ route('certification.start') }}">
+                            @csrf
+                            <button type="submit" class="cert-main-button">
+                                {{ __('certification.start_button') }}
+                            </button>
+                        </form>
+                    </div>
+                @endif
+            </section>
 
             @if($passedAttempt)
-
-                <div class="mt-10 border-t border-slate-700 pt-6">
-
-                    <h3 class="text-xl font-semibold mb-2">
-                        Certificación obtenida
-                    </h3>
-
-                    <p>
-                        Estado:
-                        {{ $passedAttempt->resultBadge() }}
-                    </p>
-
-                    <p>
-                        Código:
-                        {{ $passedAttempt->certificate_code }}
-                    </p>
-
-                </div>
-
+                <section class="cert-passed-card">
+                    <div class="cert-passed-icon">🎓</div>
+                    <div>
+                        <h3>{{ __('certification.passed_title') }}</h3>
+                        <p>{{ __('certification.result') }}: <strong>{{ $passedAttempt->resultBadge() }}</strong></p>
+                        <p>{{ __('certification.code') }}: <strong>{{ $passedAttempt->certificate_code }}</strong></p>
+                    </div>
+                </section>
             @endif
 
+            <section class="cert-legal-card">
+                <strong>{{ __('certification.legal_note_label') }}</strong>
+                {{ __('certification.legal_note_text') }}
+            </section>
         </div>
-
-    </div>
-
+    </main>
 </x-app-layout>

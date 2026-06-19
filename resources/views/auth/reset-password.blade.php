@@ -1,8 +1,8 @@
 <x-guest-layout>
     <div class="auth-form-header">
-        <span>Nueva contraseña</span>
-        <h2>Recupera tu cuenta</h2>
-        <p>Define una contraseña segura para volver a tu entrenamiento.</p>
+        <span>{{ __('auth.reset.badge') }}</span>
+        <h2>{{ __('auth.reset.title') }}</h2>
+        <p>{{ __('auth.reset.subtitle') }}</p>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}" class="auth-form">
@@ -11,7 +11,7 @@
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <div class="auth-field">
-            <label for="email">Email</label>
+            <label for="email">{{ __('auth.fields.email') }}</label>
             <input
                 id="email"
                 type="email"
@@ -20,38 +20,39 @@
                 required
                 autofocus
                 autocomplete="username"
+                placeholder="{{ __('auth.placeholders.email') }}"
             >
             <x-input-error :messages="$errors->get('email')" class="auth-error" />
         </div>
 
         <div class="auth-field">
-            <label for="password">Nueva contraseña</label>
+            <label for="password">{{ __('auth.fields.new_password') }}</label>
             <input
                 id="password"
                 type="password"
                 name="password"
                 required
                 autocomplete="new-password"
-                placeholder="Mínimo 8 caracteres"
+                placeholder="{{ __('auth.placeholders.new_password') }}"
             >
             <x-input-error :messages="$errors->get('password')" class="auth-error" />
         </div>
 
         <div class="auth-field">
-            <label for="password_confirmation">Confirmar nueva contraseña</label>
+            <label for="password_confirmation">{{ __('auth.fields.confirm_new_password') }}</label>
             <input
                 id="password_confirmation"
                 type="password"
                 name="password_confirmation"
                 required
                 autocomplete="new-password"
-                placeholder="Repite tu contraseña"
+                placeholder="{{ __('auth.placeholders.password_confirmation') }}"
             >
             <x-input-error :messages="$errors->get('password_confirmation')" class="auth-error" />
         </div>
 
         <button type="submit" class="auth-submit">
-            Guardar nueva contraseña
+            {{ __('auth.reset.submit') }}
         </button>
     </form>
 </x-guest-layout>

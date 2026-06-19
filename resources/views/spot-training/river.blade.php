@@ -1,6 +1,40 @@
 <x-app-layout>
     <link href="{{ asset('assets/css/postflop-training.css') }}" rel="stylesheet">
 
+    @php
+        $postflopRiverI18n = [
+            'default_title' => __('postflop.river.default_title'),
+            'default_difficulty' => __('postflop.river.default_difficulty'),
+            'confidence' => __('postflop.confidence'),
+            'pot' => __('postflop.pot'),
+            'spr' => __('postflop.spr'),
+            'effective_stack' => __('postflop.effective_stack'),
+            'no_leaks' => __('postflop.river.no_leaks'),
+            'gto_simplified' => __('postflop.gto_simplified'),
+            'low_stakes' => __('postflop.low_stakes'),
+            'result' => __('postflop.result'),
+            'you_chose' => __('postflop.you_chose'),
+            'best_action' => __('postflop.best_action'),
+            'grade' => __('postflop.grade'),
+            'suggested_frequency' => __('postflop.suggested_frequency'),
+            'relative_ev' => __('postflop.relative_ev'),
+            'answer_error' => __('postflop.answer_error'),
+            'unexpected_answer_error' => __('postflop.unexpected_answer_error'),
+            'next_error' => __('postflop.next_error'),
+            'unexpected_next_error' => __('postflop.unexpected_next_error'),
+            'actions' => [
+                'CHECK' => __('postflop.actions.check'),
+                'BET_33' => __('postflop.actions.bet_33'),
+                'BET_50' => __('postflop.actions.bet_50'),
+                'BET_66' => __('postflop.actions.bet_66'),
+                'BET_75' => __('postflop.actions.bet_75'),
+                'FOLD' => __('postflop.actions.fold'),
+                'CALL' => __('postflop.actions.call'),
+                'RAISE' => __('postflop.actions.raise'),
+            ],
+        ];
+    @endphp
+
     <script>
         window.ApexPostflopRiverTraining = {
             initialSpot: @json($initialSpot),
@@ -12,27 +46,28 @@
             nextUrl: @json(route('postflop-river.next')),
             answerUrl: @json(route('postflop-river.answer')),
             csrf: @json(csrf_token()),
+            i18n: @json($postflopRiverI18n),
         };
     </script>
 
     <main class="postflop-page">
         <section class="postflop-header">
             <div>
-                <span class="postflop-kicker">APEXCASH POSTFLOP RIVER V1</span>
-                <h1>Entrenador postflop · River</h1>
-                <p>Practica decisiones de river: value claro, thin value, bluffs, bluff catch, overbets y control de showdown.</p>
+                <span class="postflop-kicker">{{ __('postflop.river.kicker') }}</span>
+                <h1>{{ __('postflop.river.title') }}</h1>
+                <p>{{ __('postflop.river.subtitle') }}</p>
             </div>
 
             <div class="street-tabs">
-                <a href="{{ route('spot-training.index') }}">Preflop</a>
-                <a href="{{ route('postflop-training.index') }}">Flop</a>
-                <a href="{{ route('postflop-turn.index') }}">Turn</a>
-                <a href="{{ route('postflop-river.index') }}" class="is-active">River</a>
+                <a href="{{ route('spot-training.index') }}">{{ __('postflop.tabs.preflop') }}</a>
+                <a href="{{ route('postflop-training.index') }}">{{ __('postflop.tabs.flop') }}</a>
+                <a href="{{ route('postflop-turn.index') }}">{{ __('postflop.tabs.turn') }}</a>
+                <a href="{{ route('postflop-river.index') }}" class="is-active">{{ __('postflop.tabs.river') }}</a>
             </div>
 
             <form method="POST" action="{{ route('postflop-river.reset') }}">
                 @csrf
-                <button type="submit" class="ghost-btn">Reiniciar river</button>
+                <button type="submit" class="ghost-btn">{{ __('postflop.river.reset') }}</button>
             </form>
         </section>
 
@@ -41,10 +76,10 @@
                 <div class="postflop-table" id="postflopTable">
                     <div class="table-felt">
                         <div class="board-zone">
-                            <span>BOARD · RIVER</span>
+                            <span>{{ __('postflop.river.board_label') }}</span>
                             <div class="board-cards" id="boardCards"></div>
-                            <strong id="spotPot">Pot: -- BB</strong>
-                            <small id="spotSpr">SPR: --</small>
+                            <strong id="spotPot">{{ __('postflop.pot') }}: -- BB</strong>
+                            <small id="spotSpr">{{ __('postflop.spr') }}: --</small>
                         </div>
 
                         <div id="heroPosition" hidden></div>
@@ -65,7 +100,7 @@
                     <div class="decision-buttons" id="decisionButtons"></div>
 
                     <button type="button" class="next-btn" id="nextSpotBtn">
-                        Siguiente spot →
+                        {{ __('postflop.next_spot') }}
                     </button>
 
                     <div class="table-insights-area">
@@ -78,21 +113,21 @@
             <aside class="postflop-panel">
                 <div class="postflop-box">
                     <span class="postflop-module" id="spotModule">--</span>
-                    <h2 id="spotTitle">Cargando spot...</h2>
+                    <h2 id="spotTitle">{{ __('postflop.loading_spot') }}</h2>
                     <p class="spot-meta" id="spotMeta">--</p>
 
                     <div class="module-filter" id="moduleFilter">
-                        <button type="button" data-module="">Todos</button>
-                        <button type="button" data-module="river_value_bet">River Value Bet</button>
-                        <button type="button" data-module="river_bluff_catch">River Bluff Catch</button>
-                        <button type="button" data-module="river_bluff">River Bluff</button>
-                        <button type="button" data-module="river_thin_value">River Thin Value</button>
-                        <button type="button" data-module="river_overbet">River Overbet</button>
+                        <button type="button" data-module="">{{ __('postflop.filters.all') }}</button>
+                        <button type="button" data-module="river_value_bet">{{ __('postflop.filters.river_value_bet') }}</button>
+                        <button type="button" data-module="river_bluff_catch">{{ __('postflop.filters.river_bluff_catch') }}</button>
+                        <button type="button" data-module="river_bluff">{{ __('postflop.filters.river_bluff') }}</button>
+                        <button type="button" data-module="river_thin_value">{{ __('postflop.filters.river_thin_value') }}</button>
+                        <button type="button" data-module="river_overbet">{{ __('postflop.filters.river_overbet') }}</button>
                     </div>
                 </div>
 
                 <div class="postflop-box actions-box">
-                    <h3>Acción previa</h3>
+                    <h3>{{ __('postflop.previous_action') }}</h3>
                     <ol id="spotActions"></ol>
                 </div>
 
@@ -104,41 +139,41 @@
                 </div>
 
                 <div class="postflop-box texture-box" id="textureBox" hidden>
-                    <h3>Análisis del spot</h3>
+                    <h3>{{ __('postflop.spot_analysis') }}</h3>
 
                     <div class="metric-row">
-                        <span>Board</span>
+                        <span>{{ __('postflop.board') }}</span>
                         <strong id="boardTexture">--</strong>
                     </div>
 
                     <div class="metric-row">
-                        <span>Ventaja rango</span>
+                        <span>{{ __('postflop.range_advantage') }}</span>
                         <strong id="rangeAdvantage">--</strong>
                     </div>
 
                     <div class="metric-row">
-                        <span>Ventaja nuts</span>
+                        <span>{{ __('postflop.nut_advantage') }}</span>
                         <strong id="nutAdvantage">--</strong>
                     </div>
 
                     <div class="metric-row">
-                        <span>Stack efectivo</span>
+                        <span>{{ __('postflop.effective_stack') }}</span>
                         <strong id="effectiveStack">--</strong>
                     </div>
                 </div>
 
                 <div class="postflop-box summary-box">
-                    <h3>Sesión river</h3>
+                    <h3>{{ __('postflop.river.session') }}</h3>
 
                     <div class="summary-grid">
-                        <div><span>Total</span><strong id="summaryTotal">0</strong></div>
-                        <div><span>Aciertos</span><strong id="summaryCorrect">0</strong></div>
-                        <div><span>Fallos</span><strong id="summaryWrong">0</strong></div>
-                        <div><span>Precisión</span><strong id="summaryAccuracy">0%</strong></div>
+                        <div><span>{{ __('postflop.total') }}</span><strong id="summaryTotal">0</strong></div>
+                        <div><span>{{ __('postflop.correct') }}</span><strong id="summaryCorrect">0</strong></div>
+                        <div><span>{{ __('postflop.wrong') }}</span><strong id="summaryWrong">0</strong></div>
+                        <div><span>{{ __('postflop.accuracy') }}</span><strong id="summaryAccuracy">0%</strong></div>
                     </div>
 
                     <div class="leaks-box">
-                        <h4>Leaks river</h4>
+                        <h4>{{ __('postflop.river.summary') }}</h4>
                         <div id="leaksList"></div>
                     </div>
                 </div>

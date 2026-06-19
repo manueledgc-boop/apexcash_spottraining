@@ -1,34 +1,33 @@
-APEXCASH – PROJECT STATUS
+PROJECT_STATUS_APEXCASH.md
 
-Fecha: 16 Junio 2026
+Fecha: 17/06/2026
+Versión: ApexCash V1.0 (Estado actual)
 
-Estado General
+VISIÓN DEL PROYECTO
 
-El proyecto ApexCash se encuentra estable, funcional y desplegado.
+ApexCash es una plataforma web de entrenamiento de póker Texas Hold'em enfocada en:
 
-Actualmente el sistema cuenta con:
+Aprendizaje estructurado.
+Repetición deliberada.
+Detección automática de leaks.
+Entrenamiento GTO simplificado.
+Entrenamiento explotativo para micro límites.
+Progresión guiada por niveles.
+Certificación interna ApexCash.
 
-Autenticación de usuarios.
-Dashboard funcional.
-Sistema de XP.
-Sistema de progreso.
-Sistema de desbloqueo de módulos.
-Persistencia de estadísticas.
-Detección de leaks.
-Spot Training completo Preflop.
-Spot Training completo Flop.
-Spot Training completo Turn.
-Spot Training completo River.
-UI responsive.
-Hosting funcionando.
-Repositorio GitHub actualizado.
+La filosofía principal es:
 
-No existen errores críticos conocidos en la versión actual.
+Aprender por repetición y corrección constante, no por consumir teoría infinita.
 
-SPOT TRAINING
+ESTADO GENERAL
+Módulos completados
 Preflop
 
-Módulos implementados:
+Estado:
+
+COMPLETADO
+
+Incluye:
 
 Open Raise
 BB vs BTN
@@ -36,233 +35,397 @@ BB vs SB
 SB vs BTN
 BTN vs 3Bet
 3Bet vs Open
-Estado
 
-Completamente funcional.
+Sistema funcionando:
 
-Spots
-
-≈ 275 spots
-
+Spots aleatorios.
+Feedback.
+XP.
+Estadísticas.
+Leaks.
 Flop
 
-Módulos implementados:
+Estado:
 
-CBet IP
-Check Back IP
-Check Raise
-Defense vs CBet
-Semi Bluff
-Value Bet
-Overbet
-Donk Bet
-Float
-Estado
-
-Completamente funcional.
-
-Spots
-
-100 spots
-
-Turn
-
-Módulos implementados:
-
-Turn Barrel
-Turn Defense
-Turn Probe
-Turn Probe Bet
-Turn Value Bet
-Turn Check Raise
-Estado
-
-Completamente funcional.
-
-Spots
-
-100 spots
-
-River
-
-Módulos implementados:
-
-River Bluff Catch
-River Value Bet
-River Thin Value
-River Bluff
-River Overbet
-Estado
-
-Completamente funcional.
-
-Spots
-
-100 spots
-
-TOTAL SPOTS ACTUALES
-Calle	Spots
-Preflop	275
-Flop	100
-Turn	100
-River	100
-TOTAL	575
-SISTEMA DE XP
-
-Implementado.
+COMPLETADO
 
 Incluye:
 
-XP por respuesta correcta.
-XP acumulada.
-Nivel del jugador.
-Progreso persistente.
-Desbloqueos automáticos.
+Cbet IP
+Check Back IP
+Defense vs Cbet
+Check Raise
+Value Bet
+Semi Bluff
+
+Sistema funcionando.
+
+Turn
+
+Estado:
+
+COMPLETADO
+
+Incluye:
+
+Turn Barrel
+Turn Probe
+Turn Defense
+Turn Value Bet
+Turn Check Raise
+
+Sistema funcionando.
+
+River
+
+Estado:
+
+COMPLETADO
+
+Incluye:
+
+River Value Bet
+River Bluff Catch
+River Bluff
+River Thin Value
+River Overbet
+
+Sistema funcionando.
+
+ADVANCED TRAINING · MASTERY
+
+Estado:
+
+COMPLETADO
+
+Módulos implementados:
+
+3Bet Pots
+
+20 spots
+
+4Bet Pots
+
+20 spots
+
+Blind vs Blind Advanced
+
+20 spots
+
+Multiway Pots
+
+20 spots
+
+Short Stack Lab
+
+20 spots
+
+Tournament Lab
+
+20 spots
+
+Total Mastery
+120 spots
+
+Todos integrados al sistema:
+
+XP
+Accuracy
+Leaks
+Concept leaks
+Worst spots
+Worst modules
+SPOTS ACTUALES
+Preflop
+
+100 spots
+
+Flop
+
+50 spots
+
+Turn
+
+50 spots
+
+River
+
+50 spots
+
+Mastery
+
+120 spots
+
+TOTAL ACTUAL
+370 spots
+
+Distribución:
+
+100 Preflop
+50 Flop
+50 Turn
+50 River
+120 Mastery
+SISTEMA DE PROGRESIÓN
+
+Implementado mediante:
+
+TrainingProgressionService
+Desbloqueos
+Flop
+
+Requisitos:
+
+1000 XP
+30 spots mínimos
+70% accuracy Preflop
+Turn
+3000 XP
+30 spots mínimos
+70% accuracy Flop
+River
+6000 XP
+30 spots mínimos
+70% accuracy Turn
+Mastery
+10000 XP
+30 spots mínimos
+70% accuracy River
+Certification
+14000 XP
+30 spots mínimos
+70% accuracy Mastery
+DASHBOARD
+
+Estado:
+
+MUY AVANZADO
+
+Implementado:
+
+XP global
+Nivel
+Accuracy global
+Spots completados
+Ruta ApexCash
+Mejor módulo
+Peor módulo
+Leaks persistentes
+Leak crítico
+Peores spots
+Concept leaks
+Actividad reciente
+Accesos rápidos
+Correcciones recientes
+Worst Leak
+
+Antes:
+
+Siempre enviaba a Preflop.
+
+Corregido:
+
+Usa TrainingProgressionService.
+Envía correctamente a:
+Preflop
+Flop
+Turn
+River
+Mastery
+Critical Leak
+
+Corregido.
+
+Utiliza la misma lógica de rutas.
+
+Iconos de progresión
+
+Estado actual:
+
+🔒 Bloqueado
+⏳ En progreso
+✅ Completado
+🎓 Certification disponible
 SISTEMA DE LEAKS
 
-Implementado.
+Estado:
 
-Detecta:
+COMPLETADO
 
-Módulo con peor precisión.
-Peores conceptos.
-Historial de errores.
-Recomendaciones de estudio.
-SISTEMA DE ESTADÍSTICAS
+Incluye:
 
-Implementado.
-
-Muestra:
-
-Total spots.
-Correctos.
-Incorrectos.
-Precisión.
-XP.
-Nivel.
-Leaks.
-
-Persistente por usuario.
-
-UI / UX
-
-Estado actual:
-
-Dashboard
-Estable.
-Responsive.
-Mobile friendly.
-Spot Training
-Estable.
-Responsive.
-Feedback inmediato.
-Navegación correcta.
-Postflop
-Estable.
-Responsive.
-Consistente con dashboard.
-HOSTING
+Leaks persistentes.
+Leak crítico.
+Peores spots.
+Concept leaks.
+Accuracy por módulo.
+Módulos dominados.
+Módulos débiles.
+SISTEMA DE XP
 
 Estado:
 
-Operativo.
-Login funcionando.
-Registro funcionando.
-Base de datos funcionando.
+COMPLETADO
 
-URL actual:
+Incluye:
 
-apexcash.atwebpages.com
-
-GITHUB
+XP acumulado.
+Niveles.
+Barras de progreso.
+Desbloqueos automáticos.
+CERTIFICATION
 
 Estado:
 
-Actualizado.
-Commit recomendado hoy.
+EN DESARROLLO
+Backend creado
+Tabla
+certification_attempts
 
-Mensaje sugerido:
+Creada.
 
-git add .
-git commit -m "Complete River module to 100 spots and finalize postflop library"
-git push
-VALORACIÓN TÉCNICA
+Modelo
+CertificationAttempt
 
-Estado del proyecto:
+Creado.
 
-MVP funcional completo.
+Controller
+CertificationController
 
-Lo más importante es que ya no es una demo.
+Creado.
 
-Ya existe:
+Rutas
+/certification
+/certification/start
 
-Contenido real.
-Persistencia real.
-Usuarios reales.
-Sistema de progreso real.
-Entrenamiento estructurado.
+Creadas.
 
-575 spots es una cantidad considerable para una primera versión.
+Lógica definida
+Examen
+75 preguntas
 
-PRIORIDAD #1 (Próxima fase)
+Distribución:
 
-No aumentar más spots por ahora.
+15 Preflop
+15 Flop
+15 Turn
+15 River
+15 Mastery
+Aprobación
 
-Enfoque recomendado:
+Mínimos:
 
-Mejorar calidad
+75% global
+60% por bloque
+Resultados
+No aprobado
+Menos de 75%
 
-Añadir a cada spot:
+Bloqueo:
 
-Explicación GTO
-¿Por qué es la mejor acción teóricamente?
-Explicación Micro Límites
-¿Qué haría en NL2-NL10 y por qué?
-PRIORIDAD #2
+7 días
+Aprobado
+75% - 89%
 
-Nuevo modo:
+Resultado:
 
-Practice My Leaks
+APROBADO
+Aprobado con Distinción
+90%+
 
-Entrenar únicamente:
+Resultado:
 
-Módulo peor.
-Concepto peor.
-Errores recientes.
-PRIORIDAD #3
+APROBADO CON DISTINCIÓN
+Certificado
 
-Nuevo modo:
+Diseño acordado:
 
-Exam Mode
-25 spots.
-Sin ayuda.
-Puntuación final.
-Certificación interna.
-PRIORIDAD #4
+Mostrar:
 
-Landing Page Comercial
+Nombre.
+Fecha.
+Código certificado.
+Resultado.
+Logo ApexCash.
 
-Objetivo:
+No mostrar:
 
-Convertir visitantes en usuarios registrados.
+Porcentaje.
+Nota.
+Accuracy.
+Estadísticas.
+Aviso legal
 
-Mensajes principales:
+Pendiente de implementar:
 
-Aprende poker de forma estructurada.
-Entrena situaciones reales.
-Detecta tus leaks.
-Mejora tu winrate.
-Diseñado para NL2-NL10 y GTO.
-CONCLUSIÓN
+La Certificación ApexCash es una certificación privada emitida por ApexCash como reconocimiento interno de formación y evaluación. No constituye una titulación académica oficial ni una acreditación emitida por organismos públicos.
 
-ApexCash ya ha superado claramente la fase de prototipo.
+CASH MODE
 
-Estado actual:
+Estado:
 
-Versión estable y utilizable.
+PAUSADO
 
-575 spots implementados.
+Base ya desarrollada:
 
-Postflop completo.
+Mesa 6-Max.
+Bots persistentes.
+Dealer.
+Blinds.
+Pot.
+Reparto.
+Evaluador de manos.
+Side pots.
+Rake.
 
-Base sólida para comenzar la siguiente fase centrada en calidad, monetización y crecimiento de usuarios.
+Pendiente retomar tras finalizar Training + Certification.
+
+PRIORIDADES SIGUIENTES
+Prioridad 1
+
+Rediseñar completamente:
+
+Certification
+
+Pantalla profesional.
+
+Prioridad 2
+
+Crear:
+
+CertificationService
+Prioridad 3
+
+Generador de examen.
+
+75 preguntas.
+
+Prioridad 4
+
+Motor del examen.
+
+Prioridad 5
+
+Pantalla resultados.
+
+Prioridad 6
+
+Generador PDF del certificado.
+
+VALORACIÓN DEL PROYECTO
+
+Estado real actual:
+
+Preflop        ✅
+Flop           ✅
+Turn           ✅
+River          ✅
+Mastery        ✅
+Certification  🚧
+Cash Mode      ⏸
+
+ApexCash ya no es un prototipo.
+
+La plataforma tiene una ruta de aprendizaje completa, progresión, persistencia, XP, niveles, detección de leaks, entrenamiento estructurado y una certificación final definida.
+
+El principal trabajo restante de la V1 es completar Certification y posteriormente volver al desarrollo del modo Cash.

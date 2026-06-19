@@ -1,6 +1,38 @@
 <x-app-layout>
     <link href="{{ asset('assets/css/postflop-training.css') }}" rel="stylesheet">
 
+    @php
+        $postflopI18n = [
+            'default_title' => __('postflop.default_title'),
+            'default_difficulty' => __('postflop.default_difficulty'),
+            'confidence' => __('postflop.confidence'),
+            'pot' => __('postflop.pot'),
+            'spr' => __('postflop.spr'),
+            'effective_stack' => __('postflop.effective_stack'),
+            'no_leaks' => __('postflop.no_leaks'),
+            'gto_simplified' => __('postflop.gto_simplified'),
+            'low_stakes' => __('postflop.low_stakes'),
+            'result' => __('postflop.result'),
+            'you_chose' => __('postflop.you_chose'),
+            'best_action' => __('postflop.best_action'),
+            'grade' => __('postflop.grade'),
+            'suggested_frequency' => __('postflop.suggested_frequency'),
+            'relative_ev' => __('postflop.relative_ev'),
+            'answer_error' => __('postflop.answer_error'),
+            'unexpected_answer_error' => __('postflop.unexpected_answer_error'),
+            'next_error' => __('postflop.next_error'),
+            'unexpected_next_error' => __('postflop.unexpected_next_error'),
+            'actions' => [
+                'CHECK' => __('postflop.actions.check'),
+                'BET_33' => __('postflop.actions.bet_33'),
+                'BET_66' => __('postflop.actions.bet_66'),
+                'FOLD' => __('postflop.actions.fold'),
+                'CALL' => __('postflop.actions.call'),
+                'RAISE' => __('postflop.actions.raise'),
+            ],
+        ];
+    @endphp
+
     <script>
         window.ApexPostflopTraining = {
             initialSpot: @json($initialSpot),
@@ -12,25 +44,26 @@
             nextUrl: @json(route('postflop-training.next')),
             answerUrl: @json(route('postflop-training.answer')),
             csrf: @json(csrf_token()),
+            i18n: @json($postflopI18n),
         };
     </script>
 
     <main class="postflop-page">
         <section class="postflop-header">
             <div>
-                <span class="postflop-kicker">APEXCASH POSTFLOP V1</span>
-                <h1>Entrenador postflop · Flop</h1>
-                <p>Practica decisiones reales de flop con contexto completo: board, SPR, bote, posición, acción previa, GTO simplificado y explicación para límites bajos.</p>
+                <span class="postflop-kicker">{{ __('postflop.kicker') }}</span>
+                <h1>{{ __('postflop.title') }}</h1>
+                <p>{{ __('postflop.subtitle') }}</p>
             </div>
 
             <div class="street-tabs">
-                <a href="{{ route('spot-training.index') }}">Preflop</a>
-                <a href="{{ route('postflop-training.index') }}" class="is-active">Postflop</a>
+                <a href="{{ route('spot-training.index') }}">{{ __('postflop.tabs.preflop') }}</a>
+                <a href="{{ route('postflop-training.index') }}" class="is-active">{{ __('postflop.tabs.postflop') }}</a>
             </div>
 
             <form method="POST" action="{{ route('postflop-training.reset') }}">
                 @csrf
-                <button type="submit" class="ghost-btn">Reiniciar postflop</button>
+                <button type="submit" class="ghost-btn">{{ __('postflop.reset') }}</button>
             </form>
         </section>
 
@@ -65,7 +98,7 @@
                     <div class="decision-buttons" id="decisionButtons"></div>
 
                     <button type="button" class="next-btn" id="nextSpotBtn">
-                        Siguiente spot →
+                        {{ __('postflop.next_spot') }}
                     </button>
 
                     <div class="table-insights-area">
@@ -78,11 +111,11 @@
             <aside class="postflop-panel">
                 <div class="postflop-box">
                     <span class="postflop-module" id="spotModule">--</span>
-                    <h2 id="spotTitle">Cargando spot...</h2>
+                    <h2 id="spotTitle">{{ __('postflop.loading_spot') }}</h2>
                     <p class="spot-meta" id="spotMeta">--</p>
 
                     <div class="module-filter" id="moduleFilter">
-                        <button type="button" data-module="">Todos</button>
+                        <button type="button" data-module="">{{ __('postflop.filters.all') }}</button>
                         <button type="button" data-module="cbet_ip">C-Bet IP</button>
                         <button type="button" data-module="check_back_ip">Check Back</button>
                         <button type="button" data-module="defense_vs_cbet">Defensa vs C-Bet</button>
@@ -98,7 +131,7 @@
                 
 
                 <div class="postflop-box actions-box">
-                    <h3>Acción previa</h3>
+                    <h3>{{ __('postflop.previous_action') }}</h3>
                     <ol id="spotActions"></ol>
                 </div>
 
@@ -110,37 +143,37 @@
                 </div>
 
                 <div class="postflop-box texture-box" id="textureBox" hidden>
-                    <h3>Análisis del spot</h3>
+                    <h3>{{ __('postflop.spot_analysis') }}</h3>
 
                     <div class="metric-row">
-                        <span>Board</span>
+                        <span>{{ __('postflop.board') }}</span>
                         <strong id="boardTexture">--</strong>
                     </div>
 
                     <div class="metric-row">
-                        <span>Ventaja rango</span>
+                        <span>{{ __('postflop.range_advantage') }}</span>
                         <strong id="rangeAdvantage">--</strong>
                     </div>
 
                     <div class="metric-row">
-                        <span>Ventaja nuts</span>
+                        <span>{{ __('postflop.nut_advantage') }}</span>
                         <strong id="nutAdvantage">--</strong>
                     </div>
 
                 </div>
 
                 <div class="postflop-box summary-box">
-                    <h3>Sesión postflop</h3>
+                    <h3>{{ __('postflop.session') }}</h3>
 
                     <div class="summary-grid">
-                        <div><span>Total</span><strong id="summaryTotal">0</strong></div>
-                        <div><span>Aciertos</span><strong id="summaryCorrect">0</strong></div>
-                        <div><span>Fallos</span><strong id="summaryWrong">0</strong></div>
-                        <div><span>Precisión</span><strong id="summaryAccuracy">0%</strong></div>
+                        <div><span>{{ __('postflop.total') }}</span><strong id="summaryTotal">0</strong></div>
+                        <div><span>{{ __('postflop.correct') }}</span><strong id="summaryCorrect">0</strong></div>
+                        <div><span>{{ __('postflop.wrong') }}</span><strong id="summaryWrong">0</strong></div>
+                        <div><span>{{ __('postflop.accuracy') }}</span><strong id="summaryAccuracy">0%</strong></div>
                     </div>
 
                     <div class="leaks-box">
-                        <h4>Resumen Flop</h4>
+                        <h4>{{ __('postflop.flop_summary') }}</h4>
                         <div id="leaksList"></div>
                     </div>
                 </div>

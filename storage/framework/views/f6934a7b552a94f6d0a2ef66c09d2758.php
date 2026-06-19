@@ -8,127 +8,226 @@
 <?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
+    <link href="<?php echo e(asset('assets/css/certification-index.css')); ?>" rel="stylesheet">
 
-    <div class="max-w-5xl mx-auto px-6 py-8">
-
-        <div class="bg-slate-900 rounded-xl p-8 border border-slate-700">
-
-            <h1 class="text-3xl font-bold mb-4">
-                ApexCash Certification
-            </h1>
-
+    <main class="cert-page">
+        <div class="cert-shell">
             <?php if(session('error')): ?>
-                <div class="bg-red-900 text-red-100 p-4 rounded mb-4">
+                <div class="cert-alert cert-alert-error">
                     <?php echo e(session('error')); ?>
 
                 </div>
             <?php endif; ?>
 
             <?php if(session('success')): ?>
-                <div class="bg-green-900 text-green-100 p-4 rounded mb-4">
+                <div class="cert-alert cert-alert-success">
                     <?php echo e(session('success')); ?>
 
                 </div>
             <?php endif; ?>
 
-            <?php if(!$certificationUnlocked): ?>
+            <section class="cert-hero">
+                <div class="cert-hero-content">
+                    <span class="cert-kicker"><?php echo e(__('certification.kicker')); ?></span>
+                    <h1><?php echo e(__('certification.hero_title')); ?></h1>
+                    <p>
+                        <?php echo __('certification.hero_text', [
+                            'stages' => __('certification.hero_stages'),
+                        ]); ?>
 
-                <div class="text-center py-8">
-
-                    <div class="text-6xl mb-4">🔒</div>
-
-                    <h2 class="text-2xl font-semibold mb-2">
-                        Bloqueado por progreso
-                    </h2>
-
-                    <p class="text-slate-300">
-                        Debes completar la ruta ApexCash antes de acceder
-                        al examen de certificación.
                     </p>
+                    <p class="cert-hero-note">
+                        <?php echo e(__('certification.hero_note')); ?>
 
+                    </p>
                 </div>
 
-            <?php else: ?>
+                <div class="cert-status-card">
+                    <div class="cert-status-icon">
+                        <?php if($passedAttempt): ?>
+                            🎓
+                        <?php elseif(!$certificationUnlocked): ?>
+                            🔒
+                        <?php elseif($activeAttempt): ?>
+                            ⏳
+                        <?php else: ?>
+                            ✅
+                        <?php endif; ?>
+                    </div>
+                    <div class="cert-status-label"><?php echo e(__('certification.status')); ?></div>
+                    <div class="cert-status-value">
+                        <?php if($passedAttempt): ?>
+                            <?php echo e(__('certification.status_passed')); ?>
 
-                <div class="text-center py-8">
+                        <?php elseif(!$certificationUnlocked): ?>
+                            <?php echo e(__('certification.status_locked')); ?>
 
-                    <div class="text-6xl mb-4">🎓</div>
+                        <?php elseif($activeAttempt): ?>
+                            <?php echo e(__('certification.status_active')); ?>
 
-                    <h2 class="text-2xl font-semibold mb-4">
-                        Examen Final ApexCash
-                    </h2>
+                        <?php else: ?>
+                            <?php echo e(__('certification.status_available')); ?>
 
-                    <div class="space-y-2 text-slate-300">
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
 
-                        <p>75 preguntas totales.</p>
+            <?php
+                $stages = [
+                    [__('certification.stage_preflop'), '✅'],
+                    [__('certification.stage_flop'), '✅'],
+                    [__('certification.stage_turn'), '✅'],
+                    [__('certification.stage_river'), '✅'],
+                    [__('certification.stage_mastery'), '✅'],
+                    [__('certification.stage_certification'), $passedAttempt ? '🎓' : ($certificationUnlocked ? '⏳' : '🔒'), true],
+                ];
+            ?>
 
-                        <p>15 Preflop</p>
-                        <p>15 Flop</p>
-                        <p>15 Turn</p>
-                        <p>15 River</p>
-                        <p>15 Mastery</p>
+            <section class="cert-route-card">
+                <div class="cert-section-head">
+                    <span><?php echo e(__('certification.route_title')); ?></span>
+                    <strong><?php echo e(__('certification.route_subtitle')); ?></strong>
+                </div>
 
-                        <br>
+                <div class="cert-route">
+                    <?php $__currentLoopData = $stages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $label = $stage[0];
+                            $icon = $stage[1];
+                            $isFinal = $stage[2] ?? false;
+                        ?>
 
-                        <p>75% mínimo global para aprobar.</p>
+                        <div class="cert-route-step <?php echo e($isFinal ? 'is-final' : ''); ?>">
+                            <div class="cert-route-icon"><?php echo e($icon); ?></div>
+                            <div class="cert-route-title"><?php echo e($label); ?></div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </section>
 
-                        <p>60% mínimo en cada bloque.</p>
+            <section class="cert-info-grid">
+                <article class="cert-info-card cert-exam-card">
+                    <div class="cert-card-icon">🧩</div>
+                    <h2><?php echo e(__('certification.exam_structure')); ?></h2>
+                    <div class="cert-big-number">75</div>
+                    <p><?php echo e(__('certification.total_questions')); ?></p>
 
-                        <p>
-                            Si suspendes deberás esperar
-                            7 días antes de volver a presentarte.
-                        </p>
+                    <div class="cert-block-list">
+                        <span>15 <?php echo e(__('certification.stage_preflop')); ?></span>
+                        <span>15 <?php echo e(__('certification.stage_flop')); ?></span>
+                        <span>15 <?php echo e(__('certification.stage_turn')); ?></span>
+                        <span>15 <?php echo e(__('certification.stage_river')); ?></span>
+                        <span>15 <?php echo e(__('certification.stage_mastery')); ?></span>
+                    </div>
+                </article>
 
+                <article class="cert-info-card">
+                    <div class="cert-card-icon">🎯</div>
+                    <h2><?php echo e(__('certification.passing_requirements')); ?></h2>
+
+                    <div class="cert-requirements">
+                        <div>
+                            <strong>75%</strong>
+                            <span><?php echo e(__('certification.global_minimum')); ?></span>
+                        </div>
+                        <div>
+                            <strong>60%</strong>
+                            <span><?php echo e(__('certification.block_minimum')); ?></span>
+                        </div>
                     </div>
 
-                    <form
-                        method="POST"
-                        action="<?php echo e(route('certification.start')); ?>"
-                        class="mt-8"
-                    >
-                        <?php echo csrf_field(); ?>
+                    <p class="cert-muted">
+                        <?php echo e(__('certification.block_warning')); ?>
 
-                        <button
-                            type="submit"
-                            class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-bold"
-                        >
-                            Comenzar Examen
-                        </button>
+                    </p>
+                </article>
 
-                    </form>
+                <article class="cert-info-card">
+                    <div class="cert-card-icon">⏱️</div>
+                    <h2><?php echo e(__('certification.exam_rules')); ?></h2>
 
-                </div>
+                    <ul class="cert-rules">
+                        <li><?php echo e(__('certification.rule_60_minutes')); ?></li>
+                        <li><?php echo e(__('certification.rule_timer_visible')); ?></li>
+                        <li><?php echo e(__('certification.rule_answer_required')); ?></li>
+                        <li><?php echo e(__('certification.rule_can_correct')); ?></li>
+                        <li><?php echo e(__('certification.rule_no_back')); ?></li>
+                        <li><?php echo e(__('certification.rule_no_pause')); ?></li>
+                        <li><?php echo e(__('certification.rule_no_feedback')); ?></li>
+                    </ul>
+                </article>
+            </section>
 
-            <?php endif; ?>
+            <section class="cert-action-card">
+                <?php if(!$certificationUnlocked): ?>
+                    <div class="cert-action-center">
+                        <div class="cert-action-icon">🔒</div>
+                        <h2><?php echo e(__('certification.locked_title')); ?></h2>
+                        <p><?php echo e(__('certification.locked_text')); ?></p>
+                    </div>
+                <?php elseif($latestAttempt && $latestAttempt->isLockedForRetry()): ?>
+                    <div class="cert-action-center">
+                        <div class="cert-action-icon">⏳</div>
+                        <h2><?php echo e(__('certification.retry_locked_title')); ?></h2>
+                        <p><?php echo e(__('certification.retry_locked_text', ['date' => $latestAttempt->next_attempt_at->format('d/m/Y H:i')])); ?></p>
+                    </div>
+                <?php elseif($activeAttempt): ?>
+                    <div class="cert-action-split">
+                        <div>
+                            <span class="cert-kicker"><?php echo e(__('certification.active_kicker')); ?></span>
+                            <h2><?php echo e(__('certification.active_title')); ?></h2>
+                            <p><?php echo e(__('certification.active_text')); ?></p>
+                        </div>
+                        <a href="<?php echo e(route('certification.exam', $activeAttempt)); ?>" class="cert-main-button">
+                            <?php echo e(__('certification.continue_exam')); ?>
+
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="cert-action-split">
+                        <div>
+                            <span class="cert-kicker"><?php echo e(__('certification.before_start')); ?></span>
+                            <h2><?php echo e(__('certification.start_title')); ?></h2>
+                            <p>
+                                <?php echo e(__('certification.start_text')); ?>
+
+                            </p>
+                            <p class="cert-muted">
+                                <?php echo e(__('certification.possible_results')); ?>
+
+                            </p>
+                        </div>
+
+                        <form method="POST" action="<?php echo e(route('certification.start')); ?>">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="cert-main-button">
+                                <?php echo e(__('certification.start_button')); ?>
+
+                            </button>
+                        </form>
+                    </div>
+                <?php endif; ?>
+            </section>
 
             <?php if($passedAttempt): ?>
-
-                <div class="mt-10 border-t border-slate-700 pt-6">
-
-                    <h3 class="text-xl font-semibold mb-2">
-                        Certificación obtenida
-                    </h3>
-
-                    <p>
-                        Estado:
-                        <?php echo e($passedAttempt->resultBadge()); ?>
-
-                    </p>
-
-                    <p>
-                        Código:
-                        <?php echo e($passedAttempt->certificate_code); ?>
-
-                    </p>
-
-                </div>
-
+                <section class="cert-passed-card">
+                    <div class="cert-passed-icon">🎓</div>
+                    <div>
+                        <h3><?php echo e(__('certification.passed_title')); ?></h3>
+                        <p><?php echo e(__('certification.result')); ?>: <strong><?php echo e($passedAttempt->resultBadge()); ?></strong></p>
+                        <p><?php echo e(__('certification.code')); ?>: <strong><?php echo e($passedAttempt->certificate_code); ?></strong></p>
+                    </div>
+                </section>
             <?php endif; ?>
 
+            <section class="cert-legal-card">
+                <strong><?php echo e(__('certification.legal_note_label')); ?></strong>
+                <?php echo e(__('certification.legal_note_text')); ?>
+
+            </section>
         </div>
-
-    </div>
-
+    </main>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
@@ -138,4 +237,5 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?><?php /**PATH C:\laragon\www\apexcash\resources\views/certification/index.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+<?php /**PATH C:\laragon\www\apexcash\resources\views/certification/index.blade.php ENDPATH**/ ?>

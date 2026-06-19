@@ -45,7 +45,9 @@ class CertificationAttempt extends Model
         'answers_snapshot',
 
         'started_at',
+        'expires_at',
         'completed_at',
+        'duration_seconds',
         'next_attempt_at',
     ];
 
@@ -64,6 +66,7 @@ class CertificationAttempt extends Model
         'mastery_score' => 'float',
 
         'started_at' => 'datetime',
+        'expires_at' => 'datetime',
         'completed_at' => 'datetime',
         'next_attempt_at' => 'datetime',
     ];

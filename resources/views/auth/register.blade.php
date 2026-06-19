@@ -1,21 +1,21 @@
 <x-guest-layout>
     <div class="auth-form-header">
-        <span>Crea tu cuenta</span>
-        <h2>Empieza por Preflop</h2>
-        <p>Guarda XP, desbloquea módulos y entrena con más de 250 spots de Cash Games.</p>
+        <span>{{ __('auth.register.badge') }}</span>
+        <h2>{{ __('auth.register.title') }}</h2>
+        <p>{{ __('auth.register.subtitle') }}</p>
     </div>
 
     <div class="auth-benefits">
-        <div><strong>XP</strong><span>progreso persistente</span></div>
-        <div><strong>Leaks</strong><span>errores detectados</span></div>
-        <div><strong>250+</strong><span>spots de práctica</span></div>
+        <div><strong>{{ __('auth.register.benefits.xp.title') }}</strong><span>{{ __('auth.register.benefits.xp.text') }}</span></div>
+        <div><strong>{{ __('auth.register.benefits.leaks.title') }}</strong><span>{{ __('auth.register.benefits.leaks.text') }}</span></div>
+        <div><strong>{{ __('auth.register.benefits.spots.title') }}</strong><span>{{ __('auth.register.benefits.spots.text') }}</span></div>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="auth-form">
         @csrf
 
         <div class="auth-field">
-            <label for="name">Nombre</label>
+            <label for="name">{{ __('auth.fields.name') }}</label>
             <input
                 id="name"
                 type="text"
@@ -24,13 +24,13 @@
                 required
                 autofocus
                 autocomplete="name"
-                placeholder="Tu nombre"
+                placeholder="{{ __('auth.placeholders.name') }}"
             >
             <x-input-error :messages="$errors->get('name')" class="auth-error" />
         </div>
 
         <div class="auth-field">
-            <label for="email">Email</label>
+            <label for="email">{{ __('auth.fields.email') }}</label>
             <input
                 id="email"
                 type="email"
@@ -38,44 +38,44 @@
                 value="{{ old('email') }}"
                 required
                 autocomplete="username"
-                placeholder="tu@email.com"
+                placeholder="{{ __('auth.placeholders.email') }}"
             >
             <x-input-error :messages="$errors->get('email')" class="auth-error" />
         </div>
 
         <div class="auth-field">
-            <label for="password">Contraseña</label>
+            <label for="password">{{ __('auth.fields.password') }}</label>
             <input
                 id="password"
                 type="password"
                 name="password"
                 required
                 autocomplete="new-password"
-                placeholder="Mínimo 8 caracteres"
+                placeholder="{{ __('auth.placeholders.new_password') }}"
             >
             <x-input-error :messages="$errors->get('password')" class="auth-error" />
         </div>
 
         <div class="auth-field">
-            <label for="password_confirmation">Confirmar contraseña</label>
+            <label for="password_confirmation">{{ __('auth.fields.password_confirmation') }}</label>
             <input
                 id="password_confirmation"
                 type="password"
                 name="password_confirmation"
                 required
                 autocomplete="new-password"
-                placeholder="Repite tu contraseña"
+                placeholder="{{ __('auth.placeholders.password_confirmation') }}"
             >
             <x-input-error :messages="$errors->get('password_confirmation')" class="auth-error" />
         </div>
 
         <button type="submit" class="auth-submit">
-            Crear cuenta y empezar
+            {{ __('auth.register.submit') }}
         </button>
 
         <div class="auth-switch">
-            <span>¿Ya estás registrado?</span>
-            <a href="{{ route('login') }}">Entrar</a>
+            <span>{{ __('auth.register.already_registered') }}</span>
+            <a href="{{ route('login') }}">{{ __('auth.register.login') }}</a>
         </div>
     </form>
 </x-guest-layout>

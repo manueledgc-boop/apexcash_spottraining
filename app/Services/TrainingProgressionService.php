@@ -9,23 +9,23 @@ use Illuminate\Support\Collection;
 class TrainingProgressionService
 {
     public const FLOP_XP_REQUIRED = 1000;
-    public const TURN_XP_REQUIRED = 1000; //3000
-    public const RIVER_XP_REQUIRED = 1000; //6000
-    public const MASTERY_XP_REQUIRED = 1000; //10000
-    public const CERTIFICATION_XP_REQUIRED = 1000; //14000
+    public const TURN_XP_REQUIRED = 3000; //3000
+    public const RIVER_XP_REQUIRED = 3000; //6000
+    public const MASTERY_XP_REQUIRED = 3000; //10000
+    public const CERTIFICATION_XP_REQUIRED = 3000; //14000
 
 
-    public const PREFLOP_ACCURACY_REQUIRED = 70.0;
-    public const FLOP_ACCURACY_REQUIRED = 70.0;
-    public const TURN_ACCURACY_REQUIRED = 70.0;
-    public const RIVER_ACCURACY_REQUIRED = 70.0;
-    public const MASTERY_ACCURACY_REQUIRED = 70.0;
+    public const PREFLOP_ACCURACY_REQUIRED = 75.0;
+    public const FLOP_ACCURACY_REQUIRED = 75.0;
+    public const TURN_ACCURACY_REQUIRED = 75.0;
+    public const RIVER_ACCURACY_REQUIRED = 75.0;
+    public const MASTERY_ACCURACY_REQUIRED = 75.0;
 
     /*
      * Evita el bug clásico:
      * 1 acierto de 1 spot = 100% y desbloquea demasiado pronto.
      */
-    public const MIN_STAGE_SAMPLE = 30;
+    public const MIN_STAGE_SAMPLE = 1; //35
 
     public function preflopModules(): array
     {

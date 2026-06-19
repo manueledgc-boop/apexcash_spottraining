@@ -8,6 +8,8 @@
     };
 
     const config = window.ApexMasteryTraining ?? {};
+    const i18n = config.i18n ?? {};
+    const t = (key, fallback = '') => i18n[key] ?? fallback;
     const $ = (id) => document.getElementById(id);
 
     const els = {
@@ -61,22 +63,22 @@
 
     function actionLabel(action) {
         return {
-            CHECK: 'Check',
-            BET_25: 'Bet 25%',
-            BET_33: 'Bet 33%',
-            BET_50: 'Bet 50%',
-            BET_66: 'Bet 66%',
-            BET_75: 'Bet 75%',
-            BET_100: 'Bet Pot',
-            BET_125: 'Overbet 125%',
-            BET_150: 'Overbet 150%',
-            FOLD: 'Fold',
-            CALL: 'Call',
-            RAISE: 'Raise',
-            RAISE_2_5X: 'Raise 2.5x',
-            RAISE_3X: 'Raise 3x',
-            JAM: 'All-in',
-            SHOVE: 'All-in',
+            CHECK: t('action_check', 'Check'),
+            BET_25: t('action_bet_25', 'Bet 25%'),
+            BET_33: t('action_bet_33', 'Bet 33%'),
+            BET_50: t('action_bet_50', 'Bet 50%'),
+            BET_66: t('action_bet_66', 'Bet 66%'),
+            BET_75: t('action_bet_75', 'Bet 75%'),
+            BET_100: t('action_bet_pot', 'Bet Pot'),
+            BET_125: t('action_overbet_125', 'Overbet 125%'),
+            BET_150: t('action_overbet_150', 'Overbet 150%'),
+            FOLD: t('action_fold', 'Fold'),
+            CALL: t('action_call', 'Call'),
+            RAISE: t('action_raise', 'Raise'),
+            RAISE_2_5X: t('action_raise_2_5x', 'Raise 2.5x'),
+            RAISE_3X: t('action_raise_3x', 'Raise 3x'),
+            JAM: t('action_all_in', 'All-in'),
+            SHOVE: t('action_all_in', 'All-in'),
         }[action] ?? action;
     }
 
@@ -104,23 +106,23 @@
 
         if (els.boardStreetLabel) {
             els.boardStreetLabel.textContent = street === 'preflop'
-                ? 'SIN BOARD · PREFLOP'
-                : `BOARD · ${streetLabel}`;
+                ? t('no_board_preflop', 'SIN BOARD · PREFLOP')
+                : `${t('board', 'BOARD')} · ${streetLabel}`;
         }
 
         els.spotModule.textContent = spot.module_label ?? '--';
-        els.spotTitle.textContent = spot.title ?? 'Spot mastery';
-        els.spotMeta.textContent = `${streetLabel} · ${spot.hero_position} vs ${spot.villain_position} · ${spot.difficulty ?? 'Mastery'} · confianza ${spot.confidence ?? 0}%`;
+        els.spotTitle.textContent = spot.title ?? t('spot_mastery', 'Spot mastery');
+        els.spotMeta.textContent = `${streetLabel} · ${spot.hero_position} vs ${spot.villain_position} · ${spot.difficulty ?? 'Mastery'} · ${t('confidence', 'confianza')} ${spot.confidence ?? 0}%`;
 
         const boardCards = spot.board_cards ?? [];
 
         els.boardCards.innerHTML = boardCards.length
             ? boardCards.map(card => cardHtml(card, 'board-card')).join('')
-            : '<div class="spot-meta">Preflop / Sin board</div>';
+            : `<div class="spot-meta">${t('preflop_no_board', 'Preflop / Sin board')}</div>`;
             
         els.heroCards.innerHTML = (spot.hero_cards ?? []).map(card => cardHtml(card, 'card')).join('');
-        els.spotPot.textContent = `Pot: ${spot.pot_bb ?? '--'} BB`;
-        els.spotSpr.textContent = `SPR: ${spot.spr ?? '--'}`;
+        els.spotPot.textContent = `${t('pot', 'Pot')}: ${spot.pot_bb ?? '--'} BB`;
+        els.spotSpr.textContent = `${t('spr', 'SPR')}: ${spot.spr ?? '--'}`;
         els.heroPosition.textContent = spot.hero_position ?? '--';
         els.villainPosition.textContent = spot.villain_position ?? '--';
 
@@ -183,14 +185,14 @@
     function renderInsights(insights) {
         if (insights.gto) {
             els.gtoInsightBox.hidden = false;
-            els.gtoInsightBox.innerHTML = `<strong>GTO simplificado</strong><br>${insights.gto}`;
+            els.gtoInsightBox.innerHTML = `<strong>${t('gto_simplified', 'GTO simplificado')}</strong><br>${insights.gto}`;
         } else {
             els.gtoInsightBox.hidden = true;
         }
 
         if (insights.low_stakes) {
             els.lowStakesInsightBox.hidden = false;
-            els.lowStakesInsightBox.innerHTML = `<strong>Límites bajos NL2-NL10</strong><br>${insights.low_stakes}`;
+            els.lowStakesInsightBox.innerHTML = `<strong>${t('low_stakes', 'Límites bajos NL2-NL10')}</strong><br>${insights.low_stakes}`;
         } else {
             els.lowStakesInsightBox.hidden = true;
         }
@@ -205,7 +207,7 @@
 
     function renderLeaks(leaks) {
         if (!Array.isArray(leaks) || leaks.length === 0) {
-            els.leaksList.innerHTML = '<p class="spot-meta">Aún no hay suficientes manos de mastery para detectar leaks.</p>';
+            els.leaksList.innerHTML = `<p class="spot-meta">${t('no_leaks_yet', 'Aún no hay suficientes manos de mastery para detectar leaks.')}</p>`;
             return;
         }
 
@@ -255,7 +257,7 @@
             const data = await response.json();
 
             if (!data.success) {
-                throw new Error(data.message ?? 'No se pudo evaluar la respuesta.');
+                throw new Error(data.message ?? t('cannot_evaluate', 'No se pudo evaluar la respuesta.'));
             }
 
             state.summary = data.summary ?? state.summary;
@@ -264,7 +266,7 @@
             renderSummary(state.summary);
             renderLeaks(state.leaks);
         } catch (error) {
-            alert(error.message ?? 'Error inesperado evaluando el spot.');
+            alert(error.message ?? t('unexpected_evaluating', 'Error inesperado evaluando el spot.'));
             state.locked = false;
         }
     }
@@ -280,19 +282,19 @@
         els.feedbackBox.hidden = false;
         els.feedbackBox.classList.add(data.correct ? 'correct' : 'wrong');
         els.feedbackBox.innerHTML = `
-            <strong>${data.title ?? 'Resultado'}</strong><br>
-            Elegiste <strong>${actionLabel(data.selected_action)}</strong>. Mejor acción: <strong>${actionLabel(data.correct_action)}</strong>.<br>
+            <strong>${data.title ?? t('result', 'Resultado')}</strong><br>
+            ${t('you_chose', 'Elegiste')} <strong>${actionLabel(data.selected_action)}</strong>. ${t('best_action', 'Mejor acción')}: <strong>${actionLabel(data.correct_action)}</strong>.<br>
             ${data.explanation ?? ''}
         `;
 
         els.gradeBox.hidden = false;
-        els.gradeBox.innerHTML = `<span>Grado</span><strong>${String(data.grade ?? '--').toUpperCase()}</strong>`;
+        els.gradeBox.innerHTML = `<span>${t('grade', 'Grado')}</span><strong>${String(data.grade ?? '--').toUpperCase()}</strong>`;
 
         els.frequencyBox.hidden = false;
-        els.frequencyBox.innerHTML = `<span>Frecuencia sugerida</span><strong>${data.frequency ?? '--'}%</strong>`;
+        els.frequencyBox.innerHTML = `<span>${t('suggested_frequency', 'Frecuencia sugerida')}</span><strong>${data.frequency ?? '--'}%</strong>`;
 
         els.evBox.hidden = false;
-        els.evBox.innerHTML = `<span>EV relativo</span><strong>${data.ev_score ?? 0}/100 · +${data.xp_earned ?? 0} XP</strong>`;
+        els.evBox.innerHTML = `<span>${t('relative_ev', 'EV relativo')}</span><strong>${data.ev_score ?? 0}/100 · +${data.xp_earned ?? 0} ${t('xp', 'XP')}</strong>`;
     }
 
     function hideInsights() {
@@ -317,7 +319,7 @@
             const data = await response.json();
 
             if (!data.success) {
-                throw new Error('No se pudo cargar el siguiente spot.');
+                throw new Error(t('cannot_load_next', 'No se pudo cargar el siguiente spot.'));
             }
 
             state.spot = data.spot;
@@ -325,7 +327,7 @@
             state.leaks = data.leaks ?? state.leaks;
             renderSpot();
         } catch (error) {
-            alert(error.message ?? 'Error cargando spot.');
+            alert(error.message ?? t('loading_error', 'Error cargando spot.'));
         }
     }
 

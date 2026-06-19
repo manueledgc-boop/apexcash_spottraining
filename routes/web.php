@@ -119,14 +119,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('mastery-training.reset');
     });
 
-    Route::middleware('training.unlocked:certification')->group(function () {
-        Route::get('/certification', [CertificationController::class, 'index'])
-            ->name('certification.index');
+    Route::get('/certification', [CertificationController::class, 'index'])
+        ->name('certification.index');
 
-        Route::post('/certification/start', [CertificationController::class, 'start'])
-            ->middleware('training.unlocked:certification')
-            ->name('certification.start');
-    });
+    Route::post('/certification/start', [CertificationController::class, 'start'])
+        ->name('certification.start');
+
+    Route::get('/certification/{attempt}/exam', [CertificationController::class, 'exam'])
+        ->name('certification.exam');
+
+    Route::post('/certification/{attempt}/answer', [CertificationController::class, 'answer'])
+        ->name('certification.answer');
+
+    Route::post('/certification/{attempt}/finish', [CertificationController::class, 'finish'])
+        ->name('certification.finish');
+
+    Route::get('/certification/{attempt}/result', [CertificationController::class, 'result'])
+        ->name('certification.result');
 
 });
 
@@ -140,5 +149,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
+
+Route::view('/cookies', 'legal.cookies')->name('cookies');
 
 require __DIR__.'/auth.php';
