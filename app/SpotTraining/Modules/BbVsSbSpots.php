@@ -3,6 +3,7 @@
 namespace App\SpotTraining\Modules;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
+use App\SpotTraining\SpotFamilyResolver;
 
 class BbVsSbSpots
 {
@@ -27,7 +28,8 @@ class BbVsSbSpots
             'family_label' => $spot['family_label'],
             'concept' => $spot['concept'],
             'concept_label' => $spot['concept_label'],
-
+            'spot_family' => SpotFamilyResolver::fromConcept($spot['concept']),
+            'spot_family_label' => SpotFamilyResolver::labelFromConcept($spot['concept']),
             'title' => 'BB enfrenta open SB',
             'hero_position' => 'BB',
             'hero_cards' => $spot['cards'],

@@ -3,6 +3,7 @@
 namespace App\SpotTraining\Modules;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
+use App\SpotTraining\SpotFamilyResolver;
 
 class OpenRaiseSpots
 {
@@ -50,6 +51,8 @@ class OpenRaiseSpots
             'family_label' => $familyLabel,
             'concept' => $concept,
             'concept_label' => $conceptLabel,
+            'spot_family' => SpotFamilyResolver::fromConcept($concept),
+            'spot_family_label' => SpotFamilyResolver::labelFromConcept($concept),
             'title' => $title,
             'hero_position' => $heroPosition,
             'hero_cards' => $heroCards,

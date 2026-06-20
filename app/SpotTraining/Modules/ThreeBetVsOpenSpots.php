@@ -3,6 +3,7 @@
 namespace App\SpotTraining\Modules;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
+use App\SpotTraining\SpotFamilyResolver;
 
 class ThreeBetVsOpenSpots
 {
@@ -26,6 +27,8 @@ class ThreeBetVsOpenSpots
             'module_label' => '3Bet vs Open',
             'family' => $spot['family'],
             'family_label' => $spot['family_label'],
+            'spot_family' => SpotFamilyResolver::fromConcept($spot['concept']),
+            'spot_family_label' => SpotFamilyResolver::labelFromConcept($spot['concept']),
             'concept' => $spot['concept'],
             'concept_label' => $spot['concept_label'],
             'title' => "{$hero} enfrenta open {$villain}",

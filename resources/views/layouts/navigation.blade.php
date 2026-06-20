@@ -1,4 +1,5 @@
 <nav x-data="{ open: false }" class="apex-nav">
+    @php($isApexAdmin = auth()->check() && auth()->user()->email === env('APEXCASH_ADMIN_EMAIL', 'manueledgc@gmail.com'))
     <div class="apex-nav-inner">
         <div class="apex-nav-left">
             <a href="{{ route('dashboard') }}" class="apex-nav-brand">
@@ -14,9 +15,15 @@
                     Dashboard
                 </x-nav-link>
 
-                <x-nav-link :href="route('spot-training.index')" :active="request()->routeIs('spot-training.*')">
-                    Training
+                <x-nav-link :href="route('hand-lab.index')" :active="request()->routeIs('hand-lab.*')">
+                    {{ __('hand_lab.nav_label') }}
                 </x-nav-link>
+
+                @if($isApexAdmin)
+                    <x-nav-link :href="route('admin.hand-lab.index')" :active="request()->routeIs('admin.hand-lab.*')">
+                        {{ __('hand_lab.admin_nav_label') }}
+                    </x-nav-link>
+                @endif
 
             </div>
         </div>
@@ -62,9 +69,15 @@
             Dashboard
         </x-responsive-nav-link>
 
-        <x-responsive-nav-link :href="route('spot-training.index')" :active="request()->routeIs('spot-training.*')">
-            Training
+        <x-responsive-nav-link :href="route('hand-lab.index')" :active="request()->routeIs('hand-lab.*')">
+            {{ __('hand_lab.nav_label') }}
         </x-responsive-nav-link>
+
+        @if($isApexAdmin)
+            <x-responsive-nav-link :href="route('admin.hand-lab.index')" :active="request()->routeIs('admin.hand-lab.*')">
+                {{ __('hand_lab.admin_nav_label') }}
+            </x-responsive-nav-link>
+        @endif
 
         <x-responsive-nav-link :href="route('profile.edit')">
             Perfil

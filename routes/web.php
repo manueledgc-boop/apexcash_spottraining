@@ -9,6 +9,8 @@ use App\Http\Controllers\SpotTrainingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MasteryTrainingController;
 use App\Http\Controllers\CertificationController;
+use App\Http\Controllers\HandLabController;
+use App\Http\Controllers\Admin\HandLabReviewController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -117,6 +119,33 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::post('/mastery/reset', [MasteryTrainingController::class, 'reset'])
             ->name('mastery-training.reset');
+    });
+
+    Route::get('/hand-lab', [HandLabController::class, 'index'])
+        ->name('hand-lab.index');
+
+    Route::get('/hand-lab/reviews', [HandLabController::class, 'reviews'])
+        ->name('hand-lab.reviews.index');
+
+    Route::get('/hand-lab/reviews/{spot}', [HandLabController::class, 'showReview'])
+        ->name('hand-lab.reviews.show');
+
+    Route::post('/hand-lab/api/spots', [HandLabController::class, 'store'])
+        ->name('hand-lab.spots.store');
+
+
+    Route::prefix('admin/hand-lab')->name('admin.hand-lab.')->group(function () {
+        Route::get('/', [HandLabReviewController::class, 'index'])
+            ->name('index');
+
+        Route::get('/{spot}', [HandLabReviewController::class, 'show'])
+            ->name('show');
+
+        Route::patch('/{spot}/approve', [HandLabReviewController::class, 'approve'])
+            ->name('approve');
+
+        Route::patch('/{spot}/reject', [HandLabReviewController::class, 'reject'])
+            ->name('reject');
     });
 
     Route::get('/certification', [CertificationController::class, 'index'])

@@ -3,6 +3,7 @@
 namespace App\SpotTraining\Modules;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
+use App\SpotTraining\SpotFamilyResolver;
 
 class BtnVs3BetSpots
 {
@@ -46,6 +47,8 @@ class BtnVs3BetSpots
 
             'family' => 'btn_vs_3bet_response',
             'family_label' => 'BTN vs 3Bet',
+            'spot_family' => SpotFamilyResolver::fromConcept($concept),
+            'spot_family_label' => SpotFamilyResolver::labelFromConcept($concept),
             'concept' => $concept,
             'concept_label' => $conceptLabel,
 
