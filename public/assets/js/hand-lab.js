@@ -394,14 +394,90 @@
         return null;
     }
 
-    function validateDecisionPoint(street) {
+    function firstPostflopActor(activePlayers) {
+        const postflopOrder = ['SB', 'BB', 'UTG', 'HJ', 'CO', 'BTN'];
+
+        return postflopOrder.find(pos => activePlayers.includes(pos)) ?? null;
+    }
+
+    function heroHasPendingDecision(street) {
         const actions = streetActions(street);
-        const last = actions.at(-1);
-        if (!last) return t('missing_decision_action_error', 'El spot debe terminar justo antes de una decisión de Hero. Añade la última acción del villano o una acción que deje a Hero por actuar.');
-        if (last.actor === state.hero) return t('last_action_hero_error', 'La última acción no puede ser de Hero. El spot debe crearse antes de que Hero decida.');
-        if (['fold','auto_fold'].includes(last.type)) return t('last_action_fold_error', 'La última acción no puede ser un fold. Debe quedar una decisión real para Hero.');
+        const last = actions.at(-1) ?? null;
         const active = activePlayersAfter(actionsWithBlindsAndAutoFolds(), street);
-        if (!active.includes(state.hero)) return t('hero_not_active_error', 'Hero no sigue activo en la mano.');
+
+        if (!state.hero || !active.includes(state.hero)) {
+            return false;
+        }
+
+        const { currentBet, committed } = currentBetInfo(street);
+        const heroCommitted = Number(committed[state.hero] || 0);
+        const facingBet = currentBet > heroCommitted;
+
+        if (street === 'preflop') {
+            return facingBet && (!last || last.actor !== state.hero);
+        }
+
+        if (!last) {
+            return firstPostflopActor(active) === state.hero;
+        }
+
+        if (last.actor === state.hero) {
+            return false;
+        }
+
+        if (['fold', 'auto_fold', 'call'].includes(last.type)) {
+            return false;
+        }
+
+        if (facingBet && ['bet', 'raise', 'allin'].includes(last.type)) {
+            return true;
+        }
+
+        if (!facingBet && last.type === 'check') {
+            return true;
+        }
+
+        return false;
+    }
+
+    function canCreateCurrentSpot() {
+        const payload = buildSpotPayload();
+
+        if (!payload.hero_position || !payload.villain_position || payload.hero_cards.length < 2) {
+            return false;
+        }
+
+        if (payload.hero_position === payload.villain_position) {
+            return false;
+        }
+
+        if (validateCardsForStreet(payload.street)) {
+            return false;
+        }
+
+        return heroHasPendingDecision(payload.street);
+    }
+
+    function updateCreateSpotButton() {
+        if (!els.createSpotBtn) return;
+
+        const canCreate = canCreateCurrentSpot();
+
+        els.createSpotBtn.disabled = !canCreate;
+        els.createSpotBtn.classList.toggle('is-disabled', !canCreate);
+        els.createSpotBtn.title = canCreate
+            ? ''
+            : t('create_spot_disabled_hint', 'Solo puedes crear un spot cuando la acción está pendiente en Hero.');
+    }
+
+    function validateDecisionPoint(street) {
+        if (!heroHasPendingDecision(street)) {
+            return t(
+                'missing_decision_action_error',
+                'Solo puedes crear un spot cuando la acción está pendiente en Hero. Si la calle ya terminó, reparte la siguiente carta.'
+            );
+        }
+
         return null;
     }
 
@@ -430,6 +506,26 @@
         return facingBet ? ['Fold','Call','Raise','All-in'] : ['Check','Bet 33%','Bet 75%','Overbet','All-in'];
     }
 
+    function inferTechnicalSpotType(street) {
+        if (street === 'preflop') {
+            return 'preflop_decision';
+        }
+
+        if (street === 'flop') {
+            return 'flop_uncategorized';
+        }
+
+        if (street === 'turn') {
+            return 'turn_uncategorized';
+        }
+
+        if (street === 'river') {
+            return 'river_uncategorized';
+        }
+
+        return 'uncategorized';
+    }
+
     function buildSpotPayload() {
         const street = detectDecisionStreet();
         const cards = selectedCards();
@@ -438,7 +534,8 @@
         const pot = normalizedActions.reduce((total, action) => total + Number(action.size || 0), 0);
         const effectiveStack = Math.min(Number(els.heroStack.value || 0), Number(els.villainStack.value || 0));
         const spr = pot > 0 ? effectiveStack / pot : null;
-        return { format: els.labFormat.value, hero_position: state.hero, villain_position: state.villain, hero_stack_bb: Number(els.heroStack.value || 0), villain_stack_bb: Number(els.villainStack.value || 0), effective_stack_bb: effectiveStack, street, pot_bb: pot, spr, hero_cards: cards.hero, board_cards: selectedBoardByStreet(street), actions: normalizedActions, active_players: activePlayers, spot_type: detectSpotType(normalizedActions, activePlayers, street), options: [] };
+        return { format: els.labFormat.value, hero_position: state.hero, villain_position: state.villain, hero_stack_bb: Number(els.heroStack.value || 0), villain_stack_bb: Number(els.villainStack.value || 0), effective_stack_bb: effectiveStack, street, pot_bb: pot, spr, hero_cards: cards.hero, board_cards: selectedBoardByStreet(street), actions: normalizedActions, active_players: activePlayers, spot_type: inferTechnicalSpotType(street),
+spot_label: detectSpotType(normalizedActions, activePlayers, street), options: [] };
     }
 
     function validatePayload(payload) {
@@ -451,6 +548,8 @@
         const payload = buildSpotPayload();
         els.labPot.textContent = `${t('pot','Pot')}: ${formatBb(payload.pot_bb)} BB`;
         els.labStreetLabel.textContent = `${t('street','Calle')}: ${payload.street.toUpperCase()}`;
+
+        updateCreateSpotButton();
     }
 
     function createSpotPreview() {
@@ -479,7 +578,7 @@
     function renderEvaluationStage(payload) {
         const board = payload.board_cards.length ? payload.board_cards.map(card => cardHtml(card)).join('') : cardHtml();
         els.builderStage.hidden = true; els.evalStage.hidden = false; els.labFeedbackBox.hidden = true;
-        els.evalSpotType.textContent = payload.spot_type;
+        els.evalSpotType.textContent = payload.spot_label ?? payload.spot_type;
         els.evalSpotDetails.textContent = `${payload.hero_position} vs ${payload.villain_position} · ${payload.street.toUpperCase()}`;
         els.evalBoardCards.innerHTML = board;
         els.evalHeroCards.innerHTML = payload.hero_cards.map(card => cardHtml(card)).join('');
@@ -504,7 +603,10 @@
         try {
             if (!routes.store) throw new Error('Missing hand lab store route.');
             const response = await fetch(routes.store, { method: 'POST', headers: { 'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN': csrfToken() }, body: JSON.stringify({ ...payload, selected_action: action }) });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
             const result = await response.json();
             renderDecisionResult(action, result);
         } catch (error) {
@@ -579,10 +681,28 @@
         refreshActorSelectors();
     }
 
-    function refreshActorSelectors() {
-        const actors = allowedActors();
+    function actionOrderForStreet(street) {
+        if (street === 'preflop') {
+            return ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
+        }
 
+        return ['SB', 'BB', 'UTG', 'HJ', 'CO', 'BTN'];
+    }
+
+    function orderedAllowedActorsForStreet(street) {
+        const actors = allowedActors();
+        const order = actionOrderForStreet(street);
+
+        return order.filter(pos => actors.includes(pos));
+    }
+
+    function refreshActorSelectors() {
         document.querySelectorAll('[data-action-actor]').forEach(select => {
+            const box = select.closest('.lab-box');
+            const addButton = box?.querySelector('[data-add-action]');
+            const street = addButton?.dataset.addAction ?? detectDecisionStreet();
+
+            const actors = orderedAllowedActorsForStreet(street);
             const current = select.value;
 
             select.innerHTML = actors.length
@@ -591,6 +711,8 @@
 
             if (actors.includes(current)) {
                 select.value = current;
+            } else if (actors.length) {
+                select.value = actors[0];
             }
         });
     }

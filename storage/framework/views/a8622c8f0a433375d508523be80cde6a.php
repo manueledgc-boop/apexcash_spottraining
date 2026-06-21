@@ -364,10 +364,10 @@
 
                         </button>
 
-                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
+                    <!--    <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
                             <?php echo e(__('hand_lab.practice_related_spots')); ?>
 
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </aside>

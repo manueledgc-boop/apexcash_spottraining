@@ -1,0 +1,280 @@
+# APEXCASH HAND LAB
+
+# GUÍA OFICIAL DE TAGS Y CONCEPTS
+
+VERSIÓN 1.0
+
+IMPORTANTE:
+
+No crear tags nuevos.
+
+No modificar nombres.
+
+No utilizar sinónimos.
+
+Siempre utilizar exactamente los conceptos definidos en esta guía.
+
+---
+
+# 1. POSITION TAGS
+
+Utilizar siempre uno de estos:
+
+UTG vs MP
+UTG vs CO
+UTG vs BTN
+UTG vs SB
+UTG vs BB
+
+MP vs CO
+MP vs BTN
+MP vs SB
+MP vs BB
+
+CO vs BTN
+CO vs SB
+CO vs BB
+
+BTN vs SB
+BTN vs BB
+
+SB vs BTN
+SB vs BB
+
+BB vs BTN
+BB vs SB
+
+---
+
+# 2. POT TYPE TAGS
+
+Seleccionar uno:
+
+Single Raised Pot
+3Bet Pot
+4Bet Pot
+Multiway Pot
+
+---
+
+# 3. STREET TAGS
+
+Seleccionar uno:
+
+Flop
+Turn
+River
+
+---
+
+# 4. ACTION TYPE TAGS
+
+Seleccionar el concepto principal.
+
+CBet IP
+CBet OOP
+
+Check Back
+
+Float
+
+Check Raise
+
+Donk Bet
+
+Probe Bet
+
+Value Bet
+
+Thin Value Bet
+
+Bluff Catch
+
+Delayed CBet
+
+Second Barrel
+
+Third Barrel
+
+Overbet
+
+Protection Bet
+
+---
+
+# 5. BOARD TEXTURE TAGS
+
+Seleccionar las necesarias.
+
+Rainbow Board
+
+Two Tone Board
+
+Monotone Board
+
+Paired Board
+
+Connected Board
+
+Disconnected Board
+
+Wet Board
+
+Dry Board
+
+High Card Board
+
+Low Card Board
+
+Broadway Board
+
+---
+
+# 6. RANGE STRUCTURE TAGS
+
+Seleccionar las necesarias.
+
+Range Advantage
+
+Nut Advantage
+
+Range Disadvantage
+
+Nut Disadvantage
+
+Polarized Range
+
+Linear Range
+
+Capped Range
+
+Uncapped Range
+
+---
+
+# 7. STRATEGIC CONCEPT TAGS
+
+Seleccionar las necesarias.
+
+Showdown Value
+
+Equity Denial
+
+Fold Equity
+
+Pot Control
+
+Protection
+
+Thin Value
+
+Bluff Catcher
+
+Value Extraction
+
+Range Pressure
+
+Equity Realization
+
+---
+
+# 8. SPR TAGS
+
+Seleccionar uno.
+
+Low SPR
+
+Medium SPR
+
+High SPR
+
+---
+
+# 9. LEAK TAGS
+
+Seleccionar uno principal.
+
+Overfolding vs CBet
+
+Overcalling vs CBet
+
+Overfolding vs 3Bet
+
+Overcalling vs 3Bet
+
+Missed CBet Opportunity
+
+Passive Postflop Play
+
+Excessive Bluffing
+
+Thin Value Missed
+
+Calling Too Wide
+
+Folding Too Much
+
+Overplaying Marginal Hands
+
+Incorrect Bluff Catching
+
+Missed Value Bet
+
+Incorrect Overbet
+
+Poor Turn Strategy
+
+Poor River Strategy
+
+---
+
+# 10. GTO WRITING STANDARD
+
+Nunca mencionar cartas específicas.
+
+Incorrecto:
+
+"TT tiene valor de showdown."
+
+Correcto:
+
+"Las manos de fuerza media conservan suficiente valor de showdown para continuar dentro de la estrategia óptima."
+
+Hablar siempre de:
+
+* Rangos
+* Ventajas de rango
+* Ventajas de nuts
+* Equity
+* Frecuencias
+* Estrategia óptima
+
+---
+
+# 11. MICRO-LIMITS WRITING STANDARD
+
+Nunca mencionar cartas específicas.
+
+Hablar siempre de tendencias poblacionales.
+
+Ejemplos:
+
+* Pagan demasiado.
+* Farolean poco.
+* Defienden demasiado amplio.
+* Sobrevaloran manos medias.
+* No foldean proyectos.
+
+Explicar cómo explotar esos errores.
+
+---
+
+# 12. REGLA DE ORO
+
+Si un concepto no existe en esta lista:
+
+NO CREARLO.
+
+Primero evaluar si realmente merece convertirse en un nuevo estándar oficial de ApexCash.
+
+La consistencia de los tags es más importante que la cantidad de tags.

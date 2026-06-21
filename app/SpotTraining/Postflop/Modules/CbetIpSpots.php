@@ -46,7 +46,7 @@ class CbetIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♦ 7♣ 2♠', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'En A72 rainbow el agresor preflop tiene mucha ventaja de rango. La apuesta pequeña imprime presión a manos sin As, cobra a pares bajos y mantiene dominados dentro.',
+            'En boards A-high secos, el agresor preflop suele tener una ventaja clara de rango. La apuesta pequeña permite presionar manos sin pareja, cobrar a pares bajos y mantener dentro manos dominadas sin inflar demasiado el bote.',
             'GTO simplificado: apostar pequeño con alta frecuencia.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 82, 'ev_score' => 88, 'feedback' => 'Mejor acción. Apuesta pequeña frecuente por ventaja de rango y buen top pair/top kicker.'],
@@ -81,7 +81,7 @@ class CbetIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♦ 2♣', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'Top pair con buen kicker quiere valor de Qx peores, 7x y pares medios. En board seco, sizing pequeño funciona muy bien.',
+            'Top pair con buen kicker en board seco suele apostar por valor y protección. El sizing pequeño permite cobrar a pares peores, top pairs dominadas y floats sin aislarse innecesariamente contra manos fuertes.',
             'GTO simplificado: bet pequeño por valor y protección.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 84, 'feedback' => 'Correcto. Cobras a peores y mantienes rango amplio pagando.'],
@@ -326,7 +326,7 @@ class CbetIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 8♦', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_66',
-            'AJ en A98 two-tone quiere valor y protección. El board tiene muchos proyectos y pares peores que pagan, así que un sizing medio/grande tiene sentido.',
+            'Top pair fuerte en un board dinámico quiere apostar por valor y protección. Hay muchos proyectos, pares medios y top pairs peores que pueden pagar, por lo que un sizing medio/grande tiene sentido.',
             'GTO simplificado: apostar más grande con top pair fuerte en boards dinámicos.',
             [
                 'BET_66' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 86, 'feedback' => 'Muy bien. Cobras a draws, 9x, 8x y Ax peores.'],

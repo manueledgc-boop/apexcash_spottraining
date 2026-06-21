@@ -46,7 +46,7 @@ class CheckBackIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♥ 2♣', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
-            '88 tiene showdown value pero no quiere recibir check-raise ni construir un bote grande.',
+            'Las parejas medias con showdown value suelen preferir controlar el bote en boards altos secos. Apostar puede aislar contra manos mejores y convertir una mano razonable en una apuesta poco clara.',
             'GTO simplificado: parejas medias se chequean para controlar bote.',
             [
                 'CHECK' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 82, 'feedback' => 'Muy bien. Controlas bote con showdown value medio.'],
@@ -81,7 +81,7 @@ class CheckBackIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ T♠ 9♦', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
-            'A5o sin proyecto real bloquea poco y tiene mala jugabilidad. En board conectado, BB conecta demasiado para c-bet automática.',
+            'Las manos sin pareja, sin proyecto real y con baja jugabilidad no deben convertirse en c-bet automática en boards muy conectados. El defensor conecta demasiado y continúa con muchas manos.',
             'GTO simplificado: reduce c-bets con aire en boards conectados.',
             [
                 'CHECK' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 80, 'feedback' => 'Correcto. No tires dinero en un board que favorece al defensor.'],
@@ -116,7 +116,7 @@ class CheckBackIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♣ 2♦', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
-            '55 tiene valor de showdown débil y pocas calles de valor. Check back permite llegar a showdown y apostar algunos turns favorables.',
+            'Las parejas bajas con showdown value débil no necesitan apostar siempre. El check back controla el bote, conserva equity y permite decidir mejor en turns favorables.',
             'GTO simplificado: mezcla checks con pares bajos para proteger rango.',
             [
                 'CHECK' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 78, 'feedback' => 'Buena línea. Controlas bote y no conviertes 55 en farol innecesario.'],
@@ -326,7 +326,7 @@ class CheckBackIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♦ 2♣', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
-            'TT todavía gana a muchas manos peores. Apostar no consigue tres calles de valor ni demasiados folds mejores.',
+            'Las underpairs fuertes conservan showdown value en boards A-high secos, pero no suelen conseguir varias calles de valor ni suficientes folds de manos mejores. Check back mantiene el bote controlado.',
             'GTO simplificado: underpairs fuertes mezclan check.',
             [
                 'CHECK' => ['grade'=>'best','frequency'=>68,'ev_score'=>82,'feedback'=>'Muy bien.'],
@@ -361,7 +361,7 @@ class CheckBackIpSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 8♦', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
-            'JJ tiene showdown value pero no quiere jugar un bote grande en un board con muchos proyectos.',
+            'Las parejas medias-altas con showdown value pueden preferir controlar el bote en boards dinámicos. Apostar grande suele aislar contra Ax, proyectos fuertes y manos que realizan bien su equity.',
             'GTO simplificado: control de bote con parejas medias-altas.',
             [
                 'CHECK' => ['grade'=>'best','frequency'=>70,'ev_score'=>80,'feedback'=>'Correcto.'],

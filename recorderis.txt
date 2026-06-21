@@ -1,301 +1,184 @@
-# RECORDERIS - CERTIFICATION V1
+RECORDERIS - APEXCASH / HAND LAB V1
+Fecha: 2026-06-21
+
+ESTADO ACTUAL
+
+Se cerró una fase importante del Hand Lab V1: integración de familias de spot para preflop.
+
+Lo que quedó hecho:
+
+1. SpotFamilyResolver centralizado
+   - Archivo: app/SpotTraining/SpotFamilyResolver.php
+   - Namespace usado: App\SpotTraining
+   - Todos los módulos preflop deben consumir esta clase.
+   - Ya no se deben repetir métodos spotFamilyFromConcept() ni spotFamilyLabelFromConcept() dentro de cada módulo.
+
+2. Familias preflop V1 simplificadas y unificadas
+   Familias activas:
+   - premium_or_strong_value
+   - suited_broadway
+   - broadway_offsuit
+   - ax_suited
+   - ax_offsuit
+   - medium_pair
+   - small_pair
+   - suited_connector
+   - offsuit_connector
+   - weak_suited_broadway
+   - weak_suited_connector
+   - blind_defense
+   - trash_offsuit
+   - uncategorized_preflop
+
+   Decisión importante:
+   No usar por ahora familias demasiado finas como strong_broadway_suited, medium_broadway_suited o premium_broadway.
+   Para V1 es mejor consistencia y seguridad antes que exceso de precisión.
+
+3. Biblioteca oficial preflop actualizada
+   Todos los módulos preflop deben tener dentro del array del spot:
+
+   'spot_family' => SpotFamilyResolver::fromConcept($concept),
+   'spot_family_label' => SpotFamilyResolver::labelFromConcept($concept),
+
+   En archivos que usan fromData(array $spot), debe usarse:
+
+   'spot_family' => SpotFamilyResolver::fromConcept($spot['concept']),
+   'spot_family_label' => SpotFamilyResolver::labelFromConcept($spot['concept']),
+
+   No usar $concept si no existe en esa función.
+
+4. Archivos preflop tocados/actualizados
+   - BtnVs3BetSpots.php
+   - ThreeBetVsOpenSpots.php
+   - BbVsBtnSpots.php
+   - SbVsBtnSpots.php
+   - BbVsSbSpots.php
+   - OpenRaiseSpots.php
+
+5. Hand Lab empezó a guardar spot_family
+   Se añadió/planificó columna en hand_lab_spots:
+   - spot_family
+   - spot_family_label
+
+   En HandLabSpot.php deben estar en $fillable:
+   - spot_family
+   - spot_family_label
+
+6. HandLabController
+   Después de validar el request y antes de llamar al SimilarityService, debe calcular:
+
+   if (strtolower($validated['street']) === 'preflop') {
+       $validated['spot_family'] = SpotFamilyResolver::fromCards($validated['hero_cards']);
+       $validated['spot_family_label'] = SpotFamilyResolver::labelFromFamily($validated['spot_family']);
+   } else {
+       $validated['spot_family'] = null;
+       $validated['spot_family_label'] = null;
+   }
+
+   Esto debe estar antes de:
+   $match = $this->similarity->findBestMatch($validated);
+
+7. SimilarityService
+   Objetivo actual:
+   Para preflop, el match debe ser estricto.
+
+   Regla definitiva:
+   - street debe coincidir.
+   - pot_type debe coincidir.
+   - hero_position debe coincidir.
+   - villain_position debe coincidir.
+   - spot_family debe coincidir.
+
+   Si street = preflop y falta spot_family en payload o candidato:
+   -> return 0
+
+   Si street = preflop y spot_family es distinta:
+   -> return 0
+
+   Esto evita errores como responder JTo offsuit con una explicación de KTs suited.
+
+PUNTO DONDE PARAMOS
+
+Se corrigió SpotFamilyResolver para que esté alineado.
+Quedó pendiente confirmar definitivamente:
+
+1. Ejecutar migración de spot_family en hand_lab_spots si no se ha ejecutado.
+2. Verificar HandLabSpot.php con fillable correcto.
+3. Verificar HandLabController.php con cálculo de spot_family antes del match.
+4. Verificar HandLabSimilarityService.php con filtro duro de spot_family en preflop.
+5. Probar flujo completo.
+
+PRUEBAS PARA MAÑANA
+
+Prueba 1 - Preflop mismo spot family
+Crear en Hand Lab:
+- BTN vs BB 3Bet Pot
+- Hero: JTo o QJo
+- Debe buscar solo candidatos broadway_offsuit.
+- Si hay match broadway_offsuit aprobado, responde.
+- Si no hay match, debe ir a Pending Review.
+
+Prueba 2 - Evitar match malo
+Crear:
+- BTN vs BB 3Bet Pot
+- Hero: JTo
+
+No debe responder con análisis de:
+- KTs
+- QTs
+- JTs
+porque esas son suited_broadway.
+
+Prueba 3 - Community Library
+Aprobar un spot pending con spot_family.
+Luego crear otro similar con la misma familia.
+Debe encontrarlo en Community Library (Approved by ApexCash).
+
+Prueba 4 - Falta spot_family
+Si un candidato preflop no tiene spot_family, no debe poder responder por similitud.
+Debe ir a Pending Review.
+
+CAMINO A SEGUIR
+
+FASE INMEDIATA
+1. Revisar y cerrar HandLabSimilarityService.
+2. Revisar y cerrar HandLabController.
+3. Revisar Admin Review para que muestre spot_family y permita confirmarla/cambiarla al aprobar.
+4. Hacer pruebas reales en navegador.
+5. Hacer commit si todo funciona.
+
+FASE SIGUIENTE
+Crear familias para postflop.
+No usar las familias preflop para flop/turn/river.
+
+Para postflop se necesitará algo como:
+- made_hand_family
+- draw_family
+- board_texture
+- action_line
+
+Pero para V1 puede guardarse como un solo campo compuesto:
+spot_family
+
+Ejemplos postflop futuros:
+- top_pair_good_kicker_dry_cbet
+- flush_draw_wet_board_call
+- overpair_low_board_vs_raise
+- river_bluffcatcher_missed_draw
+- second_pair_turn_probe
+
+REGLA IMPORTANTE
+
+Para V1, ApexCash debe responder menos pero responder bien.
+Si no está seguro:
+-> Pending Review
+
+El usuario perdona esperar una revisión.
+No perdona una explicación mala.
+
+COMMIT RECOMENDADO DE ESTA FASE
+
+git add .
+git commit -m "Hand Lab V1: add spot family system and safer preflop matching"
+git push
 
-Fecha: 17/06/2026
-
-## Estado actual
-
-Completado:
-
-* Tabla certification_attempts creada.
-* Modelo CertificationAttempt creado.
-* CertificationController creado.
-* Rutas básicas creadas.
-* Pantalla inicial de Certification funcionando.
-* Desbloqueo conectado a TrainingProgressionService.
-* Sistema de bloqueo de 7 días preparado.
-* Preparado para registrar intentos futuros.
-
----
-
-# Objetivo
-
-Añadir la etapa final de ApexCash:
-
-```text
-Preflop
-↓
-Flop
-↓
-Turn
-↓
-River
-↓
-Advanced Training · Mastery
-↓
-Certification
-```
-
-La Certification debe ser visible desde el principio igual que el resto de etapas.
-
----
-
-# Estados visuales
-
-## Bloqueado
-
-```text
-🔒
-Bloqueado por progreso
-```
-
----
-
-## Disponible
-
-```text
-⏳
-Disponible
-```
-
----
-
-## Completado
-
-```text
-🎓
-Certificación obtenida
-```
-
----
-
-# Pantalla Certification
-
-La pantalla actual es funcional pero debe rediseñarse.
-
-Objetivo:
-
-Convertirla en una pantalla profesional equivalente a una etapa importante de ApexCash.
-
----
-
-## Añadir Ruta ApexCash visual
-
-Mostrar:
-
-```text
-Preflop           ✅
-Flop              ✅
-Turn              ✅
-River             ✅
-Mastery           ✅
-Certification     ⏳
-```
-
----
-
-## Añadir mensaje principal
-
-Mostrar:
-
-"Has completado la ruta formativa ApexCash.
-
-La certificación es la evaluación final del programa y medirá tus conocimientos en Preflop, Flop, Turn, River y Advanced Training."
-
----
-
-## Mostrar estructura del examen
-
-```text
-75 preguntas totales
-
-15 Preflop
-15 Flop
-15 Turn
-15 River
-15 Mastery
-```
-
----
-
-## Mostrar requisitos
-
-```text
-75% mínimo global
-
-60% mínimo por bloque
-```
-
-Bloques:
-
-```text
-Preflop
-Flop
-Turn
-River
-Mastery
-```
-
-No se puede compensar un bloque muy débil con otro muy fuerte.
-
----
-
-## Mostrar política de reintentos
-
-```text
-Si suspendes:
-
-Debes esperar 7 días
-antes de volver a presentarte.
-```
-
----
-
-## Mostrar resultados posibles
-
-```text
-✅ Aprobado
-
-🏆 Aprobado con Distinción
-
-❌ No aprobado
-```
-
----
-
-## Mejorar botón principal
-
-Botón grande y destacado:
-
-```text
-COMENZAR CERTIFICACIÓN
-```
-
-Debe ser el elemento visual principal de la pantalla.
-
----
-
-## Nota legal
-
-Mostrar al final:
-
-"La Certificación ApexCash es una certificación privada emitida por ApexCash como reconocimiento interno de formación y evaluación.
-
-No constituye una titulación académica oficial ni una acreditación emitida por organismos públicos."
-
----
-
-# Examen
-
-Pendiente de implementar.
-
----
-
-## Generación
-
-75 preguntas aleatorias:
-
-```text
-15 Preflop
-15 Flop
-15 Turn
-15 River
-15 Mastery
-```
-
----
-
-## Durante el examen
-
-NO mostrar:
-
-```text
-Feedback
-Explicaciones
-GTO
-Exploit
-EV
-Frecuencias
-Notas
-Consejos
-```
-
-Solo:
-
-```text
-Pregunta actual
-Mesa
-Acciones
-Botones de respuesta
-```
-
----
-
-# Resultado final
-
-## No aprobado
-
-Menos de 75%.
-
-Guardar:
-
-```text
-next_attempt_at = +7 días
-```
-
----
-
-## Aprobado
-
-75% - 89%
-
-Certificado:
-
-```text
-APROBADO
-```
-
----
-
-## Aprobado con Distinción
-
-90% o más.
-
-Certificado:
-
-```text
-APROBADO CON DISTINCIÓN
-```
-
----
-
-# Certificado
-
-Debe incluir:
-
-* Nombre del usuario.
-* Fecha.
-* Número de certificado.
-* Resultado.
-* Logo ApexCash.
-* Firma ApexCash.
-
-No mostrar:
-
-* Porcentaje.
-* Nota.
-* Estadísticas.
-
----
-
-# Mensaje final al usuario
-
-"La certificación marca el final de la formación.
-
-No el final del aprendizaje."
-
-Objetivo posterior:
-
-* Mantener nivel.
-* Detectar leaks.
-* Mejorar precisión.
-* Seguir entrenando.

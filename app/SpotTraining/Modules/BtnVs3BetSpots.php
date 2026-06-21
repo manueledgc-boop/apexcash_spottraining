@@ -599,8 +599,8 @@ class BtnVs3BetSpots
                 'CALL'=>'Correcto. Buena defensa IP con suited Ax.',
                 '4BET'=>'Mezcla posible, pero no principal.',
             ]),
-            'borderline_suited',
-            'Suited marginales'
+            'ax_suited',
+            'Ax Suited'
         );
     }
 
@@ -929,8 +929,8 @@ class BtnVs3BetSpots
                 'CALL'=>'Correcto. Buena defensa suited Ax.',
                 '4BET'=>'Mezcla baja; A5s-A2s suelen ser mejores bluffs.',
             ]),
-            'borderline_suited',
-            'Suited marginales'
+            'ax_suited',
+            'Ax Suited'
         );
     }
 

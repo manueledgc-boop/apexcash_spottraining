@@ -48,7 +48,7 @@ class OverbetSpots
         return [
             [
                 'id' => "pf_overbet_a72r_btn_vs_bb_ak",
-                'concept' => "dry_ace_high",
+                'concept' => "range_advantage_cbet",
                 'concept_label' => "Overbet en A-high seco",
                 'title' => "BTN vs BB · AK en A72r",
                 'hero_position' => "BTN",
@@ -77,7 +77,7 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_964r_bb_vs_btn_98",
-                'concept' => "nut_advantage_bb",
+                'concept' => "value_raise_two_pair",
                 'concept_label' => "Overbet por ventaja de nuts",
                 'title' => "BB vs BTN · 98 en 964r",
                 'hero_position' => "BB",
@@ -106,8 +106,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_t98ss_btn_vs_bb_jq",
-                'concept' => "dynamic_combo_draw",
-                'concept_label' => "Overbet con combo draw",
+                'concept' => "combo_draw_aggression",
+                'concept_label' => "Combo draw agresivo",
                 'title' => "BTN vs BB · QJ en T98ss",
                 'hero_position' => "BTN",
                 'villain_position' => "BB",
@@ -135,8 +135,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_k72r_co_vs_bb_kk",
-                'concept' => "top_set_dry",
-                'concept_label' => "Overbet con top set",
+                'concept' => "set_value_dry_board",
+                'concept_label' => "Set por valor en board seco",
                 'title' => "CO vs BB · KK en K72r",
                 'hero_position' => "CO",
                 'villain_position' => "BB",
@@ -164,8 +164,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_q55r_btn_vs_bb_a5",
-                'concept' => "trips_polar",
-                'concept_label' => "Overbet con trips",
+                'concept' => "set_value_dry_board",
+                'concept_label' => "Trips / mano fuerte en board seco",
                 'title' => "BTN vs BB · A5 en Q55r",
                 'hero_position' => "BTN",
                 'villain_position' => "BB",
@@ -193,8 +193,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_872ss_bb_vs_btn_76s",
-                'concept' => "pair_draw_defender",
-                'concept_label' => "Raise grande con pair+draw",
+                'concept' => "pair_plus_draw_pressure",
+                'concept_label' => "Pareja + draw con presión",
                 'title' => "BB vs BTN · 76s en 872ss",
                 'hero_position' => "BB",
                 'villain_position' => "BTN",
@@ -222,8 +222,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_ak3r_3bp_sb_vs_btn_qq",
-                'concept' => "overpair_3bet_pot",
-                'concept_label' => "Overpair en 3Bet pot A-high",
+                'concept' => "pot_control_dynamic_board",
+                'concept_label' => "Control con showdown value",
                 'title' => "SB vs BTN · QQ en AK3r",
                 'hero_position' => "SB",
                 'villain_position' => "BTN",
@@ -251,8 +251,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_742r_btn_vs_bb_aa",
-                'concept' => "overpair_dry",
-                'concept_label' => "Overpair en board bajo seco",
+                'concept' => "overpair_value",
+                'concept_label' => "Overpair por valor",
                 'title' => "BTN vs BB · AA en 742r",
                 'hero_position' => "BTN",
                 'villain_position' => "BB",
@@ -280,8 +280,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_j76ss_co_vs_bb_asqs",
-                'concept' => "nfd_overcards_pressure",
-                'concept_label' => "Overbet con NFD + overcards",
+                'concept' => "overcards_nfd",
+                'concept_label' => "Overcards + nut draw",
                 'title' => "CO vs BB · AQs en J76ss",
                 'hero_position' => "CO",
                 'villain_position' => "BB",
@@ -309,8 +309,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_qq3r_btn_vs_bb_air",
-                'concept' => "bad_overbet_air",
-                'concept_label' => "Overbet bluff malo",
+                'concept' => "avoid_pure_air_bluff",
+                'concept_label' => "Evitar farol con aire",
                 'title' => "BTN vs BB · A4 en QQ3r",
                 'hero_position' => "BTN",
                 'villain_position' => "BB",
@@ -338,8 +338,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_543ss_bb_vs_btn_65s",
-                'concept' => "made_plus_draw",
-                'concept_label' => "Raise polar con par + draw",
+                'concept' => "pair_plus_draw_pressure",
+                'concept_label' => "Pareja + draw con presión",
                 'title' => "BB vs BTN · 65s en 543ss",
                 'hero_position' => "BB",
                 'villain_position' => "BTN",
@@ -367,8 +367,8 @@ class OverbetSpots
             ],
             [
                 'id' => "pf_overbet_a98r_btn_vs_bb_t7s",
-                'concept' => "gutshot_bad_overbet",
-                'concept_label' => "Gutshot sin suficiente equity",
+                'concept' => "avoid_weak_gutshot_raise",
+                'concept_label' => "Evitar overbet con gutshot débil",
                 'title' => "BTN vs BB · T7s en A98r",
                 'hero_position' => "BTN",
                 'villain_position' => "BB",

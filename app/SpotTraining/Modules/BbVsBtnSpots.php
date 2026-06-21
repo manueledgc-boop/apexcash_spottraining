@@ -197,8 +197,8 @@ class BbVsBtnSpots
                 'CALL'=>'Correcto. Defensa fina pero aceptable por precio.',
                 '3BET'=>'No es el mejor bluff; hay mejores blockers.',
             ]),
-            'broadway_suited',
-            'Broadways suited'
+            'weak_suited_hands',
+            'Suited débiles'
         );
     }
 
@@ -235,15 +235,15 @@ class BbVsBtnSpots
     protected static function k9s(): array
     {
         return self::base(['Ks','9s'], 'CALL',
-            'K9s defiende bien por suitedness, blocker y jugabilidad.',
+            'Los Kx suited medios-bajos suelen defender bien desde BB contra opens amplios de BTN. Tienen equity suficiente, buena jugabilidad postflop y potencial para conectar proyectos fuertes, aunque no deben sobrejugarse cuando ligan top pair con kicker medio.',
             'GTO simplificado: FOLD 8%, CALL 74%, 3BET 18%.',
             self::grades('CALL', 8, 74, 18, ['FOLD'=>25,'CALL'=>100,'3BET'=>82], [
-                'FOLD'=>'Demasiado tight.',
-                'CALL'=>'Correcto. K9s realiza bien equity.',
-                '3BET'=>'Aceptable como mezcla baja-media.',
+                'FOLD'=>'Demasiado tight. Esta zona suited del rango realiza suficiente equity para defender la ciega grande.',
+                'CALL'=>'Correcto. La mano conserva buena jugabilidad y puede realizar equity cerrando la acción desde BB.',
+                '3BET'=>'Aceptable como mezcla baja-media, especialmente contra BTN amplio y con fold suficiente frente a resubidas.',
             ]),
-            'broadway_suited',
-            'Broadways suited'
+            'weak_suited_hands',
+            'Suited débiles'
         );
     }
 
@@ -287,8 +287,8 @@ class BbVsBtnSpots
                 'CALL'=>'Correcto. Mano muy jugable contra BTN.',
                 '3BET'=>'No es principal; mejores suited hands pueden bluffear.',
             ]),
-            'suited_connectors',
-            'Suited connectors'
+            'weak_suited_connector',
+            'Suited connectors débiles'
         );
     }
 
@@ -332,8 +332,8 @@ class BbVsBtnSpots
                 'CALL'=>'Correcto. Defensa fina con suited king.',
                 '3BET'=>'Mezcla baja; no principal.',
             ]),
-            'broadway_suited',
-            'Broadways suited'
+            'weak_suited_hands',
+            'Suited débiles'
         );
     }
 
@@ -407,8 +407,8 @@ class BbVsBtnSpots
                 'CALL'=>'Aceptable contra BTN muy amplio, pero no obligatorio.',
                 '3BET'=>'Demasiado débil como bluff.',
             ]),
-            'broadway_offsuit',
-            'Broadways offsuit'
+            'trash_offsuit',
+            'Basura offsuit'
         );
     }
 
@@ -676,8 +676,8 @@ class BbVsBtnSpots
                 'CALL'=>'Defensa fina contra BTN muy amplio.',
                 '3BET'=>'Demasiado débil como 3Bet.',
             ]),
-            'broadway_offsuit',
-            'Broadways offsuit'
+            'trash_offsuit',
+            'Basura offsuit'
         );
     }
 
@@ -751,8 +751,8 @@ class BbVsBtnSpots
                 'CALL'=>'Correcto. Buena defensa jugable.',
                 '3BET'=>'Puede existir poco, pero call domina.',
             ]),
-            'suited_connectors',
-            'Suited connectors'
+            'weak_suited_hands',
+            'Suited débiles'
         );
     }
 
@@ -841,8 +841,8 @@ class BbVsBtnSpots
                 'CALL'=>'Correcto. Buena jugabilidad por precio.',
                 '3BET'=>'No es principal.',
             ]),
-            'suited_connectors',
-            'Suited connectors'
+            'weak_suited_connector',
+            'Suited connectors debiles'
         );
     }
 

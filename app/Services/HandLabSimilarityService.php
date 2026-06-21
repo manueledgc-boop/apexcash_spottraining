@@ -123,17 +123,45 @@ class HandLabSimilarityService
         $payloadStreet = strtolower((string) ($payload['street'] ?? ''));
         $candidateStreet = strtolower((string) ($candidate['street'] ?? ''));
 
-        if ($payloadStreet !== $candidateStreet) {
+        if ($payloadStreet === '' || $candidateStreet === '' || $payloadStreet !== $candidateStreet) {
             return 0;
         }
 
-        $score += 25;
+        $payloadHero = strtoupper((string) ($payload['hero_position'] ?? ''));
+        $candidateHero = strtoupper((string) ($candidate['hero_position'] ?? ''));
+
+        if ($payloadHero === '' || $candidateHero === '' || $payloadHero !== $candidateHero) {
+            return 0;
+        }
+
+        $payloadVillain = strtoupper((string) ($payload['villain_position'] ?? ''));
+        $candidateVillain = strtoupper((string) ($candidate['villain_position'] ?? ''));
+
+        if ($payloadVillain === '' || $candidateVillain === '' || $payloadVillain !== $candidateVillain) {
+            return 0;
+        }
+
+        $payloadPotType = $this->potTypeFromText($payload['spot_type'] ?? null, $payload['actions'] ?? []);
+        $candidatePotType = $candidate['pot_type'] ?? 'unknown';
+
+        if (
+            $payloadPotType === 'unknown' ||
+            $candidatePotType === 'unknown' ||
+            $payloadPotType !== $candidatePotType
+        ) {
+            return 0;
+        }
 
         $payloadFamily = $payload['spot_family'] ?? null;
         $candidateFamily = $candidate['spot_family'] ?? null;
 
         if ($payloadStreet === 'preflop') {
-            if (! $payloadFamily || ! $candidateFamily) {
+            if (
+                empty($payloadFamily) ||
+                empty($candidateFamily) ||
+                $payloadFamily === 'uncategorized_preflop' ||
+                $candidateFamily === 'uncategorized_preflop'
+            ) {
                 return 0;
             }
 
@@ -142,21 +170,13 @@ class HandLabSimilarityService
             }
         }
 
-        if (strtoupper((string) ($payload['hero_position'] ?? '')) === strtoupper((string) ($candidate['hero_position'] ?? ''))) {
-            $score += 20;
-        }
+        $score += 25; // street
+        $score += 20; // hero position
+        $score += 20; // villain position
+        $score += 25; // pot type
 
-        if (strtoupper((string) ($payload['villain_position'] ?? '')) === strtoupper((string) ($candidate['villain_position'] ?? ''))) {
-            $score += 20;
-        }
-
-        $payloadPotType = $this->potTypeFromText($payload['spot_type'] ?? null, $payload['actions'] ?? []);
-        $candidatePotType = $candidate['pot_type'] ?? 'unknown';
-
-        if ($payloadPotType === $candidatePotType) {
-            $score += 25;
-        } elseif ($payloadPotType !== 'unknown' && $candidatePotType !== 'unknown') {
-            $score -= 15;
+        if ($payloadStreet === 'preflop') {
+            $score += 10; // spot family
         }
 
         $score += $this->handScore($payload['hero_cards'] ?? [], $candidate['hero_cards'] ?? []);
@@ -165,7 +185,10 @@ class HandLabSimilarityService
             $score += $this->boardScore($payload['board_cards'] ?? [], $candidate['board_cards'] ?? []);
         }
 
-        $score += $this->stackScore((float) ($payload['effective_stack_bb'] ?? 0), (float) ($candidate['effective_stack_bb'] ?? 0));
+        $score += $this->stackScore(
+            (float) ($payload['effective_stack_bb'] ?? 0),
+            (float) ($candidate['effective_stack_bb'] ?? 0)
+        );
 
         return max(0, min(100, $score));
     }

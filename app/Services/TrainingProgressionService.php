@@ -10,9 +10,9 @@ class TrainingProgressionService
 {
     public const FLOP_XP_REQUIRED = 1000;
     public const TURN_XP_REQUIRED = 3000; //3000
-    public const RIVER_XP_REQUIRED = 3000; //6000
-    public const MASTERY_XP_REQUIRED = 3000; //10000
-    public const CERTIFICATION_XP_REQUIRED = 3000; //14000
+    public const RIVER_XP_REQUIRED = 6000; //6000
+    public const MASTERY_XP_REQUIRED = 10000; //10000
+    public const CERTIFICATION_XP_REQUIRED = 14000; //14000
 
 
     public const PREFLOP_ACCURACY_REQUIRED = 75.0;

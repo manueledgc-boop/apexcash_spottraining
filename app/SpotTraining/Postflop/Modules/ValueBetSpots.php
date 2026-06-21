@@ -83,7 +83,7 @@ class ValueBetSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♣ 2♥', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'AJ quiere valor de Ax peores, 7x y pares. Sizing pequeño mantiene rango peor dentro.',
+            'Top pair con buen kicker en board A-high seco suele apostar pequeño por valor. El sizing reducido mantiene dentro top pairs peores, pares bajos y manos dominadas sin inflar demasiado el bote.',
             'GTO simplificado: apuesta pequeña por valor.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 82, 'ev_score' => 88, 'feedback' => 'Excelente. Valor claro y bajo riesgo.'],
@@ -118,7 +118,7 @@ class ValueBetSpots
             ['CO opens 2.5 BB', 'BB calls', 'Flop: Q♦ 8♣ 3♠', 'BB checks', 'Action on Hero CO'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'AQ domina muchas Qx peores. La apuesta pequeña cobra valor sin expulsar manos peores.',
+            'Top pair con buen kicker domina muchas top pairs peores. La apuesta pequeña cobra valor sin expulsar manos dominadas ni convertir el bote en una situación innecesariamente grande.',
             'GTO simplificado: bet pequeño con top pair fuerte.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 86, 'feedback' => 'Muy buen value bet.'],
@@ -153,7 +153,7 @@ class ValueBetSpots
             ['BTN opens 2.5 BB', 'SB calls', 'Flop: K♠ 9♣ 5♥', 'SB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_66',
-            'KQ puede apostar más grande contra SB, que tiene muchos Kx peores y pares que pagan.',
+            'Top pair con buen kicker puede apostar más grande contra rangos que contienen muchas top pairs peores y pares medios dispuestos a pagar.',
             'GTO simplificado: value bet más grande en textura que recibe calls peores.',
             [
                 'BET_66' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 86, 'feedback' => 'Muy bien. Extraes valor de Kx y pares.'],
@@ -328,7 +328,7 @@ class ValueBetSpots
             ['BTN opens 2.5 BB', 'SB 3bets 10 BB', 'BTN calls', 'Flop: A♠ 8♣ 4♥', 'Action on Hero SB'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'AK domina muchos Ax peores y en 3Bet pot no necesita apostar enorme. El sizing pequeño deja dentro AQ, AJ, AT y pares curiosos.',
+            'Top pair top kicker en un 3Bet pot sobre board A-high seco suele apostar pequeño por valor. El sizing reducido mantiene dentro top pairs peores, pares medios y floats, sin aislarse innecesariamente contra manos muy fuertes.',
             'GTO simplificado: c-bet pequeña por valor con top pair top kicker en A-high seco de 3Bet pot.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 90, 'feedback' => 'Excelente. Construyes bote sin aislarte solo contra manos fuertes.'],
@@ -336,10 +336,10 @@ class ValueBetSpots
                 'CHECK' => ['grade' => 'mistake', 'frequency' => 14, 'ev_score' => 50, 'feedback' => 'Demasiado pasivo con una mano que domina el rango de call.'],
             ],
             'En 3Bet pot, TPTK apuesta pequeño con frecuencia en boards secos.',
-            'En NL2-NL10 no regales carta. Te pagan Ax peores demasiadas veces.',
+            'En NL2-NL10 no regales carta con top pair fuerte en 3Bet pot. Muchos rivales pagan con top pairs peores, pares medios y manos curiosas, así que apostar pequeño por valor suele imprimir dinero.',
             90,
-            'three_bet_pot',
-            '3Bet Pot'
+            'tptk_3bet_pot',
+            'TPTK en 3Bet Pot'
         );
     }
 
@@ -400,7 +400,7 @@ class ValueBetSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♣ 2♦', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_33',
-            'A7 puede apostar pequeño por valor/protección contra 2x, pares pequeños, gutshots débiles y overcards. No quiere inflar demasiado el bote.',
+            'La segunda pareja con buen kicker puede apostar pequeño por valor fino y protección contra pares peores, overcards y proyectos débiles. No quiere inflar demasiado el bote.',
             'GTO simplificado: segunda pareja con kicker alto mezcla apuesta pequeña y check; como ejercicio, la línea preferida es bet pequeño.',
             [
                 'BET_33' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 80, 'feedback' => 'Correcto. Valor fino y protección sin convertir la mano en bluff.'],
@@ -435,7 +435,7 @@ class ValueBetSpots
             ['CO opens 2.5 BB', 'BB calls', 'Flop: 7♠ 6♠ 5♣', 'BB checks', 'Action on Hero CO'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_66',
-            'TT es overpair pero muy vulnerable. Apostar grande cobra a proyectos, 7x, 6x y pares con equity. Checkear da demasiadas cartas gratis.',
+            'Una overpair en board bajo y conectado es fuerte pero vulnerable. Apostar grande cobra a proyectos, pares peores y manos con equity, además de negar cartas gratis en turns peligrosos.',
             'GTO simplificado: overpair vulnerable en board dinámico apuesta menos frecuencia, pero cuando apuesta suele usar tamaño grande.',
             [
                 'BET_66' => ['grade' => 'best', 'frequency' => 52, 'ev_score' => 82, 'feedback' => 'Bien. Proteges y cobras a muchas manos con equity.'],

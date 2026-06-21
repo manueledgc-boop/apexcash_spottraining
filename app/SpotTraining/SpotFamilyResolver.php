@@ -14,7 +14,10 @@ class SpotFamilyResolver
                 'premium_or_strong_value',
 
             'ax_suited',
-            'ax_3bet_bluff' =>
+            'ax_3bet_bluff',
+            'ax_bluff_3bet',
+            'ax_4bet_bluff',
+            'ax_suited_3bet' =>
                 'ax_suited',
 
             'ax_offsuit_medium' =>
@@ -24,7 +27,8 @@ class SpotFamilyResolver
             'pocket_pairs' =>
                 'medium_pair',
 
-            'small_pairs' =>
+            'small_pairs',
+            'small_pairs_oop' =>
                 'small_pair',
 
             'suited_connectors' =>
@@ -34,14 +38,23 @@ class SpotFamilyResolver
                 'offsuit_connector',
 
             'broadway_offsuit',
-            'dominated_offsuit' =>
+            'offsuit_broadway',
+            'dominated_offsuit',
+            'marginal_offsuit',
+            'value_defense' =>
                 'broadway_offsuit',
 
             'suited_broadway',
             'broadway_suited' =>
                 'suited_broadway',
 
-            'weak_suited_broadway' =>
+            'weak_suited_broadway',
+            'weak_suited',
+            'weak_suited_hands',
+            'borderline_suited',
+            'semi_bluff_suited',
+            'kx_bluff_3bet',
+            'broadway_weak' =>
                 'weak_suited_broadway',
 
             'weak_suited_connector' =>

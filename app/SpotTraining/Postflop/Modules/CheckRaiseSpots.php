@@ -18,7 +18,7 @@ class CheckRaiseSpots
             self::checkRaiseTopTwoPair(),
             self::checkRaiseMiddleSetWetBoard(),
             self::avoidCheckRaiseWeakGutshot(),
-            self::avoidCheckRaiseBottomPair(),
+            self::checkRaiseHiddenTwoPair(),
             self::avoidCheckRaisePureAir(),
             self::avoidCheckRaiseWeakTopPair(),
             self::checkRaisePairPlusFlushDraw(),
@@ -48,7 +48,7 @@ class CheckRaiseSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♠ 2♦', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
             ['FOLD', 'CALL', 'RAISE'],
             'RAISE',
-            'QJs con proyecto de color, gutshot y overcards tiene mucha equity y fold equity.',
+            'Los combo draws fuertes combinan equity real y fold equity. En boards dinámicos donde la BB conecta bien, el check-raise presiona al agresor y permite construir un bote cuando completamos.',
             'GTO simplificado: subir draws fuertes en boards donde BB tiene nuts.',
             [
                 'RAISE' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 90, 'feedback' => 'Excelente. Presionas con mucha equity.'],
@@ -83,7 +83,7 @@ class CheckRaiseSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: 8♠ 6♦ 4♠', 'BB checks', 'BTN bets 3 BB', 'Action on Hero BB'],
             ['FOLD', 'CALL', 'RAISE'],
             'RAISE',
-            '75s tiene escalera abierta y proyecto de color. Es una mano excelente para check-raise agresivo.',
+            'Los proyectos muy fuertes, como escalera abierta combinada con proyecto de color, son excelentes candidatos a check-raise porque mantienen mucha equity incluso cuando reciben call.',
             'GTO simplificado: subir draws muy fuertes.',
             [
                 'RAISE' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 92, 'feedback' => 'Excelente. Mucha equity y fold equity.'],
@@ -271,14 +271,14 @@ class CheckRaiseSpots
         );
     }
 
-    protected static function avoidCheckRaiseBottomPair(): array
+    protected static function checkRaiseHiddenTwoPair(): array
     {
         return self::spot(
             'pf_no_xraise_k84r_bb_vs_btn_84',
             'check_raise',
             'Check-Raise Flop',
-            'avoid_turning_pair_into_bluff',
-            'No convertir pareja en farol',
+            'value_raise_two_pair',
+            'Check-raise por valor con dobles',
             'BB vs BTN · Bottom pair contra c-bet',
             'BB',
             'BTN',

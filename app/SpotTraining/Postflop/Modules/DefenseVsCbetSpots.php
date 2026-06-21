@@ -83,7 +83,7 @@ class DefenseVsCbetSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♥ 2♣', 'BB checks', 'BTN bets 2 BB', 'Action on Hero BB'],
             ['FOLD', 'CALL', 'RAISE'],
             'FOLD',
-            'J9o sin backdoor relevante, sin pareja y sin proyecto no tiene suficiente equity ni jugabilidad.',
+            'Las manos sin pareja, sin proyecto real y sin backdoors relevantes no tienen suficiente equity ni jugabilidad para continuar frente a una c-bet.',
             'GTO simplificado: foldea aire sin backdoors ante c-bet en A-high seco.',
             [
                 'FOLD' => ['grade' => 'best', 'frequency' => 92, 'ev_score' => 80, 'feedback' => 'Correcto. No defiendas manos sin equity.'],
@@ -223,7 +223,7 @@ class DefenseVsCbetSpots
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: 6♣ 4♦ 2♠', 'BB checks', 'BTN bets 2 BB', 'Action on Hero BB'],
             ['FOLD', 'CALL', 'RAISE'],
             'CALL',
-            'A5s tiene gutshot, overcard y backdoors. Call es estándar; raise puede mezclarse.',
+            'Los proyectos claros con overcard y backdoors tienen suficiente equity para continuar frente a un sizing pequeño. Call es estándar; raise puede mezclarse.',
             'GTO simplificado: continuar con proyectos claros.',
             [
                 'CALL' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 78, 'feedback' => 'Bien. Tienes equity y realizas barato.'],

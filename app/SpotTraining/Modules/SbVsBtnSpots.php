@@ -95,7 +95,7 @@ class SbVsBtnSpots
             self::spot(['As','Jd'], '3BET', [12,6,82], 'AJo desde SB contra BTN es 3Bet claro por valor/protección. Call OOP es mala costumbre.', 'value_3bet', '3Bet por valor'),
             self::spot(['Ah','5h'], '3BET', [16,8,76], 'A5s es candidato premium de 3Bet bluff: blocker al As y buena equity suited.', 'ax_bluff_3bet', '3Bet bluff con Ax suited'),
             self::spot(['Kc','Qs'], '3BET', [22,8,70], 'KQo suele funcionar mejor como 3Bet lineal que pagando fuera de posición.', 'value_3bet', '3Bet por valor'),
-            self::spot(['Qh','Ts'], '3BET', [34,12,54], 'QTs puede 3betear como semi-bluff con jugabilidad, aunque no debe defenderse siempre.', 'semi_bluff_suited', 'Suited semi-bluffs'),
+            self::spot(['Qh','Ts'], '3BET', [34,12,54], 'Las broadways suited de fuerza media pueden combinarse entre fold y 3Bet dependiendo de las posiciones, los rangos involucrados y la estrategia utilizada. Su valor proviene de sus blockers, su buena jugabilidad postflop y su capacidad para generar fold equity antes del flop.', 'semi_bluff_suited', 'Suited semi-bluffs'),
             self::spot(['Jh','9h'], '3BET', [38,14,48], 'J9s puede entrar como 3Bet selectivo contra BTN amplio, pero es borde inferior.', 'semi_bluff_suited', 'Suited semi-bluffs'),
 
             self::spot(['Ad','8c'], 'FOLD', [62,6,32], 'A8o está dominada a menudo y realiza mal equity OOP. 3Betearla siempre crea problemas.', 'dominated_offsuit', 'Offsuit dominadas'),

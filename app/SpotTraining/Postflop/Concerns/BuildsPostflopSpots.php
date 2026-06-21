@@ -1,6 +1,7 @@
 <?php
 
 namespace App\SpotTraining\Postflop\Concerns;
+use App\SpotTraining\FlopSpotFamilyResolver;
 
 trait BuildsPostflopSpots
 {
@@ -41,6 +42,8 @@ trait BuildsPostflopSpots
             'family_label' => $familyLabel,
             'concept' => $concept,
             'concept_label' => $conceptLabel,
+            'spot_family' => FlopSpotFamilyResolver::fromConcept($concept),
+            'spot_family_label' => FlopSpotFamilyResolver::labelFromConcept($concept),
             'title' => $title,
             'street' => 'flop',
             'hero_position' => $heroPosition,
@@ -55,6 +58,10 @@ trait BuildsPostflopSpots
             'nut_advantage' => $nutAdvantage,
             'actions' => $actions,
             'options' => $options,
+            'correct_action' => $correctAction,
+            'explanation' => $explanation,
+            'solver_note' => $solverNote,
+            'action_grades' => $grades,
             'answers' => [
                 'gto' => [
                     'correct_action' => $correctAction,

@@ -4,6 +4,8 @@ namespace App\SpotTraining\PostflopRiver\Concerns;
 
 use App\SpotTraining\Concerns\BuildsSpotPlayers;
 
+use App\SpotTraining\RiverSpotFamilyResolver;
+
 trait BuildsPostflopRiverSpots
 {
     use BuildsSpotPlayers;
@@ -45,6 +47,8 @@ trait BuildsPostflopRiverSpots
             'family_label' => $familyLabel,
             'concept' => $concept,
             'concept_label' => $conceptLabel,
+            'spot_family' => RiverSpotFamilyResolver::fromConcept($concept),
+            'spot_family_label' => RiverSpotFamilyResolver::labelFromConcept($concept),
             'title' => $title,
             'street' => 'river',
             'hero_position' => $heroPosition,

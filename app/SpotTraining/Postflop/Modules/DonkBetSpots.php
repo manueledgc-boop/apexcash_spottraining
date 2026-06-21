@@ -48,7 +48,7 @@ class DonkBetSpots
         return [
             [
                 'id' => "pf_donk_765ss_bb_vs_btn_98s",
-                'concept' => "board_favors_bb",
+                'concept' => "combo_draw_aggression",
                 'concept_label' => "Donk en board que favorece BB",
                 'title' => "BB vs BTN · 98s en 765ss",
                 'hero_position' => "BB",
@@ -77,7 +77,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_842r_bb_vs_btn_88",
-                'concept' => "set_dry",
+                'concept' => "set_value_dry_board",
                 'concept_label' => "Donk con set en board seco",
                 'title' => "BB vs BTN · 88 en 842r",
                 'hero_position' => "BB",
@@ -106,7 +106,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_943ss_bb_vs_co_a5s",
-                'concept' => "nfd_low_board",
+                'concept' => "nut_draw_pressure",
                 'concept_label' => "Donk con nut draw",
                 'title' => "BB vs CO · A5s en 943ss",
                 'hero_position' => "BB",
@@ -135,7 +135,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_ak7r_bb_vs_btn_kq",
-                'concept' => "bad_donk_range_disadvantage",
+                'concept' => "avoid_overplaying_second_pair",
                 'concept_label' => "Donk malo en A-high",
                 'title' => "BB vs BTN · KQ en AK7r",
                 'hero_position' => "BB",
@@ -164,7 +164,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_t98r_bb_vs_btn_j7s",
-                'concept' => "straight_draw",
+                'concept' => "open_ended_pressure",
                 'concept_label' => "Donk con OESD",
                 'title' => "BB vs BTN · J7s en T98r",
                 'hero_position' => "BB",
@@ -193,7 +193,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_q72r_bb_vs_btn_77",
-                'concept' => "middle_set",
+                'concept' => "set_value_dry_board",
                 'concept_label' => "Set medio contra BTN",
                 'title' => "BB vs BTN · 77 en Q72r",
                 'hero_position' => "BB",
@@ -222,7 +222,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_622ss_bb_vs_sb_a4s",
-                'concept' => "blind_vs_blind_nfd",
+                'concept' => "nut_draw_pressure",
                 'concept_label' => "Donk en guerra de ciegas",
                 'title' => "BB vs SB · A4s en 622ss",
                 'hero_position' => "BB",
@@ -251,7 +251,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_j85ss_bb_vs_co_jt",
-                'concept' => "top_pair_dynamic",
+                'concept' => "avoid_overplaying_top_pair",
                 'concept_label' => "Donk top pair en dinámico",
                 'title' => "BB vs CO · JT en J85ss",
                 'hero_position' => "BB",
@@ -280,7 +280,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_432r_bb_vs_btn_65s",
-                'concept' => "made_straight",
+                'concept' => "value_raise_set_wet_board",
                 'concept_label' => "Donk con escalera hecha",
                 'title' => "BB vs BTN · 65s en 432r",
                 'hero_position' => "BB",
@@ -309,7 +309,7 @@ class DonkBetSpots
             ],
             [
                 'id' => "pf_donk_k72r_bb_vs_btn_76s",
-                'concept' => "bad_donk_air",
+                'concept' => "avoid_overplaying_second_pair",
                 'concept_label' => "Donk sin equity suficiente",
                 'title' => "BB vs BTN · 76s en K72r",
                 'hero_position' => "BB",

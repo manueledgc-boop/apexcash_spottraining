@@ -349,9 +349,9 @@
                             {{ __('hand_lab.create_another_spot') }}
                         </button>
 
-                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
+                    <!--    <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
                             {{ __('hand_lab.practice_related_spots') }}
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </aside>

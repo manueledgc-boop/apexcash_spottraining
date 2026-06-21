@@ -48,7 +48,7 @@ class FloatSpots
         return [
             [
                 'id' => "pf_float_a72r_bb_vs_btn_kq",
-                'concept' => "overcards_backdoor",
+                'concept' => "backdoor_air_fold",
                 'concept_label' => "Float con overcards y backdoor",
                 'title' => "BB vs BTN · KQ en A72r",
                 'hero_position' => "BB",
@@ -77,7 +77,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_q83r_bb_vs_btn_aj",
-                'concept' => "two_overcards_bdfd",
+                'concept' => "overcards_backdoor_float",
                 'concept_label' => "Float con overcards + backdoor",
                 'title' => "BB vs BTN · AJ en Q83r",
                 'hero_position' => "BB",
@@ -106,7 +106,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_k94ss_bb_vs_btn_asj",
-                'concept' => "nfd_float",
+                'concept' => "nut_flush_draw_aggression",
                 'concept_label' => "Float con nut flush draw",
                 'title' => "BB vs BTN · AJs en K94ss",
                 'hero_position' => "BB",
@@ -135,7 +135,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_j76r_bb_vs_co_t9",
-                'concept' => "oesd_float",
+                'concept' => "clean_gutshot_continue",
                 'concept_label' => "Float con OESD",
                 'title' => "BB vs CO · T9 en J76r",
                 'hero_position' => "BB",
@@ -164,7 +164,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_t72r_bb_vs_btn_a5",
-                'concept' => "ace_high_backdoor",
+                'concept' => "overcards_backdoor_float",
                 'concept_label' => "Float con A-high backdoor",
                 'title' => "BB vs BTN · A5s en T72r",
                 'hero_position' => "BB",
@@ -193,7 +193,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_983ss_bb_vs_btn_kq",
-                'concept' => "bad_float_no_equity",
+                'concept' => "fold_no_equity",
                 'concept_label' => "Float malo sin equity",
                 'title' => "BB vs BTN · KQ en 983ss",
                 'hero_position' => "BB",
@@ -222,7 +222,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_qt4r_bb_vs_btn_kj",
-                'concept' => "gutshot_overcards",
+                'concept' => "clean_gutshot_continue",
                 'concept_label' => "Float con gutshot + overcard",
                 'title' => "BB vs BTN · KJ en QT4r",
                 'hero_position' => "BB",
@@ -251,7 +251,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_ak5r_bb_vs_btn_qj",
-                'concept' => "dominated_float",
+                'concept' => "backdoor_air_fold",
                 'concept_label' => "Float dominado en A-K",
                 'title' => "BB vs BTN · QJ en AK5r",
                 'hero_position' => "BB",
@@ -280,7 +280,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_654ss_bb_vs_btn_a3s",
-                'concept' => "wheel_draw_fd",
+                'concept' => "combo_draw_aggression",
                 'concept_label' => "Float agresivo con draw fuerte",
                 'title' => "BB vs BTN · A3s en 654ss",
                 'hero_position' => "BB",
@@ -309,7 +309,7 @@ class FloatSpots
             ],
             [
                 'id' => "pf_float_j42r_bb_vs_btn_55",
-                'concept' => "underpair_float",
+                'concept' => "underpair_showdown_value",
                 'concept_label' => "Float con par bajo",
                 'title' => "BB vs BTN · 55 en J42r",
                 'hero_position' => "BB",
