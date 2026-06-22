@@ -349,9 +349,9 @@
                             {{ __('hand_lab.create_another_spot') }}
                         </button>
 
-                    <!--    <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
+                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
                             {{ __('hand_lab.practice_related_spots') }}
-                        </button> -->
+                        </button>
                     </div>
                 </div>
             </aside>
@@ -361,7 +361,7 @@
     <script>
         window.ApexHandLabText = @json(__('hand_lab'));
         window.ApexHandLabRoutes = {
-            store: @json(route('hand-lab.spots.store')),
+            aiAnalyze: @json(route('hand-lab.ai-analyze')),
         };
     </script>
     <script src="{{ asset('assets/js/hand-lab.js') }}"></script>

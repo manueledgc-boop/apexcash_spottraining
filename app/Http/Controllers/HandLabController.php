@@ -9,10 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
-use App\SpotTraining\SpotFamilyResolver;
-use App\SpotTraining\FlopSpotFamilyResolver;
-use App\SpotTraining\TurnSpotFamilyResolver;
-use App\SpotTraining\RiverSpotFamilyResolver;
+use App\HandLab\HandLabClassifier;
 
 class HandLabController extends Controller
 {
@@ -76,24 +73,7 @@ class HandLabController extends Controller
             'selected_action' => ['required', 'string', 'max:40'],
         ]);
 
-        $street = strtolower($validated['street']);
-
-        if ($street === 'preflop') {
-            $validated['spot_family'] = SpotFamilyResolver::fromCards($validated['hero_cards']);
-            $validated['spot_family_label'] = SpotFamilyResolver::labelFromFamily($validated['spot_family']);
-        } elseif ($street === 'flop') {
-            $validated['spot_family'] = FlopSpotFamilyResolver::fromConcept($validated['spot_type'] ?? '');
-            $validated['spot_family_label'] = FlopSpotFamilyResolver::labelFromConcept($validated['spot_type'] ?? '');
-        } elseif ($street === 'turn') {
-            $validated['spot_family'] = TurnSpotFamilyResolver::fromConcept($validated['spot_type'] ?? '');
-            $validated['spot_family_label'] = TurnSpotFamilyResolver::labelFromConcept($validated['spot_type'] ?? '');
-        } elseif ($street === 'river') {
-            $validated['spot_family'] = RiverSpotFamilyResolver::fromConcept($validated['spot_type'] ?? '');
-            $validated['spot_family_label'] = RiverSpotFamilyResolver::labelFromConcept($validated['spot_type'] ?? '');
-        } else {
-            $validated['spot_family'] = null;
-            $validated['spot_family_label'] = null;
-        }
+        $validated = HandLabClassifier::enrichPayload($validated);
 
         $match = $this->similarity->findBestMatch($validated);
 

@@ -1,5 +1,5 @@
 <nav x-data="{ open: false }" class="apex-nav">
-    @php($isApexAdmin = auth()->check() && auth()->user()->email === env('APEXCASH_ADMIN_EMAIL', 'manueledgc@gmail.com'))
+    @php($isApexAdmin = auth()->check() && auth()->user()->email === env('APEXCASH_ADMIN_EMAIL', 'mdiazgranados@yahoo.com'))
     <div class="apex-nav-inner">
         <div class="apex-nav-left">
             <a href="{{ route('dashboard') }}" class="apex-nav-brand">

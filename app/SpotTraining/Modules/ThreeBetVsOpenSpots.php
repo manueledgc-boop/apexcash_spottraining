@@ -208,7 +208,7 @@ class ThreeBetVsOpenSpots
             'concept_label' => $conceptLabel,
             'feedback' => [
                 'FOLD' => $best === 'FOLD' ? 'Correcto. Esta mano no tiene suficiente EV como defensa agresiva o call estándar.' : 'Demasiado tight. Estás dejando pasar una defensa rentable.',
-                'CALL' => $best === 'CALL' ? 'Correcto. La mano realiza bien equity pagando y no necesita convertirse siempre en 3Bet.' : 'Puede existir como mezcla, pero no es la línea principal en este spot.',
+                'CALL' => $best === 'CALL' ? 'Correcto. La mano realiza bien equity pagando y no necesita convertirse siempre en 3Bet.' : 'Puede existir como mezcla 3bet o fold, pero no es la línea principal en este spot.',
                 '3BET' => $best === '3BET' ? 'Correcto. La mano captura más EV como 3Bet por valor, protección, blockers o fold equity.' : 'No es la línea principal. 3betear aquí puede inflar el bote con una mano que realiza mejor pagando o foldeando.',
             ],
         ];
@@ -260,7 +260,7 @@ class ThreeBetVsOpenSpots
                 'En NL2-NL10 las pocket pairs medias y bajas ganan valor cuando puedes pagar con buenas odds y cobrar fuerte al ligar set. Evita convertirlas en 3Bet bluff sin blockers; contra tamaños grandes o rivales agresivos, reduce los calls marginales.',
 
             'dominated_offsuit' =>
-                'En NL2-NL10 muchas pérdidas vienen de defender offsuit dominadas contra rangos fuertes. Manos como KJo, QJo o QTo parecen jugables, pero suelen acabar dominadas. Contra opens tight o 3Bets fuertes, foldear más es el ajuste rentable.',
+                'En NL2-NL10 muchas pérdidas vienen de defender offsuit dominadas contra rangos fuertes. Manos como AQo, KJo, QJo o QTo parecen jugables, pero suelen acabar dominadas. Contra opens tight o 3Bets fuertes, foldear más es el ajuste rentable.',
 
             'suited_connectors' =>
                 'En NL2-NL10 los suited connectors ganan valor cuando tienes posición, buen precio y rivales que pagan demasiado postflop. No los uses como 3Bet automático: sin fold equity real, inflar el bote reduce su ventaja.',

@@ -364,10 +364,10 @@
 
                         </button>
 
-                    <!--    <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
+                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
                             <?php echo e(__('hand_lab.practice_related_spots')); ?>
 
-                        </button> -->
+                        </button>
                     </div>
                 </div>
             </aside>
@@ -377,7 +377,7 @@
     <script>
         window.ApexHandLabText = <?php echo json_encode(__('hand_lab'), 15, 512) ?>;
         window.ApexHandLabRoutes = {
-            store: <?php echo json_encode(route('hand-lab.spots.store'), 15, 512) ?>,
+            aiAnalyze: <?php echo json_encode(route('hand-lab.ai-analyze'), 15, 512) ?>,
         };
     </script>
     <script src="<?php echo e(asset('assets/js/hand-lab.js')); ?>"></script>

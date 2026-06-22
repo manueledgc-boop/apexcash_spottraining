@@ -327,14 +327,31 @@ class CheckBackIpSpots
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
             'Las underpairs fuertes conservan showdown value en boards A-high secos, pero no suelen conseguir varias calles de valor ni suficientes folds de manos mejores. Check back mantiene el bote controlado.',
-            'GTO simplificado: underpairs fuertes mezclan check.',
+            'GTO simplificado: en boards A-high secos, pares medios como TT mezclan check con frecuencia. La mano tiene suficiente showdown value y no necesita construir un bote grande cuando gran parte de las continuaciones de BB contienen Ax.',
             [
-                'CHECK' => ['grade'=>'best','frequency'=>68,'ev_score'=>82,'feedback'=>'Muy bien.'],
-                'BET_33' => ['grade'=>'good','frequency'=>36,'ev_score'=>68,'feedback'=>'Puede mezclarse.'],
-                'BET_66' => ['grade'=>'mistake','frequency'=>6,'ev_score'=>30,'feedback'=>'No hace falta.'],
+                'CHECK' => [
+                    'grade'=>'best',
+                    'frequency'=>68,
+                    'ev_score'=>82,
+                    'feedback'=>'Muy bien. TT tiene valor de showdown y suele preferir controlar el bote en este board. Muchas manos peores no pueden pagar varias calles.'
+                ],
+
+                'BET_33' => [
+                    'grade'=>'good',
+                    'frequency'=>36,
+                    'ev_score'=>68,
+                    'feedback'=>'Apuesta pequeña razonable. Puede obtener algo de valor de pares peores y proteger contra overcards, aunque no es necesario apostar siempre.'
+                ],
+
+                'BET_66' => [
+                    'grade'=>'mistake',
+                    'frequency'=>6,
+                    'ev_score'=>30,
+                    'feedback'=>'Demasiado grande para una mano de valor medio. Construyes un bote innecesario y te enfrentas con más frecuencia a Ax y manos que te dominan.'
+                ],
             ],
-            'No toda mano razonable necesita apostar.',
-            'En NL2-NL10 muchas veces TT sigue siendo la mejor mano.',
+            'TT tiene valor de showdown en este board y con frecuencia sigue ganando contra muchas manos de BB. Apostar hace que foldeen manos peores y rara vez consigue tres calles de valor. Check permite controlar el bote y llegar al turn con una mano que todavía puede ser la mejor.',
+            'En NL2-NL10 muchos rivales llegan al flop con proyectos fallidos, pares pequeños y overcards. TT suele seguir ganando contra una parte importante de ese rango. No conviertas una mano razonable en una apuesta obligatoria; controla el bote y reevalúa el turn.',
             82
         );
     }
@@ -362,14 +379,31 @@ class CheckBackIpSpots
             ['CHECK', 'BET_33', 'BET_66'],
             'CHECK',
             'Las parejas medias-altas con showdown value pueden preferir controlar el bote en boards dinámicos. Apostar grande suele aislar contra Ax, proyectos fuertes y manos que realizan bien su equity.',
-            'GTO simplificado: control de bote con parejas medias-altas.',
+            'GTO simplificado: en boards A-high dinámicos, muchas parejas medias como JJ mezclan check para proteger el rango de check-back y evitar construir un bote grande cuando van por detrás de gran parte del rango de call de BB.',
             [
-                'CHECK' => ['grade'=>'best','frequency'=>70,'ev_score'=>80,'feedback'=>'Correcto.'],
-                'BET_33' => ['grade'=>'marginal','frequency'=>30,'ev_score'=>62,'feedback'=>'Puede mezclarse.'],
-                'BET_66' => ['grade'=>'mistake','frequency'=>8,'ev_score'=>28,'feedback'=>'Demasiado agresivo.'],
+                'CHECK' => [
+                    'grade' => 'best',
+                    'frequency' => 70,
+                    'ev_score' => 80,
+                    'feedback' => 'Bien jugado. JJ suele preferir llegar al turn de forma barata y evitar apostar cuando muchas manos peores foldearán.'
+                ],
+
+                'BET_33' => [
+                    'grade' => 'marginal',
+                    'frequency' => 30,
+                    'ev_score' => 62,
+                    'feedback' => 'No es un desastre, pero obtienes poco valor. Cuando te pagan, con frecuencia seguirás enfrentando un rango fuerte o con mucha equity.'
+                ],
+
+                'BET_66' => [
+                    'grade' => 'mistake',
+                    'frequency' => 8,
+                    'ev_score' => 28,
+                    'feedback' => 'Esta apuesta suele inflar el bote innecesariamente. JJ no es una mano que quiera jugar por stacks en este tipo de board.'
+                ],
             ],
             'El control de bote gana importancia en boards dinámicos.',
-            'En límites bajos evita inflar el bote sin una mano fuerte.',
+            'En NL2-NL10 no intentes ganar el bote inmediatamente con JJ en un flop con As. Muchas manos peores foldearán y muchas mejores continuarán. Controla el tamaño del bote y toma decisiones más fáciles en turn y river.',
             80
         );
     }

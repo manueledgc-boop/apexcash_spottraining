@@ -12,6 +12,8 @@ use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\HandLabController;
 use App\Http\Controllers\Admin\HandLabReviewController;
 
+use App\Http\Controllers\HandLabAiController;
+
 Route::view('/', 'welcome')->name('home');
 
 Route::get('/set-language/{locale}', function ($locale) {
@@ -180,5 +182,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::view('/cookies', 'legal.cookies')->name('cookies');
+
+Route::post('/hand-lab/ai-analyze', [HandLabAiController::class, 'analyze'])
+    ->middleware(['auth'])
+    ->name('hand-lab.ai-analyze');
 
 require __DIR__.'/auth.php';

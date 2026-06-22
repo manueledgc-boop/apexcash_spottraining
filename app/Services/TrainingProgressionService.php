@@ -25,7 +25,7 @@ class TrainingProgressionService
      * Evita el bug clásico:
      * 1 acierto de 1 spot = 100% y desbloquea demasiado pronto.
      */
-    public const MIN_STAGE_SAMPLE = 1; //35
+    public const MIN_STAGE_SAMPLE = 35; //35
 
     public function preflopModules(): array
     {

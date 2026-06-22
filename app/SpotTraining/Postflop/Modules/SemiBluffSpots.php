@@ -169,7 +169,7 @@ class SemiBluffSpots
     protected static function semiBluffOpenEndedStraightDraw(): array
     {
         return self::spot(
-            'pf_semibluff_976r_btn_vs_bb_t8s',
+            'pf_semibluff_976r_btn_vs_bb_tqs',
             'semi_bluff',
             'Semi-Bluff Flop',
             'open_ended_pressure',
@@ -177,18 +177,18 @@ class SemiBluffSpots
             'BTN vs BB · OESD en 976r',
             'BTN',
             'BB',
-            ['Th', '8h'],
+            ['Th', 'Qh'],
             ['9s', '7d', '6c'],
             5.5,
             8.6,
             47.5,
             'Board bajo conectado',
             'BB conecta bastante con este board.',
-            'BB tiene dobles y escaleras; Hero conserva overpairs.',
+            'BB conecta bien con este board, aunque Hero todavía puede representar overpairs, sets y proyectos fuertes.',
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 7♦ 6♣', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_33', 'BET_66'],
             'BET_66',
-            'T8s tiene escalera abierta y buena equity. Apostar grande presiona pares, proyectos peores y construye bote cuando completas.',
+            'TQs tiene escalera abierta y buena equity. Apostar grande presiona pares, proyectos peores y construye bote cuando completas.',
             'GTO simplificado: los proyectos fuertes pueden usar sizing grande en boards dinámicos.',
             [
                 'BET_66' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 86, 'feedback' => 'Muy buen semi-bluff. Tienes equity real y fold equity.'],

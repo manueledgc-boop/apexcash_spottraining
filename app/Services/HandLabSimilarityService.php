@@ -2,43 +2,30 @@
 
 namespace App\Services;
 
-use App\Models\HandLabSpot;
-use App\SpotTraining\Postflop\PostflopSpotRepository;
-use App\SpotTraining\PostflopRiver\PostflopRiverSpotRepository;
-use App\SpotTraining\PostflopTurn\PostflopTurnSpotRepository;
-use App\SpotTraining\SpotRepository;
+use App\HandLab\HandLabClassifier;
+use App\HandLab\HandLabRepository;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class HandLabSimilarityService
 {
-    protected int $minimumScore = 72;
+    protected int $minimumScore = 74;
 
-    public function __construct(
-        protected SpotRepository $preflopSpots,
-        protected PostflopSpotRepository $flopSpots,
-        protected PostflopTurnSpotRepository $turnSpots,
-        protected PostflopRiverSpotRepository $riverSpots,
-    ) {
+    public function __construct(protected HandLabRepository $repository)
+    {
     }
 
     public function findBestMatch(array $payload): ?array
     {
-        $candidates = collect()
-            ->merge($this->officialCandidates())
-            ->merge($this->communityCandidates());
+        $payload = HandLabClassifier::enrichPayload($payload);
 
-        $best = $candidates
+        $best = $this->officialCandidates()
             ->map(function (array $candidate) use ($payload): array {
                 $candidate['similarity_score'] = $this->score($payload, $candidate);
 
                 return $candidate;
             })
             ->filter(fn (array $candidate): bool => $candidate['similarity_score'] >= $this->minimumScore)
-            ->sortByDesc(fn (array $candidate): array => [
-                $candidate['similarity_score'],
-                $candidate['source_type'] === 'official' ? 1 : 0,
-            ])
+            ->sortByDesc('similarity_score')
             ->first();
 
         return $best ?: null;
@@ -46,144 +33,37 @@ class HandLabSimilarityService
 
     protected function officialCandidates(): Collection
     {
-        return collect($this->preflopSpots->all())
-            ->map(fn (array $spot): array => $this->candidateFromOfficialSpot($spot, 'preflop'))
-            ->merge(collect($this->flopSpots->all())->map(fn (array $spot): array => $this->candidateFromOfficialSpot($this->flopSpots->normalize($spot), 'flop')))
-            ->merge(collect($this->turnSpots->all())->map(fn (array $spot): array => $this->candidateFromOfficialSpot($this->turnSpots->normalize($spot), 'turn')))
-            ->merge(collect($this->riverSpots->all())->map(fn (array $spot): array => $this->candidateFromOfficialSpot($this->riverSpots->normalize($spot), 'river')));
-    }
-
-    protected function communityCandidates(): Collection
-    {
-        return HandLabSpot::query()
-            ->where('review_status', 'approved')
-            ->where('visibility', 'public')
-            ->whereNotNull('best_action')
-            ->latest()
-            ->limit(2000)
-            ->get()
-            ->map(fn (HandLabSpot $spot): array => $this->candidateFromCommunitySpot($spot));
-    }
-
-    protected function candidateFromOfficialSpot(array $spot, string $fallbackStreet): array
-    {
-        $street = strtolower((string) ($spot['street'] ?? $fallbackStreet));
-        $bestAction = $this->normalizeActionLabel((string) ($spot['correct_action'] ?? ''));
-
-        return [
-            'source_type' => 'official',
-            'source_label' => 'ApexCash Official Library',
-            'id' => $spot['id'] ?? $spot['spot_id'] ?? null,
-            'street' => $street,
-            'spot_type' => $spot['spot_type'] ?? $spot['title'] ?? $spot['module_label'] ?? null,
-            'pot_type' => $this->potTypeFromOfficialSpot($spot),
-            'hero_position' => strtoupper((string) ($spot['hero_position'] ?? '')),
-            'villain_position' => strtoupper((string) ($spot['villain_position'] ?? '')),
-            'spot_family' => $spot['spot_family'] ?? null,
-            'hero_cards' => $spot['hero_cards'] ?? [],
-            'board_cards' => $spot['board_cards'] ?? [],
-            'actions' => $spot['actions'] ?? [],
-            'effective_stack_bb' => (float) ($spot['effective_stack_bb'] ?? data_get($spot, 'stacks.hero_bb', 100)),
-            'best_action' => $bestAction,
-            'gto_explanation' => $spot['explanation'] ?? null,
-            'exploit_explanation' => data_get($spot, 'insights.low_stakes'),
-            'leak_label' => $spot['concept_label'] ?? $spot['concept'] ?? null,
-            'concepts' => array_values(array_filter([$spot['concept'] ?? null, $spot['module'] ?? null])),
-        ];
-    }
-
-    protected function candidateFromCommunitySpot(HandLabSpot $spot): array
-    {
-        return [
-            'source_type' => 'community',
-            'source_label' => 'Community Library (Approved by ApexCash)',
-            'id' => $spot->id,
-            'street' => strtolower((string) $spot->street),
-            'spot_type' => $spot->spot_type,
-            'pot_type' => $this->potTypeFromText($spot->spot_type, $spot->action_history ?? []),
-            'hero_position' => strtoupper((string) $spot->hero_position),
-            'villain_position' => strtoupper((string) $spot->villain_position),
-            'spot_family' => $spot->spot_family,
-            'hero_cards' => $spot->hero_cards ?? [],
-            'board_cards' => $spot->board_cards ?? [],
-            'actions' => $spot->action_history ?? [],
-            'effective_stack_bb' => (float) $spot->effective_stack_bb,
-            'best_action' => $spot->best_action,
-            'gto_explanation' => $spot->gto_explanation,
-            'exploit_explanation' => $spot->exploit_explanation,
-            'leak_label' => $spot->leak_label,
-            'concepts' => $spot->concepts ?? [],
-        ];
+        return $this->repository->all();
     }
 
     protected function score(array $payload, array $candidate): int
     {
+        if (! $this->sameRequiredContext($payload, $candidate)) {
+            return 0;
+        }
+
+        $street = strtolower((string) ($payload['street'] ?? ''));
+
+        return match ($street) {
+            'preflop' => $this->scorePreflop($payload, $candidate),
+            'flop', 'turn', 'river' => $this->scorePostflop($payload, $candidate),
+            default => 0,
+        };
+    }
+
+    protected function scorePreflop(array $payload, array $candidate): int
+    {
         $score = 0;
 
-        $payloadStreet = strtolower((string) ($payload['street'] ?? ''));
-        $candidateStreet = strtolower((string) ($candidate['street'] ?? ''));
+        $score += 20; // street
+        $score += 18; // hero position
+        $score += 12; // villain position
+        $score += 18; // pot type
 
-        if ($payloadStreet === '' || $candidateStreet === '' || $payloadStreet !== $candidateStreet) {
-            return 0;
-        }
-
-        $payloadHero = strtoupper((string) ($payload['hero_position'] ?? ''));
-        $candidateHero = strtoupper((string) ($candidate['hero_position'] ?? ''));
-
-        if ($payloadHero === '' || $candidateHero === '' || $payloadHero !== $candidateHero) {
-            return 0;
-        }
-
-        $payloadVillain = strtoupper((string) ($payload['villain_position'] ?? ''));
-        $candidateVillain = strtoupper((string) ($candidate['villain_position'] ?? ''));
-
-        if ($payloadVillain === '' || $candidateVillain === '' || $payloadVillain !== $candidateVillain) {
-            return 0;
-        }
-
-        $payloadPotType = $this->potTypeFromText($payload['spot_type'] ?? null, $payload['actions'] ?? []);
-        $candidatePotType = $candidate['pot_type'] ?? 'unknown';
-
-        if (
-            $payloadPotType === 'unknown' ||
-            $candidatePotType === 'unknown' ||
-            $payloadPotType !== $candidatePotType
-        ) {
-            return 0;
-        }
-
-        $payloadFamily = $payload['spot_family'] ?? null;
-        $candidateFamily = $candidate['spot_family'] ?? null;
-
-        if ($payloadStreet === 'preflop') {
-            if (
-                empty($payloadFamily) ||
-                empty($candidateFamily) ||
-                $payloadFamily === 'uncategorized_preflop' ||
-                $candidateFamily === 'uncategorized_preflop'
-            ) {
-                return 0;
-            }
-
-            if ($payloadFamily !== $candidateFamily) {
-                return 0;
-            }
-        }
-
-        $score += 25; // street
-        $score += 20; // hero position
-        $score += 20; // villain position
-        $score += 25; // pot type
-
-        if ($payloadStreet === 'preflop') {
-            $score += 10; // spot family
-        }
-
-        $score += $this->handScore($payload['hero_cards'] ?? [], $candidate['hero_cards'] ?? []);
-
-        if ($payloadStreet !== 'preflop') {
-            $score += $this->boardScore($payload['board_cards'] ?? [], $candidate['board_cards'] ?? []);
-        }
+        $score += $this->exactCardsScore(
+            $payload['hero_cards'] ?? [],
+            $candidate['hero_cards'] ?? []
+        ) * 3;
 
         $score += $this->stackScore(
             (float) ($payload['effective_stack_bb'] ?? 0),
@@ -193,78 +73,136 @@ class HandLabSimilarityService
         return max(0, min(100, $score));
     }
 
-    protected function handScore(array $payloadCards, array $candidateCards): int
+    protected function scorePostflop(array $payload, array $candidate): int
     {
-        $a = $this->handProfile($payloadCards);
-        $b = $this->handProfile($candidateCards);
+        $street = strtolower((string) ($payload['street'] ?? ''));
 
-        if (! $a || ! $b) {
-            return 0;
-        }
+        if ($street !== 'preflop') {
+            $payloadClass = $payload['hand_lab_hand_class'] ?? HandLabClassifier::handClass($payload['hero_cards'] ?? [], $payload['board_cards'] ?? [], $payload['street'] ?? '');
+            $candidateClass = $candidate['hand_class'] ?? HandLabClassifier::handClass($candidate['hero_cards'] ?? [], $candidate['board_cards'] ?? [], $candidate['street'] ?? '');
 
-        if ($a['combo'] === $b['combo']) {
-            return 15;
-        }
-
-        if ($a['rank_class'] === $b['rank_class']) {
-            return 14;
+            // This hard gate is only for postflop.
+            // It prevents cases like AA overpair matching AQ ace-high.
+            if ($payloadClass !== $candidateClass) {
+                return 0;
+            }
         }
 
         $score = 0;
+        $score += 18;
+        $score += 14;
+        $score += 14;
+        $score += 14;
+        $score += 22;
+        $score += $this->drawScore($payload['hand_lab_draws'] ?? [], $candidate['draws'] ?? []);
+        $score += $this->boardTextureScore($payload['hand_lab_board_texture'] ?? [], $candidate['board_texture'] ?? []);
+        $score += $this->exactCardsScore($payload['hero_cards'] ?? [], $candidate['hero_cards'] ?? []);
+        $score += $this->stackScore((float) ($payload['effective_stack_bb'] ?? 0), (float) ($candidate['effective_stack_bb'] ?? 0));
 
-        $sharedRanks = count(array_intersect($a['ranks'], $b['ranks']));
-        $score += $sharedRanks * 4;
-
-        if ($a['category'] === $b['category']) {
-            $score += 5;
-        }
-
-        if ($a['suited'] === $b['suited']) {
-            $score += 2;
-        }
-
-        if (abs($a['high_value'] - $b['high_value']) <= 1) {
-            $score += 2;
-        }
-
-        if (abs($a['low_value'] - $b['low_value']) <= 1) {
-            $score += 2;
-        }
-
-        return min(15, $score);
+        return max(0, min(100, $score));
     }
 
-    protected function boardScore(array $payloadBoard, array $candidateBoard): int
+    protected function sameRequiredContext(array $payload, array $candidate): bool
     {
-        if (empty($payloadBoard) || empty($candidateBoard)) {
+        $payloadStreet = strtolower((string) ($payload['street'] ?? ''));
+        $candidateStreet = strtolower((string) ($candidate['street'] ?? ''));
+
+        if ($payloadStreet === '' || $candidateStreet === '' || $payloadStreet !== $candidateStreet) {
+            return false;
+        }
+
+        $payloadHero = strtoupper((string) ($payload['hero_position'] ?? ''));
+        $candidateHero = strtoupper((string) ($candidate['hero_position'] ?? ''));
+
+        if ($payloadHero === '' || $candidateHero === '' || $payloadHero !== $candidateHero) {
+            return false;
+        }
+
+        $payloadPotType = $payload['hand_lab_pot_type'] ?? HandLabClassifier::potType($payload['spot_type'] ?? null, $payload['actions'] ?? []);
+        $candidatePotType = $candidate['pot_type'] ?? 'unknown';
+
+        if ($payloadPotType === 'unknown' || $candidatePotType === 'unknown' || $payloadPotType !== $candidatePotType) {
+            return false;
+        }
+
+        $isPreflopOpenRaise =
+            $payloadStreet === 'preflop'
+            && $payloadPotType === 'open_raise'
+            && $candidatePotType === 'open_raise';
+
+        if (! $isPreflopOpenRaise) {
+            $payloadVillain = strtoupper((string) ($payload['villain_position'] ?? ''));
+            $candidateVillain = strtoupper((string) ($candidate['villain_position'] ?? ''));
+
+            if ($payloadVillain === '' || $candidateVillain === '' || $payloadVillain !== $candidateVillain) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected function drawScore(array $payloadDraws, array $candidateDraws): int
+    {
+        sort($payloadDraws);
+        sort($candidateDraws);
+
+        if ($payloadDraws === $candidateDraws) {
+            return 8;
+        }
+
+        if (empty($payloadDraws) && empty($candidateDraws)) {
+            return 8;
+        }
+
+        $shared = count(array_intersect($payloadDraws, $candidateDraws));
+
+        return min(8, $shared * 4);
+    }
+
+    protected function boardTextureScore(array $payloadTexture, array $candidateTexture): int
+    {
+        if (empty($payloadTexture) || empty($candidateTexture)) {
             return 0;
         }
 
-        $a = $this->boardProfile($payloadBoard);
-        $b = $this->boardProfile($candidateBoard);
-        $score = 0;
+        $shared = count(array_intersect($payloadTexture, $candidateTexture));
+        $total = count(array_unique(array_merge($payloadTexture, $candidateTexture)));
 
-        if ($a['count'] === $b['count']) {
-            $score += 3;
+        if ($total === 0) {
+            return 0;
         }
 
-        if ($a['high_card'] === $b['high_card']) {
-            $score += 4;
+        return (int) round(($shared / $total) * 8);
+    }
+
+    protected function exactCardsScore(array $payloadCards, array $candidateCards): int
+    {
+        $payloadCombo = $this->combo($payloadCards);
+        $candidateCombo = $this->combo($candidateCards);
+
+        if ($payloadCombo === null || $candidateCombo === null) {
+            return 0;
         }
 
-        if ($a['paired'] === $b['paired']) {
-            $score += 3;
+        if ($payloadCombo === $candidateCombo) {
+            return 6;
         }
 
-        if ($a['flush_texture'] === $b['flush_texture']) {
-            $score += 3;
+        $payloadRanks = $this->comboRanks($payloadCombo);
+        $candidateRanks = $this->comboRanks($candidateCombo);
+
+        return count(array_intersect($payloadRanks, $candidateRanks)) * 2;
+    }
+
+
+    protected function comboRanks(string $combo): array
+    {
+        if (strlen($combo) === 3) {
+            return [substr($combo, 0, 1), substr($combo, 1, 1)];
         }
 
-        if ($a['connectedness'] === $b['connectedness']) {
-            $score += 2;
-        }
-
-        return min(15, $score);
+        return str_split($combo);
     }
 
     protected function stackScore(float $payloadStack, float $candidateStack): int
@@ -276,17 +214,17 @@ class HandLabSimilarityService
         $diff = abs($payloadStack - $candidateStack);
 
         if ($diff <= 10) {
-            return 5;
+            return 4;
         }
 
         if ($diff <= 25) {
-            return 3;
+            return 2;
         }
 
         return 0;
     }
 
-    protected function handProfile(array $cards): ?array
+    protected function combo(array $cards): ?string
     {
         if (count($cards) < 2) {
             return null;
@@ -303,115 +241,10 @@ class HandLabSimilarityService
 
         $r1 = $parsed[0]['rank'];
         $r2 = $parsed[1]['rank'];
-        $suited = $parsed[0]['suit'] === $parsed[1]['suit'];
         $pair = $r1 === $r2;
-        $high = $rankValues[$r1] ?? 0;
-        $low = $rankValues[$r2] ?? 0;
-        $gap = abs($high - $low);
+        $suited = $parsed[0]['suit'] === $parsed[1]['suit'];
 
-        return [
-            'combo' => $r1 . $r2 . ($pair ? '' : ($suited ? 's' : 'o')),
-            'rank_class' => $r1 . $r2,
-            'ranks' => [$r1, $r2],
-            'suited' => $suited,
-            'high_value' => $high,
-            'low_value' => $low,
-            'category' => match (true) {
-                $pair && $high >= 11 => 'premium_pair',
-                $pair => 'pair',
-                $high >= 14 && $low >= 10 => 'strong_broadway',
-                $high >= 10 && $low >= 10 => 'broadway',
-                $suited && $gap <= 2 => 'suited_connected',
-                $suited => 'suited',
-                default => 'offsuit',
-            },
-        ];
-    }
-
-    protected function boardProfile(array $cards): array
-    {
-        $rankValues = $this->rankValues();
-        $ranks = collect($cards)->map(fn ($card) => strtoupper(substr((string) $card, 0, 1)))->all();
-        $suits = collect($cards)->map(fn ($card) => strtolower(substr((string) $card, -1)))->all();
-        $values = collect($ranks)->map(fn ($rank) => $rankValues[$rank] ?? 0)->sort()->values();
-        $maxSuitCount = collect($suits)->countBy()->max() ?? 0;
-        $rankCounts = collect($ranks)->countBy();
-        $maxGap = $values->count() > 1 ? $values->last() - $values->first() : 0;
-        $highValue = $values->max() ?? 0;
-
-        return [
-            'count' => count($cards),
-            'high_card' => match (true) {
-                $highValue >= 14 => 'ace_high',
-                $highValue >= 13 => 'king_high',
-                $highValue >= 12 => 'queen_high',
-                $highValue >= 10 => 'broadway_high',
-                default => 'low_high',
-            },
-            'paired' => $rankCounts->max() >= 2,
-            'flush_texture' => match (true) {
-                $maxSuitCount >= 3 => 'monotone_or_flush_possible',
-                $maxSuitCount === 2 => 'two_tone',
-                default => 'rainbow',
-            },
-            'connectedness' => $maxGap <= 4 ? 'connected' : 'dry',
-        ];
-    }
-
-    protected function potTypeFromOfficialSpot(array $spot): string
-    {
-        $module = strtolower((string) ($spot['module'] ?? ''));
-        $family = strtolower((string) ($spot['family'] ?? ''));
-        $title = strtolower((string) ($spot['title'] ?? ''));
-        $actions = $spot['actions'] ?? [];
-
-        if (Str::contains($module . ' ' . $family . ' ' . $title, ['btn_vs_3bet', '3bet', '3 bet', '3-bet'])) {
-            return '3bet_pot';
-        }
-
-        if (Str::contains($module . ' ' . $family . ' ' . $title, ['4bet', '4 bet', '4-bet'])) {
-            return '4bet_pot';
-        }
-
-        return $this->potTypeFromText($title, $actions);
-    }
-
-    protected function potTypeFromText(?string $text, array $actions = []): string
-    {
-        $haystack = strtolower((string) $text . ' ' . json_encode($actions));
-
-        if (Str::contains($haystack, ['4bet', '4 bet', '4-bet'])) {
-            return '4bet_pot';
-        }
-
-        if (Str::contains($haystack, ['3bet', '3 bet', '3-bet'])) {
-            return '3bet_pot';
-        }
-
-        if (Str::contains($haystack, ['limp', 'limped'])) {
-            return 'limped_pot';
-        }
-
-        if (Str::contains($haystack, ['srp', 'single raised', 'opens', 'raises', 'raise'])) {
-            return 'srp';
-        }
-
-        return 'unknown';
-    }
-
-    protected function normalizeActionLabel(string $action): string
-    {
-        $action = strtoupper(trim($action));
-
-        return match ($action) {
-            'BET_33' => 'Bet 33%',
-            'BET_50' => 'Bet 50%',
-            'BET_66', 'BET_75' => 'Bet 75%',
-            'OVERBET' => 'Overbet',
-            '4BET' => 'Raise / 4Bet',
-            'ALLIN', 'ALL_IN', 'ALL-IN' => 'All-in',
-            default => Str::title(strtolower(str_replace('_', ' ', $action))),
-        };
+        return $r1 . $r2 . ($pair ? '' : ($suited ? 's' : 'o'));
     }
 
     protected function rankValues(): array

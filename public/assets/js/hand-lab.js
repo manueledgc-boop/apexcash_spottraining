@@ -400,6 +400,25 @@
         return postflopOrder.find(pos => activePlayers.includes(pos)) ?? null;
     }
 
+    function isOpenRaiseSpot() {
+        if (!state.hero) return false;
+
+        const street = detectDecisionStreet();
+
+        if (street !== 'preflop') {
+            return false;
+        }
+
+        const manualPreflopActions = streetActions('preflop')
+            .filter(action => !action.locked && !action.auto);
+
+        if (manualPreflopActions.length > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     function heroHasPendingDecision(street) {
         const actions = streetActions(street);
         const last = actions.at(-1) ?? null;
@@ -414,6 +433,10 @@
         const facingBet = currentBet > heroCommitted;
 
         if (street === 'preflop') {
+            if (isOpenRaiseSpot()) {
+                return true;
+            }
+
             return facingBet && (!last || last.actor !== state.hero);
         }
 
@@ -482,19 +505,44 @@
     }
 
     function detectSpotType(actions, activePlayers, street) {
-        const preflopActions = actions.filter(action => action.street === 'preflop' && !action.locked && !action.auto);
-        const aggressive = preflopActions.filter(action => ['raise', 'bet', 'allin'].includes(action.type));
-        const hasLimp = preflopActions.some(action => ['limp', 'call'].includes(action.type)) && aggressive.length === 0;
+        const preflopActions = actions.filter(action =>
+            action.street === 'preflop' && !action.locked && !action.auto
+        );
+
+        if (street === 'preflop' && preflopActions.length === 0 && state.hero) {
+            return `Open Raise ${state.hero} PREFLOP`;
+        }
+
+        const aggressive = preflopActions.filter(action =>
+            ['raise', 'bet', 'allin'].includes(action.type)
+        );
+
+        const hasLimp = preflopActions.some(action =>
+            ['limp', 'call'].includes(action.type)
+        ) && aggressive.length === 0;
+
         const hasNoManualAction = preflopActions.length === 0;
-        const bvb = activePlayers.every(pos => ['SB', 'BB'].includes(pos)) || preflopActions[0]?.actor === 'SB';
+
+        const bvb =
+            activePlayers.every(pos => ['SB', 'BB'].includes(pos)) ||
+            preflopActions[0]?.actor === 'SB';
+
         let potType = t('unclassified_pot', 'Unclassified Pot');
+
         if (hasNoManualAction) potType = t('unclassified_pot', 'Unclassified Pot');
         else if (hasLimp) potType = t('limped_pot', 'Limped Pot');
         else if (aggressive.length === 1) potType = 'SRP';
         else if (aggressive.length === 2) potType = '3Bet Pot';
         else if (aggressive.length >= 3) potType = '4Bet Pot';
-        if (bvb) return `BvB ${potType} ${street.toUpperCase()}`;
-        const matchup = state.hero && state.villain ? `${state.hero} vs ${state.villain}` : t('unknown_matchup', 'Unknown matchup');
+
+        if (bvb) {
+            return `BvB ${potType} ${street.toUpperCase()}`;
+        }
+
+        const matchup = state.hero && state.villain
+            ? `${state.hero} vs ${state.villain}`
+            : t('unknown_matchup', 'Unknown matchup');
+
         return `${matchup} ${potType} ${street.toUpperCase()}`;
     }
 
@@ -508,6 +556,10 @@
 
     function inferTechnicalSpotType(street) {
         if (street === 'preflop') {
+            if (isOpenRaiseSpot()) {
+                return 'open_raise';
+            }
+
             return 'preflop_decision';
         }
 
@@ -534,8 +586,25 @@
         const pot = normalizedActions.reduce((total, action) => total + Number(action.size || 0), 0);
         const effectiveStack = Math.min(Number(els.heroStack.value || 0), Number(els.villainStack.value || 0));
         const spr = pot > 0 ? effectiveStack / pot : null;
-        return { format: els.labFormat.value, hero_position: state.hero, villain_position: state.villain, hero_stack_bb: Number(els.heroStack.value || 0), villain_stack_bb: Number(els.villainStack.value || 0), effective_stack_bb: effectiveStack, street, pot_bb: pot, spr, hero_cards: cards.hero, board_cards: selectedBoardByStreet(street), actions: normalizedActions, active_players: activePlayers, spot_type: inferTechnicalSpotType(street),
-spot_label: detectSpotType(normalizedActions, activePlayers, street), options: [] };
+        return {
+            format: els.labFormat.value,
+            hero_position: state.hero,
+            villain_position: state.villain,
+            hero_stack_bb: Number(els.heroStack.value || 0),
+            villain_stack_bb: Number(els.villainStack.value || 0),
+            effective_stack_bb: effectiveStack,
+            street,
+            pot_bb: pot,
+            spr,
+            hero_cards: cards.hero,
+            board_cards: selectedBoardByStreet(street),
+            actions: normalizedActions,
+            active_players: activePlayers,
+            spot_type: inferTechnicalSpotType(street),
+            spot_label: detectSpotType(normalizedActions, activePlayers, street),
+            options: [],
+        };
+
     }
 
     function validatePayload(payload) {
@@ -596,13 +665,22 @@ spot_label: detectSpotType(normalizedActions, activePlayers, street), options: [
         const payload = state.currentPayload; if (!payload) return;
         els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = true);
         els.labFeedbackBox.hidden = false;
-        els.labFeedbackTitle.textContent = t('saving_spot','Guardando spot');
-        els.labFeedbackText.textContent = `${t('your_decision','Tu decisión')}: ${action}. ${t('saving_spot_text','ApexCash está guardando este spot de laboratorio.')}`;
-        els.labAiNotice.textContent = t('library_first_notice','Flujo aprobado: biblioteca primero, IA solo si no existe un spot igual o parecido.');
+        els.labFeedbackTitle.textContent = 'AI Analysis';
+        els.labFeedbackText.textContent = `${t('your_decision','Tu decisión')}: ${action}. Analizando la mano...`;
+        hideAiNotice();
         els.labFeedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         try {
-            if (!routes.store) throw new Error('Missing hand lab store route.');
-            const response = await fetch(routes.store, { method: 'POST', headers: { 'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN': csrfToken() }, body: JSON.stringify({ ...payload, selected_action: action }) });
+            if (!routes.aiAnalyze) throw new Error('Missing hand lab AI route.');
+            const response = await fetch(routes.aiAnalyze, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                    'X-CSRF-TOKEN': csrfToken()
+                },
+                body: JSON.stringify({ ...payload, selected_action: action })
+            });
+
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`HTTP ${response.status}: ${errorText}`);
@@ -613,45 +691,107 @@ spot_label: detectSpotType(normalizedActions, activePlayers, street), options: [
             console.error(error);
             els.labFeedbackTitle.textContent = t('save_error_title','No se pudo guardar');
             els.labFeedbackText.textContent = t('save_error_text','Revisa la conexión o vuelve a intentarlo. El spot no fue guardado.');
-            els.labAiNotice.textContent = '';
+            showAiNotice('No se pudo conectar. Intenta de nuevo en unos segundos.');
             els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
         }
+    }
+
+    function relatedPracticeUrl(payload) {
+        if (!payload) return '/spot-training';
+
+        if (payload.street === 'preflop') {
+            if (payload.spot_type === 'open_raise') {
+                return '/spot-training?module=open_raise';
+            }
+
+            return '/spot-training';
+        }
+
+        const module = payload.spot_type || '';
+
+        if (payload.street === 'flop') {
+            return `/postflop?street=flop&module=${encodeURIComponent(module)}`;
+        }
+
+        if (payload.street === 'turn') {
+            return `/postflop?street=turn&module=${encodeURIComponent(module)}`;
+        }
+
+        if (payload.street === 'river') {
+            return `/postflop?street=river&module=${encodeURIComponent(module)}`;
+        }
+
+        return '/spot-training';
+    }
+
+    function hideAiNotice() {
+        if (!els.labAiNotice) return;
+
+        els.labAiNotice.textContent = '';
+        els.labAiNotice.style.display = 'none';
+    }
+
+    function showAiNotice(message) {
+        if (!els.labAiNotice) return;
+
+        els.labAiNotice.textContent = message;
+        els.labAiNotice.style.display = message ? 'block' : 'none';
     }
 
     function renderDecisionResult(action, result) {
         els.labDecisionButtons.innerHTML = '';
 
-        if (result.status === 'matched_library') {
-            const sourceLabel = result.source_label ?? t('source_official_library', 'ApexCash Official Library');
-            const similarity = result.similarity_score ? `${result.similarity_score}%` : null;
+        if (result.status === 'ai_analysis') {
+            els.labFeedbackTitle.textContent = 'AI Analysis';
 
-            els.labFeedbackTitle.textContent = t('library_match_title', 'Analysis found in library');
             els.labFeedbackText.innerHTML = [
-                `<strong>${t('your_decision', 'Your decision')}:</strong> ${action}`,
+                `<strong>${t('your_decision', 'Your decision')}:</strong> ${result.hero_choice ?? action}`,
                 `<strong>${t('best_action', 'Best action')}:</strong> ${result.best_action ?? '--'}`,
-                result.gto_explanation ? `<strong>GTO:</strong> ${result.gto_explanation}` : '',
-                result.exploit_explanation ? `<strong>${t('micro_limits', 'Micro-limits')}:</strong> ${result.exploit_explanation}` : '',
-                `<strong>${t('source', 'Source')}:</strong> ${sourceLabel}`,
-                similarity ? `<strong>${t('similarity', 'Similarity')}:</strong> ${similarity}` : '',
+                `<strong>Grade:</strong> ${(result.grade ?? '--').toUpperCase()}`,
+                result.concept ? `<strong>Category:</strong> ${result.concept}` : '',
+                result.gto ? `<strong>GTO:</strong> ${result.gto}` : '',
+                result.micro ? `<strong>${t('micro_limits', 'Micro-limits')}:</strong> ${result.micro}` : '',
+                result.feedback ? `<strong>Feedback:</strong> ${result.feedback}` : '',
+                `<strong>Confidence:</strong> ${result.confidence ?? 0}%`,
             ].filter(Boolean).map(line => `<p>${line}</p>`).join('');
-            els.labAiNotice.textContent = t('matched_without_ai', 'An approved analysis was reused. AI was not called.');
+
+            hideAiNotice();
+
             return;
         }
 
         els.labFeedbackTitle.textContent = t('spot_pending_review_title', 'Spot sent for review');
         els.labFeedbackText.textContent = `${t('your_decision', 'Your decision')}: ${action}. ${result.message ?? t('saved_pending_review', 'This spot does not yet have a sufficiently similar approved analysis. It was saved for ApexCash review.')}`;
-        els.labAiNotice.textContent = t('pending_review_notice', 'Once the spot has a verdict, it will appear in your Hand Reviews. If approved, it may become part of the Community Library anonymously.');
+        showAiNotice(t('ai_unavailable_notice', 'No se recibió un análisis IA válido. Intenta de nuevo.'));
     }
 
     function bindEvents() {
-        els.seats.forEach(seat => seat.addEventListener('click', () => handleSeatClick(seat.dataset.position)));
-        [els.heroStack, els.villainStack].forEach(input => input.addEventListener('input', () => { updateSeats(); updateLiveSummary(); }));
-        document.querySelectorAll('[data-add-action]').forEach(button => {
-            button.addEventListener('click', () => addAction(button.dataset.addAction, button.closest('.lab-box')));
+        els.seats.forEach(seat => {
+            seat.addEventListener('click', () => handleSeatClick(seat.dataset.position));
         });
+
+        [els.heroStack, els.villainStack].forEach(input => {
+            input.addEventListener('input', () => {
+                updateSeats();
+                updateLiveSummary();
+            });
+        });
+
+        document.querySelectorAll('[data-add-action]').forEach(button => {
+            button.addEventListener('click', () => {
+                addAction(button.dataset.addAction, button.closest('.lab-box'));
+            });
+        });
+
         els.createSpotBtn.addEventListener('click', createSpotPreview);
         els.createAnotherSpotBtn.addEventListener('click', resetState);
-        els.practiceRelatedBtn.addEventListener('click', () => { els.labAiNotice.textContent = t('related_placeholder','Próxima fase: abrir spots oficiales y de comunidad relacionados con este tipo de mano.'); });
+
+        if (els.practiceRelatedBtn) {
+            els.practiceRelatedBtn.addEventListener('click', () => {
+                const url = relatedPracticeUrl(state.currentPayload);
+                window.location.href = url;
+            });
+        }
     }
 
     function allowedActors() {
