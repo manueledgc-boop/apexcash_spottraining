@@ -9,6 +9,7 @@ use App\SpotTraining\PostflopTurn\Modules\TurnDefenseSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnProbeBetSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnProbeSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnValueBetSpots;
+use Illuminate\Support\Facades\Auth;
 
 class PostflopTurnSpotRepository
 {
@@ -24,6 +25,12 @@ class PostflopTurnSpotRepository
             TurnValueBetSpots::all(),
             TurnCheckRaiseSpots::all(),
         );
+
+        if (! Auth::user()?->hasPremiumAccess()) {
+            $spots = array_slice($spots, 0, 10);
+        }
+
+        return $spots;
     }
 
     public function findById(string $spotId): ?array

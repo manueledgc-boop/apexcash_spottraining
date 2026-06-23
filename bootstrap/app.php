@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'training.unlocked' => EnsureTrainingStageUnlocked::class,
+            'premium' => \App\Http\Middleware\EnsurePremiumUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

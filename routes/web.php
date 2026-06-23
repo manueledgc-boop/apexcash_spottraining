@@ -132,10 +132,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/hand-lab/reviews/{spot}', [HandLabController::class, 'showReview'])
         ->name('hand-lab.reviews.show');
 
-    Route::post('/hand-lab/api/spots', [HandLabController::class, 'store'])
-        ->name('hand-lab.spots.store');
-
-
     Route::prefix('admin/hand-lab')->name('admin.hand-lab.')->group(function () {
         Route::get('/', [HandLabReviewController::class, 'index'])
             ->name('index');

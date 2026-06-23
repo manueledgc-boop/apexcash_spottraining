@@ -8,18 +8,7 @@
                 <h1>{{ __('hand_lab.title') }}</h1>
                 <p>{{ __('hand_lab.subtitle') }}</p>
             </div>
-
-            <div class="hand-lab-header-actions">
-                @if(($reviewCount ?? 0) > 0)
-                    <a href="{{ route('hand-lab.reviews.index') }}" class="ghost-link hand-review-link">
-                        {{ __('hand_lab.my_hand_reviews') }} ({{ $reviewCount }})
-                    </a>
-                @else
-                    <span class="ghost-link hand-review-link is-disabled" aria-disabled="true">
-                        {{ __('hand_lab.my_hand_reviews') }} (0)
-                    </span>
-                @endif
-            </div>
+            
         </section>
 
         <section class="hand-lab-layout" id="handLabBuilderStage">
@@ -347,10 +336,6 @@
                     <div class="lab-final-actions">
                         <button type="button" class="primary-lab-btn" id="createAnotherSpotBtn">
                             {{ __('hand_lab.create_another_spot') }}
-                        </button>
-
-                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
-                            {{ __('hand_lab.practice_related_spots') }}
                         </button>
                     </div>
                 </div>

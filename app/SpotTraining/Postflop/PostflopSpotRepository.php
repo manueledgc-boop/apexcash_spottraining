@@ -12,6 +12,7 @@ use App\SpotTraining\Postflop\Modules\ValueBetSpots;
 use App\SpotTraining\Postflop\Modules\OverbetSpots;
 use App\SpotTraining\Postflop\Modules\DonkBetSpots;
 use App\SpotTraining\Postflop\Modules\FloatSpots;
+use Illuminate\Support\Facades\Auth;
 
 class PostflopSpotRepository
 {
@@ -30,6 +31,12 @@ class PostflopSpotRepository
             DonkBetSpots::all(),
             FloatSpots::all(),
         );
+
+        if (! Auth::user()?->hasPremiumAccess()) {
+            $spots = array_slice($spots, 0, 10);
+        }
+
+        return $spots;
     }
 
     public function findById(string $spotId): ?array

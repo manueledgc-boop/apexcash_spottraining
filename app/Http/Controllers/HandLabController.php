@@ -3,20 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\HandLabSpot;
-use App\Services\HandLabSimilarityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
-use App\HandLab\HandLabClassifier;
 
 class HandLabController extends Controller
 {
-    public function __construct(protected HandLabSimilarityService $similarity)
-    {
-    }
-
     public function index(): View
     {
         return view('hand-lab.index', [
@@ -94,8 +88,6 @@ class HandLabController extends Controller
             ]);
         }
 
-        $signature = $this->signatureFromPayload($validated);
-
         $spot = HandLabSpot::create([
             'user_id' => Auth::id(),
             'format' => $validated['format'],
@@ -150,70 +142,5 @@ class HandLabController extends Controller
             ->whereIn('review_status', ['pending', 'approved', 'rejected'])
             ->whereNull('user_seen_at')
             ->count();
-    }
-
-    private function signatureFromPayload(array $payload): string
-    {
-        $actions = collect($payload['actions'] ?? [])
-            ->reject(fn ($action) => (bool) ($action['locked'] ?? false))
-            ->map(fn ($action) => implode(':', [
-                strtolower($action['street'] ?? ''),
-                strtoupper($action['actor'] ?? ''),
-                strtolower($action['type'] ?? ''),
-                $this->sizeBucket((float) ($action['size'] ?? 0)),
-            ]))
-            ->values()
-            ->implode('|');
-
-        $boardCount = count($payload['board_cards'] ?? []);
-        $sprBucket = $this->sprBucket((float) ($payload['spr'] ?? 0));
-
-        return strtoupper(implode('__', array_filter([
-            $payload['street'] ?? 'unknown',
-            $payload['hero_position'] ?? 'hero',
-            $payload['villain_position'] ?? 'villain',
-            preg_replace('/\s+/', '_', $payload['spot_type'] ?? 'unknown'),
-            'BOARD_' . $boardCount,
-            'SPR_' . $sprBucket,
-            md5($actions),
-        ])));
-    }
-
-    private function sizeBucket(float $size): string
-    {
-        if ($size <= 0) {
-            return 'none';
-        }
-
-        if ($size <= 1.5) {
-            return 'small';
-        }
-
-        if ($size <= 3.5) {
-            return 'standard';
-        }
-
-        if ($size <= 8) {
-            return 'large';
-        }
-
-        return 'allin_or_huge';
-    }
-
-    private function sprBucket(float $spr): string
-    {
-        if ($spr <= 0) {
-            return 'unknown';
-        }
-
-        if ($spr <= 2) {
-            return 'low';
-        }
-
-        if ($spr <= 6) {
-            return 'medium';
-        }
-
-        return 'high';
     }
 }

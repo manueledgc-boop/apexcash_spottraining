@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'plan', 'premium_until', 'is_admin'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -49,6 +49,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'premium_until' => 'datetime',
         ];
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->plan === 'premium'
+            && (
+                $this->premium_until === null
+                || $this->premium_until->isFuture()
+            );
+    }
+
+    public function isAdminPlan(): bool
+    {
+        return $this->plan === 'admin';
+    }
+
+    public function hasPremiumAccess(): bool
+    {
+        return $this->isAdminPlan() || $this->isPremium();
     }
 }

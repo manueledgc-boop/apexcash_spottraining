@@ -8,6 +8,7 @@ use App\SpotTraining\PostflopRiver\Modules\RiverBluffSpots;
 use App\SpotTraining\PostflopRiver\Modules\RiverThinValueSpots;
 use App\SpotTraining\PostflopRiver\Modules\RiverOverbetSpots;
 use App\SpotTraining\PostflopRiver\Modules\RiverValueBetSpots;
+use Illuminate\Support\Facades\Auth;
 
 class PostflopRiverSpotRepository
 {
@@ -22,6 +23,12 @@ class PostflopRiverSpotRepository
             RiverThinValueSpots::all(),
             RiverOverbetSpots::all(),
         );
+
+        if (! Auth::user()?->hasPremiumAccess()) {
+            $spots = array_slice($spots, 0, 10);
+        }
+
+        return $spots;
     }
 
     public function findById(string $spotId): ?array

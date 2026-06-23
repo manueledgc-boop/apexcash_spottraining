@@ -17,18 +17,7 @@
                 <h1><?php echo e(__('hand_lab.title')); ?></h1>
                 <p><?php echo e(__('hand_lab.subtitle')); ?></p>
             </div>
-
-            <div class="hand-lab-header-actions">
-                <?php if(($reviewCount ?? 0) > 0): ?>
-                    <a href="<?php echo e(route('hand-lab.reviews.index')); ?>" class="ghost-link hand-review-link">
-                        <?php echo e(__('hand_lab.my_hand_reviews')); ?> (<?php echo e($reviewCount); ?>)
-                    </a>
-                <?php else: ?>
-                    <span class="ghost-link hand-review-link is-disabled" aria-disabled="true">
-                        <?php echo e(__('hand_lab.my_hand_reviews')); ?> (0)
-                    </span>
-                <?php endif; ?>
-            </div>
+            
         </section>
 
         <section class="hand-lab-layout" id="handLabBuilderStage">
@@ -361,11 +350,6 @@
                     <div class="lab-final-actions">
                         <button type="button" class="primary-lab-btn" id="createAnotherSpotBtn">
                             <?php echo e(__('hand_lab.create_another_spot')); ?>
-
-                        </button>
-
-                        <button type="button" class="secondary-lab-btn" id="practiceRelatedBtn">
-                            <?php echo e(__('hand_lab.practice_related_spots')); ?>
 
                         </button>
                     </div>

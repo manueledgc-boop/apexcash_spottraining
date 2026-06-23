@@ -18,6 +18,7 @@
         villain: null,
         actions: { preflop: [], flop: [], turn: [], river: [] },
         currentPayload: null,
+        lastAiResult: null,
     };
 
     const $ = (id) => document.getElementById(id);
@@ -681,12 +682,38 @@
                 body: JSON.stringify({ ...payload, selected_action: action })
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
-            }
             const result = await response.json();
+
+            if (result.status === 'free_limit_reached') {
+                els.labFeedbackTitle.textContent = 'Límite Free alcanzado';
+                els.labFeedbackText.textContent = 'Has usado tus 5 análisis gratuitos de Hand Lab hoy. Actualiza a Premium para análisis ilimitados.';
+                showAiNotice('Límite diario Free alcanzado.');
+                els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
+                return;
+            }
+
+            if (result.status === 'ai_quota_exceeded') {
+                els.labFeedbackTitle.textContent = 'IA no disponible temporalmente';
+                els.labFeedbackText.textContent = 'La IA alcanzó el límite. Intenta de nuevo más tarde.';
+                showAiNotice('Límite temporal alcanzado.');
+                els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
+                return;
+            }
+
+            if (result.status === 'ai_busy') {
+                els.labFeedbackTitle.textContent = 'IA ocupada';
+                els.labFeedbackText.textContent = 'El modelo está temporalmente saturado. Intenta nuevamente en unos segundos.';
+                showAiNotice('Modelo ocupado temporalmente.');
+                els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${JSON.stringify(result)}`);
+            }
+
             renderDecisionResult(action, result);
+
         } catch (error) {
             console.error(error);
             els.labFeedbackTitle.textContent = t('save_error_title','No se pudo guardar');
@@ -694,34 +721,6 @@
             showAiNotice('No se pudo conectar. Intenta de nuevo en unos segundos.');
             els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
         }
-    }
-
-    function relatedPracticeUrl(payload) {
-        if (!payload) return '/spot-training';
-
-        if (payload.street === 'preflop') {
-            if (payload.spot_type === 'open_raise') {
-                return '/spot-training?module=open_raise';
-            }
-
-            return '/spot-training';
-        }
-
-        const module = payload.spot_type || '';
-
-        if (payload.street === 'flop') {
-            return `/postflop?street=flop&module=${encodeURIComponent(module)}`;
-        }
-
-        if (payload.street === 'turn') {
-            return `/postflop?street=turn&module=${encodeURIComponent(module)}`;
-        }
-
-        if (payload.street === 'river') {
-            return `/postflop?street=river&module=${encodeURIComponent(module)}`;
-        }
-
-        return '/spot-training';
     }
 
     function hideAiNotice() {
@@ -742,13 +741,14 @@
         els.labDecisionButtons.innerHTML = '';
 
         if (result.status === 'ai_analysis') {
+            state.lastAiResult = result;
             els.labFeedbackTitle.textContent = 'AI Analysis';
 
             els.labFeedbackText.innerHTML = [
                 `<strong>${t('your_decision', 'Your decision')}:</strong> ${result.hero_choice ?? action}`,
                 `<strong>${t('best_action', 'Best action')}:</strong> ${result.best_action ?? '--'}`,
                 `<strong>Grade:</strong> ${(result.grade ?? '--').toUpperCase()}`,
-                result.concept ? `<strong>Category:</strong> ${result.concept}` : '',
+                
                 result.gto ? `<strong>GTO:</strong> ${result.gto}` : '',
                 result.micro ? `<strong>${t('micro_limits', 'Micro-limits')}:</strong> ${result.micro}` : '',
                 result.feedback ? `<strong>Feedback:</strong> ${result.feedback}` : '',
@@ -785,13 +785,6 @@
 
         els.createSpotBtn.addEventListener('click', createSpotPreview);
         els.createAnotherSpotBtn.addEventListener('click', resetState);
-
-        if (els.practiceRelatedBtn) {
-            els.practiceRelatedBtn.addEventListener('click', () => {
-                const url = relatedPracticeUrl(state.currentPayload);
-                window.location.href = url;
-            });
-        }
     }
 
     function allowedActors() {
