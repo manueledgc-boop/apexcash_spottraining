@@ -1,0 +1,270 @@
+.apex-profile-page {
+    min-height: calc(100vh - 80px);
+    padding: 34px 18px 56px;
+    background:
+        radial-gradient(circle at top left, rgba(34, 229, 139, .16), transparent 35%),
+        radial-gradient(circle at top right, rgba(255, 205, 64, .08), transparent 32%),
+        linear-gradient(135deg, #06110c, #0b1712 45%, #07110d);
+    color: #fff;
+}
+
+.apex-profile-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.apex-profile-hero {
+    padding: 30px;
+    border-radius: 26px;
+    border: 1px solid rgba(34, 229, 139, .22);
+    background: rgba(10, 25, 18, .86);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    margin-bottom: 22px;
+}
+
+.apex-profile-chip {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(34, 229, 139, .13);
+    color: #22e58b;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.apex-profile-hero h1 {
+    margin: 14px 0 8px;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1;
+    font-weight: 900;
+}
+
+.apex-profile-hero p {
+    max-width: 720px;
+    color: #b7c8bf;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.apex-profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.apex-profile-card {
+    padding: 26px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, .09);
+    background: rgba(15, 36, 27, .9);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .26);
+}
+
+.apex-profile-card--wide {
+    grid-column: span 2;
+}
+
+.apex-profile-card--danger {
+    border-color: rgba(239, 68, 68, .35);
+    background: rgba(32, 16, 16, .82);
+}
+
+.apex-profile-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.apex-profile-icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(34, 229, 139, .12);
+    color: #22e58b;
+    font-size: 22px;
+}
+
+.apex-profile-card--danger .apex-profile-icon {
+    background: rgba(239, 68, 68, .14);
+    color: #ff6b6b;
+}
+
+.apex-profile-card h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.apex-profile-card p {
+    color: #9fb2a8;
+    line-height: 1.55;
+}
+
+.apex-profile-form {
+    margin-top: 22px;
+    display: grid;
+    gap: 18px;
+}
+
+.apex-field label,
+.apex-profile-card label {
+    color: #dce8e2 !important;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.apex-field input,
+.apex-profile-card input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px 14px;
+    border-radius: 14px;
+    background: #07110d !important;
+    border: 1px solid rgba(34, 229, 139, .25) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.apex-field input:focus,
+.apex-profile-card input:focus {
+    border-color: #22e58b !important;
+    box-shadow: 0 0 0 3px rgba(34, 229, 139, .15) !important;
+}
+
+.apex-profile-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.apex-btn,
+.apex-profile-card button {
+    border: 0;
+    border-radius: 13px;
+    padding: 12px 18px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform .15s ease, opacity .15s ease;
+}
+
+.apex-btn:hover,
+.apex-profile-card button:hover {
+    transform: translateY(-1px);
+    opacity: .92;
+}
+
+.apex-btn-primary,
+.apex-profile-card button[type="submit"] {
+    background: #22c970 !important;
+    color: #06110c !important;
+}
+
+.apex-btn-danger {
+    background: #ef4444 !important;
+    color: #fff !important;
+}
+
+.apex-saved {
+    color: #22e58b !important;
+    font-weight: 800;
+}
+
+.apex-verify-box {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 205, 64, .28);
+    background: rgba(255, 205, 64, .08);
+}
+
+.apex-verify-box p {
+    margin: 0;
+    color: #ffe08a;
+}
+
+.apex-link-button {
+    margin-left: 4px;
+    color: #22e58b;
+    text-decoration: underline;
+    font-weight: 800;
+}
+
+.apex-account-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.apex-account-row:last-child {
+    border-bottom: 0;
+}
+
+.apex-account-label {
+    color: #9fb2a8;
+    font-size: 14px;
+}
+
+.apex-account-value {
+    color: #fff;
+    font-weight: 900;
+}
+
+.apex-plan-badge {
+    display: inline-flex;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(34, 229, 139, .13);
+    color: #22e58b;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.apex-modal-dark form {
+    background: #0f241b;
+    color: #fff;
+}
+
+@media (max-width: 860px) {
+    .apex-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .apex-profile-card--wide {
+        grid-column: span 1;
+    }
+
+    .apex-profile-hero,
+    .apex-profile-card {
+        padding: 22px;
+    }
+}
+.apex-premium-benefits {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(34, 229, 139, .08);
+    border: 1px solid rgba(34, 229, 139, .18);
+}
+
+.apex-premium-benefits p {
+    margin: 0;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.apex-profile-actions a.apex-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}

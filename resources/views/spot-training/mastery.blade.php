@@ -54,6 +54,7 @@
             answerUrl: @json(route('mastery-training.answer')),
             csrf: @json(csrf_token()),
             i18n: @json($masteryI18n),
+           
         };
     </script>
 

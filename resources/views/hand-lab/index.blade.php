@@ -110,6 +110,9 @@
                     <button type="button" class="secondary-lab-btn" data-add-action="preflop">
                         {{ __('hand_lab.add_action') }}
                     </button>
+                    <button type="button" class="secondary-lab-btn danger-lab-btn" data-remove-last-action="preflop">
+                        Eliminar última acción
+                    </button>
 
                     <ol class="lab-action-list" data-action-list="preflop"></ol>
                 </div>
@@ -155,6 +158,9 @@
                     <button type="button" class="secondary-lab-btn" data-add-action="flop">
                         {{ __('hand_lab.add_action') }}
                     </button>
+                    <button type="button" class="secondary-lab-btn danger-lab-btn" data-remove-last-action="flop">
+                        Eliminar última acción
+                    </button>
 
                     <ol class="lab-action-list" data-action-list="flop"></ol>
                 </div>
@@ -199,6 +205,10 @@
                         {{ __('hand_lab.add_action') }}
                     </button>
 
+                    <button type="button" class="secondary-lab-btn danger-lab-btn" data-remove-last-action="turn">
+                        Eliminar última acción
+                    </button>
+
                     <ol class="lab-action-list" data-action-list="turn"></ol>
                 </div>
 
@@ -240,6 +250,10 @@
 
                     <button type="button" class="secondary-lab-btn" data-add-action="river">
                         {{ __('hand_lab.add_action') }}
+                    </button>
+
+                    <button type="button" class="secondary-lab-btn danger-lab-btn" data-remove-last-action="river">
+                        Eliminar última acción
                     </button>
 
                     <ol class="lab-action-list" data-action-list="river"></ol>

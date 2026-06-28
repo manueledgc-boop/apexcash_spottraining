@@ -14,7 +14,7 @@ class TurnBarrelSpots
             self::barrelAceHighGoodTurn(),
             self::barrelOverpairSafeTurn(),
             self::giveUpBadTurnAqo(),
-            self::barrelNutFlushDraw(),
+            self::barrelNutFlushCompleted(),
             self::barrelScareCardK(),
             self::checkBackShowdownValue(),
             self::doubleBarrelTopPairDynamic(),
@@ -23,7 +23,7 @@ class TurnBarrelSpots
             self::checkBackWetTurnControl(),
             self::barrelScareAceWithEquity(),
             self::noBarrelBlankNoFoldEquity(),
-            self::barrelNutFlushDrawTurn(),
+            self::barrelNutFlushBlockerTurn(),
             self::barrelOvercardAndFlushDraw(),
             self::checkBackSecondPairShowdown(),
             self::barrelPolarOverbetTurn(),
@@ -31,6 +31,26 @@ class TurnBarrelSpots
             self::giveUpMissedBroadwaysNoBlocker(),
             self::barrelTurnImprovesRangeAdvantage(),
             self::checkBackTopPairBadKickerWetTurn(),
+            self::barrelSecondNutFlushDrawCombo(),
+            self::checkBackAceHighShowdown(),
+            self::barrelBlockerAceOnFlushTurn(),
+            self::giveUpPairedTurnBadBluff(),
+            self::barrelSetForValueWetTurn(),
+            self::checkBackOverpairBadRunout(),
+            self::barrelOesdPlusOvercards(),
+            self::barrelLowTurnRangeAdvantage(),
+            self::giveUpNoEquityMonotoneTurn(),
+            self::barrelTwoPairForValue(),
+            self::checkBackNutAdvantageLost(),
+            self::barrelTurnPairsTopCard(),
+            self::barrelEquityAndBlockers(),
+            self::checkBackSecondPairWetTurn(),
+            self::barrelBlankWithOverpair(),
+            self::giveUpAceHighNoBackdoor(),
+            self::barrelStraightCompletedHero(),
+            self::smallBarrelRangeOnAceTurn(),
+            self::checkBackTopPairFacingBadTurn(),
+            self::barrelPolarWithNutBlocker(),
         ];
     }
 
@@ -63,8 +83,8 @@ class TurnBarrelSpots
                 'BET_75' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 78, 'feedback' => 'También válido contra rivales calling station, pero puede aislar más.'],
                 'CHECK' => ['grade' => 'mistake', 'frequency' => 18, 'ev_score' => 48, 'feedback' => 'Demasiado pasivo con una mano que todavía tiene valor claro.'],
             ],
-            'Top pair top kicker puede seguir apostando por valor en turn seguro.',
-            'En NL2-NL10 apuesta por valor. Te pagan Ax peores demasiado a menudo.',
+            'TPTK barrelea turn favorable: cobra valor sin sobrepolarizar.',
+            'En micro, apuesta por valor: Ax peores pagan demasiado.',
             88
         );
     }
@@ -98,8 +118,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 46, 'ev_score' => 82, 'feedback' => 'También válido, algo menos presión.'],
                 'CHECK' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 44, 'feedback' => 'Demasiado pasivo con overpair fuerte en blank.'],
             ],
-            'Los blanks de turn permiten seguir apostando manos de valor fuerte.',
-            'En límites bajos apuesta grande por valor cuando el rival tiene muchas Qx que pagan.',
+            'Turn blank mantiene tu ventaja; overpairs fuertes siguen apostando.',
+            'En micro, apuesta grande: Qx y pares pagan demasiado.',
             90
         );
     }
@@ -133,16 +153,16 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'mistake', 'frequency' => 20, 'ev_score' => 38, 'feedback' => 'Demasiado optimista. BB continúa mucho.'],
                 'BET_75' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 16, 'feedback' => 'Farol caro en una carta que mejora al rival.'],
             ],
-            'No todas las c-bets de flop deben continuar en turn.',
-            'En NL2-NL10 evita segunda barrel con aire cuando la turn conecta al rival.',
+            'Si el turn mejora al defensor, abandona aire sin equity.',
+            'En micro, no quemes fichas cuando el turn ayuda al rival.',
             82
         );
     }
 
-    protected static function barrelNutFlushDraw(): array
+    protected static function barrelNutFlushCompleted(): array
     {
         return self::spot(
-            'turn_barrel_btn_vs_bb_k72ss_asqs_turn_4s',
+            'turn_barrel_btn_vs_bb_k72ss_asqs_turn_4s_value',
             'turn_barrel',
             'Turn Barrel',
             'turn_flush_value',
@@ -168,8 +188,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 44, 'ev_score' => 82, 'feedback' => 'También correcto, pero deja valor contra manos que pagan.'],
                 'CHECK' => ['grade' => 'blunder', 'frequency' => 6, 'ev_score' => 20, 'feedback' => 'Slowplay malo. Hay demasiado valor disponible.'],
             ],
-            'Cuando completas el nut flush, apuesta por valor.',
-            'En microlímites no slowplayees nuts: te pagan colores peores y top pair con espada.',
+            'Con nut flush hecho, apuesta fuerte por valor.',
+            'En micro, no slowplayees nuts: colores peores y Kx pagan.',
             94
         );
     }
@@ -203,8 +223,8 @@ class TurnBarrelSpots
                 'CHECK' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 72, 'feedback' => 'Check también puede controlar bote contra rivales agresivos.'],
                 'BET_75' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 62, 'feedback' => 'Puede ser algo grande: foldeas manos peores y te pagan mejores.'],
             ],
-            'Las scare cards pueden servir para seguir apostando, pero el sizing importa.',
-            'En NL2-NL10 apuesta medio: todavía te pagan Q peores, pero no infles demasiado sin nuts.',
+            'Scare card favorable permite barrel medio, no siempre grande.',
+            'En micro, apuesta medio: Qx peores pagan, pero no infles sin nuts.',
             82
         );
     }
@@ -238,8 +258,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'marginal', 'frequency' => 22, 'ev_score' => 58, 'feedback' => 'Puede existir, pero no debe ser estándar.'],
                 'BET_75' => ['grade' => 'mistake', 'frequency' => 6, 'ev_score' => 26, 'feedback' => 'Demasiado grande para una mano media.'],
             ],
-            'Las parejas medias muchas veces prefieren check en turn.',
-            'En límites bajos no apuestes por información. Llega barato a showdown.',
+            'Parejas medias con showdown value prefieren controlar bote.',
+            'En micro, no apuestes por información: llega barato a showdown.',
             78
         );
     }
@@ -273,8 +293,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 44, 'ev_score' => 76, 'feedback' => 'También correcto, pero menos presión.'],
                 'CHECK' => ['grade' => 'mistake', 'frequency' => 16, 'ev_score' => 42, 'feedback' => 'Das carta gratis a demasiados proyectos.'],
             ],
-            'Las top pairs vulnerables siguen apostando en turns blank.',
-            'En NL2-NL10 apuesta fuerte por valor y protección en boards con proyectos.',
+            'Top pair vulnerable barrelea blanks por valor y protección.',
+            'En micro, apuesta fuerte: draws y pares peores pagan demasiado.',
             84
         );
     }
@@ -308,8 +328,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'mistake', 'frequency' => 20, 'ev_score' => 36, 'feedback' => 'Segunda barrel débil: BB no foldeará suficiente.'],
                 'BET_75' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 14, 'feedback' => 'Farol caro sin mejora ni blockers claros.'],
             ],
-            'Cuando te pagan flop y no mejoras, muchos faroles deben rendirse.',
-            'En microlímites evita doble barrel con aire: la gente paga demasiado.',
+            'Tras call flop, aire sin mejora debe rendirse mucho.',
+            'En micro, evita doble barrel automático: pagan demasiado.',
             80
         );
     }
@@ -343,8 +363,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 76, 'feedback' => 'También válido, con menos presión.'],
                 'CHECK' => ['grade' => 'marginal', 'frequency' => 28, 'ev_score' => 62, 'feedback' => 'Check toma carta gratis, pero pierdes fold equity.'],
             ],
-            'Las turns que añaden equity convierten manos pasivas en buenos semi-bluffs.',
-            'En NL2-NL10 farolea con equity real: gutshot + flush draw es mucho mejor que aire.',
+            'Cuando el turn añade equity, puedes convertirte en semi-bluff.',
+            'En micro, farolea con equity real, no con aire.',
             84
         );
     }
@@ -378,8 +398,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'mistake', 'frequency' => 16, 'ev_score' => 36, 'feedback' => 'Apuesta vulnerable: recibes calls/raises de manos mejores.'],
                 'BET_75' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 12, 'feedback' => 'Sizing grande en turn pésima.'],
             ],
-            'Las turns que completan draws reducen mucho los faroles y thin value.',
-            'En microlímites no fuerces valor en cartas que completan todo. Check y controla.',
+            'Turns que completan draws reducen faroles y thin value.',
+            'En micro, no fuerces valor cuando se completa todo.',
             82
         );
     }
@@ -412,8 +432,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 70, 'feedback' => 'También válido, aunque presiona menos a Kx.'],
                 'CHECK' => ['grade' => 'marginal', 'frequency' => 26, 'ev_score' => 56, 'feedback' => 'Check realiza equity, pero desaprovecha una carta muy buena para tu rango.'],
             ],
-            'Las scary cards no se farolean a ciegas: funcionan mejor con blockers o equity.',
-            'En NL2-NL10 este bluff funciona mejor contra rivales capaces de foldear Kx. Contra calling stations baja la frecuencia.',
+            'Scare cards funcionan mejor con equity o blockers claros.',
+            'En micro, blufea menos contra calling stations; no foldean Kx.',
             80
         );
     }
@@ -447,43 +467,43 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'mistake', 'frequency' => 20, 'ev_score' => 34, 'feedback' => 'Segundo barrel pobre: no representas mucho nuevo.'],
                 'BET_75' => ['grade' => 'blunder', 'frequency' => 6, 'ev_score' => 14, 'feedback' => 'Farol caro en una carta que no ayuda a tu historia.'],
             ],
-            'No todos los turns son buenos para seguir apostando después de c-bet flop.',
-            'En microlímites evita el piloto automático: si la carta no asusta y no tienes equity, check y abandona.',
+            'Blank sin equity ni fold equity pide check.',
+            'En micro, sin equity ni carta scare, abandona.',
             82
         );
     }
 
-    protected static function barrelNutFlushDrawTurn(): array
+    protected static function barrelNutFlushBlockerTurn(): array
     {
         return self::spot(
-            'turn_barrel_btn_vs_bb_j72ss_4s_asqs',
+            'turn_barrel_btn_vs_bb_j72ss_4s_asqh',
             'turn_barrel',
             'Turn Barrel',
             'turn_double_barrel_draw',
-            'Segundo barrel con nut flush draw',
-            'BTN vs BB · AQs en J72ss · Turn 4s',
+            'Barrel con blocker al nut flush',
+            'BTN vs BB · AsQh en J72ss · Turn 4♠',
             'BTN',
             'BB',
-            ['As', 'Qs'],
+            ['As', 'Qh'],
             ['Js', '7s', '2d', '4s'],
             8.5,
             5.5,
             44.5,
             'Turn completa color',
             'BTN puede tener nut flushes y overpairs con spade.',
-            'Hero bloquea el nut flush y tiene equity enorme si va detrás.',
+            'Hero bloquea el nut flush, pero todavía no tiene color hecho.',
             ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 7♠ 2♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 4♠', 'BB checks', 'Action on Hero BTN'],
             ['CHECK', 'BET_50', 'BET_75'],
             'BET_75',
-            'Hero tiene nut flush draw convertido en proyecto máximo con blockers muy fuertes. Apostar grande presiona Jx sin spade, pares y draws peores.',
+            'Hero no tiene color hecho, pero bloquea el nut flush. Buen barrel contra Jx sin espada y pares vulnerables.',
             'GTO simplificado: el As de spades permite barrels agresivos en cartas que completan color.',
             [
-                'BET_75' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 84, 'feedback' => 'Excelente barrel. Bloqueas nuts y tienes mucha equity.'],
+                'BET_75' => ['grade' => 'best', 'frequency' => 60, 'ev_score' => 84, 'feedback' => 'Buen barrel. Bloqueas nuts y presionas manos vulnerables.'],
                 'BET_50' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 74, 'feedback' => 'Correcto, aunque deja respirar a demasiadas manos.'],
                 'CHECK' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 58, 'feedback' => 'Check no es horrible, pero pierdes fold equity y presión.'],
             ],
-            'Los blockers al nut flush son candidatos naturales para seguir barreleando.',
-            'En NL2-NL10 no farolees cualquier carta de color: hazlo con el blocker correcto o equity clara.',
+            'Blocker al nut flush permite barrels polarizados selectivos.',
+            'En micro, farolea color completado solo con blocker fuerte.',
             84
         );
     }
@@ -496,7 +516,7 @@ class TurnBarrelSpots
             'Turn Barrel',
             'turn_double_barrel_draw',
             'Segundo barrel con overcards + draw',
-            'CO vs BB · AKs en T64ss · Turn Qs',
+            'CO vs BB · AsKh en T64ss · Turn Q♠',
             'CO',
             'BB',
             ['As', 'Kh'],
@@ -517,8 +537,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 38, 'ev_score' => 70, 'feedback' => 'Aceptable, pero menos presión.'],
                 'CHECK' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 58, 'feedback' => 'Check conserva equity, pero deja de presionar una carta excelente.'],
             ],
-            'Los barrels buenos cuentan una historia coherente con blockers y ventaja de rango.',
-            'En micro límites úsalo selectivamente: si el rival nunca foldea par, reduce este bluff.',
+            'Buen barrel combina blocker, carta favorable y presión creíble.',
+            'En micro, reduce este bluff contra rivales que no foldean pares.',
             80
         );
     }
@@ -552,8 +572,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'marginal', 'frequency' => 28, 'ev_score' => 56, 'feedback' => 'Puede proteger, pero se aísla contra mejores con frecuencia.'],
                 'BET_75' => ['grade' => 'mistake', 'frequency' => 6, 'ev_score' => 24, 'feedback' => 'Demasiado grande para segunda pareja.'],
             ],
-            'No conviertas todas tus manos medias en apuestas automáticas.',
-            'En NL2-NL10 controlar bote con segunda pareja evita decisiones caras en river.',
+            'Manos medias con showdown value no son barrels automáticos.',
+            'En micro, controlar segunda pareja evita rivers caros.',
             80
         );
     }
@@ -587,8 +607,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 40, 'ev_score' => 78, 'feedback' => 'También correcto, pero menos valor contra jugadores pagadores.'],
                 'CHECK' => ['grade' => 'mistake', 'frequency' => 14, 'ev_score' => 44, 'feedback' => 'Demasiado pasivo con una mano que cobra mucho valor.'],
             ],
-            'El tamaño grande no es solo bluff: también maximiza valor cuando te pagan demasiadas manos peores.',
-            'En microlímites apuesta fuerte por valor cuando el rival paga Ax peores.',
+            'Sizing grande también es valor contra bluffcatchers peores.',
+            'En micro, apuesta fuerte: Ax peores pagan demasiado.',
             86
         );
     }
@@ -622,8 +642,8 @@ class TurnBarrelSpots
                 'CHECK' => ['grade' => 'good', 'frequency' => 30, 'ev_score' => 68, 'feedback' => 'Check controla, pero das carta gratis a mucha equity.'],
                 'BET_75' => ['grade' => 'marginal', 'frequency' => 18, 'ev_score' => 58, 'feedback' => 'Demasiado grande contra un rango que también tiene manos fuertes.'],
             ],
-            'La protección también es una razón válida para barrelear turn.',
-            'En NL2-NL10 muchos pagan 9x y draws: apuesta por valor/protección sin regalar cartas.',
+            'Protección justifica barrel cuando muchas rivers dañan tu mano.',
+            'En micro, cobra a 9x y draws; no regales cartas.',
             82
         );
     }
@@ -657,8 +677,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'mistake', 'frequency' => 20, 'ev_score' => 34, 'feedback' => 'Farol flojo: BB no foldea suficiente.'],
                 'BET_75' => ['grade' => 'blunder', 'frequency' => 6, 'ev_score' => 12, 'feedback' => 'Sizing caro sin blockers ni equity clara.'],
             ],
-            'Los buenos faroles necesitan equity, blockers o una carta que cambie la historia.',
-            'En micro límites abandonar turns malas ahorra mucho dinero.',
+            'Buenos bluffs necesitan equity, blockers o carta realmente favorable.',
+            'En micro, abandonar turns malos ahorra mucho dinero.',
             82
         );
     }
@@ -692,8 +712,8 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 72, 'feedback' => 'Correcto, aunque menos presión.'],
                 'CHECK' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 56, 'feedback' => 'Check desaprovecha una de las mejores cartas para tu rango.'],
             ],
-            'La ventaja de rango cambia calle a calle; algunos turns son mucho mejores para el agresor.',
-            'En NL2-NL10 no lo conviertas en bluff automático, pero con equity como AQ es un buen barrel.',
+            'La ventaja de rango cambia; algunos turns favorecen mucho al agresor.',
+            'En micro, barrelea esto por equity, no por piloto automático.',
             82
         );
     }
@@ -727,9 +747,709 @@ class TurnBarrelSpots
                 'BET_50' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 54, 'feedback' => 'Thin value peligroso; muchos calls/raises te dominan.'],
                 'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 26, 'feedback' => 'Demasiado grande con kicker débil en turn conectado.'],
             ],
-            'Top pair no siempre es tres calles de valor, especialmente con kicker débil y runout malo.',
-            'En microlímites este check evita regalar botes grandes cuando el board se vuelve peligroso.',
+            'Top pair débil baja valor en turns que favorecen al caller.',
+            'En micro, controlar evita botes grandes con top pair débil.',
             82
+        );
+    }
+
+    protected static function barrelSecondNutFlushDrawCombo(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_q72hh_khjh_turn_4c',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_combo_draw_barrel',
+            'Barrel con combo draw fuerte',
+            'BTN vs BB · KJhh en Q72hh · Turn 4',
+            'BTN',
+            'BB',
+            ['Kh', 'Jh'],
+            ['Qh', '7h', '2c', '4d'],
+            8.5,
+            5.5,
+            44.5,
+            'Q-high con proyecto de color fuerte',
+            'BTN mantiene Qx fuertes, overpairs y proyectos fuertes.',
+            'Hero tiene color draw alto, overcard y blockers relevantes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♥ 7♥ 2♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 4♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'KJhh tiene mucha equity y bloquea colores fuertes. Buen candidato para seguir presionando con sizing grande.',
+            'GTO simplificado: los combo draws fuertes barrelean turns blanks con frecuencia.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 58, 'ev_score' => 84, 'feedback' => 'Muy bien. Presionas con equity real y buenos blockers.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 74, 'feedback' => 'Correcto, aunque genera menos fold equity.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 28, 'ev_score' => 60, 'feedback' => 'Check realiza equity, pero pierde presión en buen spot.'],
+            ],
+            'Draw fuerte con blockers barrelea turns que no cambian la textura.',
+            'En micro, apuesta draws fuertes; tienes equity cuando pagan.',
+            84
+        );
+    }
+
+    protected static function checkBackAceHighShowdown(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_k72r_aq_turn_2_check',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_ace_high_showdown',
+            'Check back con As alto',
+            'BTN vs BB · AQ en K72r · Turn 2',
+            'BTN',
+            'BB',
+            ['Ah', 'Qc'],
+            ['Ks', '7d', '2c', '2h'],
+            8.5,
+            5.5,
+            44.5,
+            'Board emparejado seco',
+            'BTN tiene Kx fuertes, pero AQ conserva showdown value.',
+            'Hero bloquea Ax y puede ganar contra floats peores.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♦ 2♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'AQ tiene algo de showdown value y pocos folds mejores. Barrelear aquí suele convertir una mano media en bluff débil.',
+            'GTO simplificado: As alto con showdown value puede chequear turns secos emparejados.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 66, 'ev_score' => 78, 'feedback' => 'Correcto. No conviertas As alto en farol malo.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 55, 'feedback' => 'Puede tirar floats, pero no foldea muchas manos mejores.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 30, 'feedback' => 'Demasiado caro para una mano con showdown value.'],
+            ],
+            'As alto con showdown value no necesita convertirse en bluff.',
+            'En micro, ahorra fichas: Kx y pares no foldean suficiente.',
+            78
+        );
+    }
+
+    protected static function barrelBlockerAceOnFlushTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_j83ss_asqh_turn_5s',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_nut_blocker_barrel',
+            'Barrel con blocker al color máximo',
+            'CO vs BB · AsQh en J83ss · Turn 5s',
+            'CO',
+            'BB',
+            ['As', 'Qh'],
+            ['Js', '8s', '3d', '5s'],
+            8.5,
+            5.8,
+            45.0,
+            'Color completado en turn',
+            'CO puede representar colores altos y overpairs con espada.',
+            'Hero bloquea el color máximo con As.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: J♠ 8♠ 3♦', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 5♠', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'As bloquea el nut flush y permite presionar Jx sin espada, pares y draws medios.',
+            'GTO simplificado: el blocker al nut flush permite algunos barrels grandes.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 44, 'ev_score' => 78, 'feedback' => 'Buen farol. Tienes blocker clave al color máximo.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 70, 'feedback' => 'Correcto, aunque mete menos presión.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 38, 'ev_score' => 62, 'feedback' => 'Check es prudente, pero desaprovecha un blocker importante.'],
+            ],
+            'Cuando se completa color, blockers fuertes ganan mucho valor.',
+            'En micro, usa este bluff selectivo; pagan pares y espadas.',
+            78
+        );
+    }
+
+    protected static function giveUpPairedTurnBadBluff(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_998r_kq_turn_9',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_bad_paired_card_giveup',
+            'Rendirse en turn muy malo',
+            'BTN vs BB · KQ en 998r · Turn 9',
+            'BTN',
+            'BB',
+            ['Kh', 'Qc'],
+            ['9s', '9d', '8c', '9h'],
+            8.5,
+            5.5,
+            44.5,
+            'Board muy emparejado',
+            'BB tiene muchos 9x, 8x y pares que no foldean.',
+            'Hero tiene aire sin blockers relevantes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 9♦ 8♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 9♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'El tercer 9 reduce fold equity y BB no abandona pares fácilmente. KQ sin equity debe rendirse.',
+            'GTO simplificado: se abandona aire sin blockers en turns que no mejoran tu historia.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 80, 'feedback' => 'Correcto. No fuerces un bluff sin credibilidad.'],
+                'BET_50' => ['grade' => 'mistake', 'frequency' => 16, 'ev_score' => 34, 'feedback' => 'Farol débil: no representas suficiente y te pagan pares.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 14, 'feedback' => 'Muy mal. Bluff caro sin fold equity real.'],
+            ],
+            'Board muy emparejado reduce fold equity de aire sin blockers.',
+            'En micro, no intentes tirar pares de rivales curiosos.',
+            80
+        );
+    }
+
+    protected static function barrelSetForValueWetTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_t87ss_tt_turn_2d',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_set_value_wet',
+            'Set fuerte en board húmedo',
+            'CO vs BB · TT en T87ss · Turn 2',
+            'CO',
+            'BB',
+            ['Th', 'Tc'],
+            ['Ts', '8s', '7d', '2d'],
+            8.5,
+            5.8,
+            45.0,
+            'Board coordinado con muchos proyectos',
+            'CO tiene sets y overpairs; BB tiene pares, draws y escaleras.',
+            'Hero tiene top set y quiere cobrar/proteger.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: T♠ 8♠ 7♦', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 2♦', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Top set debe apostar grande. Hay demasiados draws y manos peores que pagan.',
+            'GTO simplificado: sets fuertes apuestan grande en turns húmedos.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 94, 'feedback' => 'Excelente. Máximo valor y protección.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 38, 'ev_score' => 82, 'feedback' => 'Correcto, pero puedes cobrar más.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 20, 'feedback' => 'Slowplay pésimo en board tan cargado.'],
+            ],
+            'Manos premium en boards húmedos deben construir bote.',
+            'En micro, apuesta grande: pagan draws y pares peores.',
+            94
+        );
+    }
+
+    protected static function checkBackOverpairBadRunout(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_987ss_aa_turn_6s',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_overpair_bad_runout',
+            'Control con overpair en turn horrible',
+            'BTN vs BB · AA en 987ss · Turn 6s',
+            'BTN',
+            'BB',
+            ['Ah', 'Ad'],
+            ['9s', '8s', '7d', '6s'],
+            8.5,
+            5.5,
+            44.5,
+            'Turn completa escaleras y color',
+            'BB conecta muy fuerte con suited connectors, pares y proyectos.',
+            'Hero tiene overpair, pero el nut advantage cae hacia BB.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♠ 7♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 6♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'AA perdió mucha fuerza relativa. Apostar grande se aísla contra escaleras, colores y manos muy fuertes.',
+            'GTO simplificado: overpairs chequean más cuando el turn cambia drásticamente la textura.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 70, 'ev_score' => 80, 'feedback' => 'Correcto. Controlas bote en una carta pésima.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 22, 'ev_score' => 52, 'feedback' => 'Thin value muy peligroso contra rango fuerte.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 24, 'feedback' => 'Demasiado grande; te pagan muchas manos mejores.'],
+            ],
+            'Overpair frena cuando el turn completa muchos proyectos.',
+            'En micro, no infles cuando color y escalera completan.',
+            84
+        );
+    }
+
+    protected static function barrelOesdPlusOvercards(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_t92r_qj_turn_8',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_oesd_overcards_barrel',
+            'Barrel con OESD y overcards',
+            'BTN vs BB · QJ en T92r · Turn 8',
+            'BTN',
+            'BB',
+            ['Qh', 'Jc'],
+            ['Ts', '9d', '2c', '8h'],
+            8.5,
+            5.5,
+            44.5,
+            'Board conectado con proyecto fuerte',
+            'BTN tiene broadways fuertes y algunas escaleras.',
+            'Hero tiene OESD a escalera alta y overcards útiles.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: T♠ 9♦ 2♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 8♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'QJ gana proyecto abierto fuerte y presiona Tx, 9x y pares. Tiene suficiente equity para barrelear.',
+            'GTO simplificado: los draws fuertes con fold equity pueden apostar grande turn.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 56, 'ev_score' => 82, 'feedback' => 'Bien. Tienes equity y presión real.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 72, 'feedback' => 'Correcto, aunque genera menos presión.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 30, 'ev_score' => 60, 'feedback' => 'Check realiza equity, pero pierde fold equity.'],
+            ],
+            'OESD fuerte con overcards es buen candidato de barrel.',
+            'En micro, barrelea draws fuertes; top pair no foldea mucho.',
+            82
+        );
+    }
+
+    protected static function barrelLowTurnRangeAdvantage(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_a72r_kk_turn_3',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_range_advantage_value',
+            'Segunda barrel con valor vulnerable',
+            'CO vs BB · KK en A72r · Turn 3',
+            'CO',
+            'BB',
+            ['Kh', 'Kc'],
+            ['As', '7d', '2c', '3h'],
+            8.5,
+            5.8,
+            45.0,
+            'A-high seco con blank turn',
+            'CO tiene muchos Ax fuertes y overpairs.',
+            'KK no es top pair, pero aún cobra a pares peores ocasionalmente.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: A♠ 7♦ 2♣', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 3♥', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'KK tiene showdown value, pero tras call flop en A-high no consigue suficiente valor apostando otra vez.',
+            'GTO simplificado: pares fuertes sin top pair chequean bastante tras recibir call en A-high.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 64, 'ev_score' => 76, 'feedback' => 'Correcto. Realizas showdown value sin aislarte.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 28, 'ev_score' => 58, 'feedback' => 'Puede proteger, pero pocas peores pagan cómodo.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 32, 'feedback' => 'Demasiado grande contra rango cargado de Ax.'],
+            ],
+            'Ventaja de rango no obliga a apostar manos medias.',
+            'En micro, tras call flop A-high, respeta Ax.',
+            76
+        );
+    }
+
+    protected static function giveUpNoEquityMonotoneTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_q74hhh_kcjd_turn_2h',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_monotone_giveup',
+            'Rendirse sin blocker en monotone',
+            'BTN vs BB · KJo en Q74hhh · Turn 2h',
+            'BTN',
+            'BB',
+            ['Kc', 'Jd'],
+            ['Qh', '7h', '4h', '2h'],
+            8.5,
+            5.5,
+            44.5,
+            'Board cuatro corazones',
+            'BB tiene muchos corazones y pares con corazón.',
+            'Hero no tiene corazón ni pareja.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♥ 7♥ 4♥', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'Sin corazón ni equity real, KJ no debe seguir faroleando. BB no foldea suficientes manos con corazón.',
+            'GTO simplificado: sin blocker en turn monotone, muchos bluffs abandonan.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 82, 'ev_score' => 80, 'feedback' => 'Correcto. No farolees sin blocker ni equity.'],
+                'BET_50' => ['grade' => 'mistake', 'frequency' => 12, 'ev_score' => 28, 'feedback' => 'Farol malo: no bloqueas colores.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 4, 'ev_score' => 10, 'feedback' => 'Muy caro y sin credibilidad suficiente.'],
+            ],
+            'En monotone, sin blocker al palo debes abandonar más.',
+            'En micro, no farolees monotone sin blocker; pagan corazones.',
+            80
+        );
+    }
+
+    protected static function barrelTwoPairForValue(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_k96r_k9_turn_2',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_two_pair_value',
+            'Dos pares por valor',
+            'BTN vs BB · K9s en K96r · Turn 2',
+            'BTN',
+            'BB',
+            ['Kh', '9h'],
+            ['Ks', '9d', '6c', '2s'],
+            8.5,
+            5.5,
+            44.5,
+            'K-high semi seco',
+            'BTN tiene Kx fuertes y dobles ocasionales.',
+            'Hero tiene dos pares y domina muchos Kx.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 9♦ 6♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Dos pares quiere construir bote contra Kx, 9x y proyectos. El turn no cambia casi nada.',
+            'GTO simplificado: manos fuertes vulnerables apuestan grande en turn.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 72, 'ev_score' => 92, 'feedback' => 'Excelente. Mucho valor contra Kx peor.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 40, 'ev_score' => 82, 'feedback' => 'Correcto, aunque cobras menos.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 10, 'ev_score' => 38, 'feedback' => 'Demasiado pasivo con una mano fuerte.'],
+            ],
+            'Dos pares barrelea turn por valor y protección.',
+            'En micro, apuesta fuerte: top pair paga demasiado.',
+            92
+        );
+    }
+
+    protected static function checkBackNutAdvantageLost(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_654r_ak_turn_7',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_nut_advantage_lost',
+            'Check cuando pierdes ventaja de nuts',
+            'CO vs BB · AK en 654r · Turn 7',
+            'CO',
+            'BB',
+            ['Ah', 'Kd'],
+            ['6s', '5d', '4c', '7h'],
+            8.5,
+            5.8,
+            45.0,
+            'Turn completa muchas escaleras',
+            'BB conecta mucho con pares bajos, 8x, 3x y dobles.',
+            'Hero tiene overcards sin equity suficiente.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: 6♠ 5♦ 4♣', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 7♥', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'El 7 mejora muchísimo a BB. AK sin proyecto real no debe barrelear en una carta tan mala.',
+            'GTO simplificado: cuando el caller gana nut advantage, muchos bluffs se abandonan.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 78, 'ev_score' => 80, 'feedback' => 'Correcto. La carta favorece demasiado a BB.'],
+                'BET_50' => ['grade' => 'mistake', 'frequency' => 16, 'ev_score' => 30, 'feedback' => 'Farol muy flojo contra rango conectado.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 12, 'feedback' => 'Mal barrel: representas poco y te pagan/raisean fuerte.'],
+            ],
+            'Si el caller gana nuts, baja mucho tu frecuencia de barrel.',
+            'En micro, no farolees boards que conectan con ciega.',
+            82
+        );
+    }
+
+    protected static function barrelTurnPairsTopCard(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_k72r_ak_turn_k',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_trips_value',
+            'Trips por valor',
+            'BTN vs BB · AK en K72r · Turn K',
+            'BTN',
+            'BB',
+            ['Ah', 'Kh'],
+            ['Ks', '7d', '2c', 'Kd'],
+            8.5,
+            5.5,
+            44.5,
+            'Top card emparejada',
+            'BTN tiene muchos Kx fuertes y full houses ocasionales.',
+            'Hero tiene trips top kicker y domina Kx peores.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: K♠ 7♦ 2♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: K♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'AK bloquea Kx, pero sigue cobrando a K peores, 7x y pares curiosos. Sizing medio mantiene manos peores dentro.',
+            'GTO simplificado: trips fuertes apuestan con frecuencia, usando sizing que retenga manos peores.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 62, 'ev_score' => 86, 'feedback' => 'Correcto. Cobras sin espantar demasiadas manos peores.'],
+                'BET_75' => ['grade' => 'good', 'frequency' => 34, 'ev_score' => 78, 'feedback' => 'También válido contra rivales muy pagadores.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 62, 'feedback' => 'Puede inducir, pero pierdes valor contra muchos rivales.'],
+            ],
+            'Trips fuertes apuestan, ajustando tamaño para retener peores.',
+            'En micro, apuesta por valor: pagan pares y Kx dominados.',
+            86
+        );
+    }
+
+    protected static function barrelEquityAndBlockers(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_a95ss_qsjs_turn_3d',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_equity_blockers_barrel',
+            'Barrel con equity y blockers',
+            'BTN vs BB · QJss en A95ss · Turn 3',
+            'BTN',
+            'BB',
+            ['Qs', 'Js'],
+            ['As', '9s', '5d', '3c'],
+            8.5,
+            5.5,
+            44.5,
+            'A-high con draw de color fuerte',
+            'BTN tiene Ax fuertes y proyectos altos.',
+            'Hero tiene flush draw alto y bloquea colores fuertes.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♠ 9♠ 5♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 3♣', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'QJss mantiene mucha equity y bloquea colores altos. Puede presionar 9x, pares y floats sin As.',
+            'GTO simplificado: draws altos con blockers son buenos candidatos a second barrel.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 82, 'feedback' => 'Buen barrel. Tienes equity y blockers fuertes.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 72, 'feedback' => 'Correcto, menos presión pero sigue bien.'],
+                'CHECK' => ['grade' => 'marginal', 'frequency' => 32, 'ev_score' => 62, 'feedback' => 'Check realiza equity, pero pierde fold equity.'],
+            ],
+            'Equity más blockers suele justificar segundo barrel.',
+            'En micro, apuesta draws fuertes; recibirás calls frecuentes.',
+            82
+        );
+    }
+
+    protected static function checkBackSecondPairWetTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_j97ss_t9_turn_qs',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_second_pair_wet_control',
+            'Control con segunda pareja en turn malo',
+            'BTN vs BB · T9 en J97ss · Turn Qs',
+            'BTN',
+            'BB',
+            ['Th', '9h'],
+            ['Js', '9s', '7d', 'Qs'],
+            8.5,
+            5.5,
+            44.5,
+            'Turn completa color y mejora broadways',
+            'BB tiene colores, QJ, QT, T8 y muchos proyectos fuertes.',
+            'Hero tiene segunda pareja con gutshot marginal.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: J♠ 9♠ 7♦', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: Q♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'T9 ya no puede apostar cómodamente por valor. La Qs mejora demasiado el rango de BB.',
+            'GTO simplificado: pares medios chequean cuando el turn completa muchos proyectos.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 72, 'ev_score' => 78, 'feedback' => 'Correcto. Controlas bote en carta peligrosa.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 20, 'ev_score' => 50, 'feedback' => 'Apuesta fina y peligrosa; te pagan mejores.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 6, 'ev_score' => 22, 'feedback' => 'Demasiado grande para segunda pareja vulnerable.'],
+            ],
+            'Cuando el turn completa proyectos, manos medias frenan.',
+            'En micro, evita valor fino en cartas muy peligrosas.',
+            80
+        );
+    }
+
+    protected static function barrelBlankWithOverpair(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_853r_qq_turn_2',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_overpair_blank_value',
+            'Overpair en blank absoluto',
+            'BTN vs BB · QQ en 853r · Turn 2',
+            'BTN',
+            'BB',
+            ['Qh', 'Qc'],
+            ['8s', '5d', '3c', '2h'],
+            8.5,
+            5.5,
+            44.5,
+            'Board bajo con turn blank',
+            'BTN tiene overpairs fuertes; BB tiene pares bajos y proyectos.',
+            'Hero domina muchas parejas y necesita protección.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 8♠ 5♦ 3♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'QQ sigue muy fuerte y debe cobrar a 8x, 5x, pares y proyectos. El 2 no cambia casi nada.',
+            'GTO simplificado: overpairs fuertes barrelean grande en turns blanks.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 68, 'ev_score' => 90, 'feedback' => 'Excelente. Mucho valor contra pares peores.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 80, 'feedback' => 'Correcto, aunque puedes cobrar más.'],
+                'CHECK' => ['grade' => 'mistake', 'frequency' => 14, 'ev_score' => 42, 'feedback' => 'Demasiado pasivo con overpair fuerte.'],
+            ],
+            'Turn blank permite seguir apostando overpairs fuertes.',
+            'En micro, apuesta por valor: pares peores pagan demasiado.',
+            90
+        );
+    }
+
+    protected static function giveUpAceHighNoBackdoor(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_j86r_aq_turn_4',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_air_no_backdoor_giveup',
+            'Rendirse con aire sin backdoor',
+            'CO vs BB · AQ en J86r · Turn 4',
+            'CO',
+            'BB',
+            ['Ah', 'Qc'],
+            ['Js', '8d', '6c', '4h'],
+            8.5,
+            5.8,
+            45.0,
+            'Board medio que conecta con BB',
+            'BB tiene Jx, 8x, 6x, pares y draws que continúan.',
+            'Hero solo tiene overcards sin proyecto claro.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: J♠ 8♦ 6♣', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 4♥', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'AQ no mejora y no tiene blockers suficientes. BB conectó demasiado con este board.',
+            'GTO simplificado: aire sin equity abandona turns que no cambian la textura.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 76, 'ev_score' => 78, 'feedback' => 'Correcto. No sigas quemando fichas.'],
+                'BET_50' => ['grade' => 'mistake', 'frequency' => 18, 'ev_score' => 34, 'feedback' => 'Farol débil: BB continúa demasiado.'],
+                'BET_75' => ['grade' => 'blunder', 'frequency' => 5, 'ev_score' => 12, 'feedback' => 'Muy caro sin equity ni blockers.'],
+            ],
+            'Barrels necesitan razón clara: equity, blockers o carta favorable.',
+            'En micro, abandonar aire malo ahorra muchas fichas.',
+            80
+        );
+    }
+
+    protected static function barrelStraightCompletedHero(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_986r_t7_turn_2',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_straight_value',
+            'Escalera hecha por valor',
+            'BTN vs BB · T7s en 986r · Turn 2',
+            'BTN',
+            'BB',
+            ['Th', '7h'],
+            ['9s', '8d', '6c', '2s'],
+            8.5,
+            5.5,
+            44.5,
+            'Board conectado con escalera hecha',
+            'BTN tiene algunas escaleras y sets; BB también conecta mucho.',
+            'Hero tiene escalera y debe cobrar/proteger.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: 9♠ 8♦ 6♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♠', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Con escalera hecha en board conectado hay que apostar grande contra pares, dobles, sets y draws.',
+            'GTO simplificado: manos muy fuertes apuestan grande en boards dinámicos.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 74, 'ev_score' => 94, 'feedback' => 'Excelente. Cobras y proteges en board peligroso.'],
+                'BET_50' => ['grade' => 'good', 'frequency' => 40, 'ev_score' => 82, 'feedback' => 'Correcto, aunque puedes extraer más.'],
+                'CHECK' => ['grade' => 'blunder', 'frequency' => 6, 'ev_score' => 18, 'feedback' => 'Slowplay malo: hay demasiadas cartas peligrosas.'],
+            ],
+            'Escaleras hechas en boards dinámicos deben construir bote.',
+            'En micro, apuesta fuerte: pagan dobles, sets y proyectos.',
+            94
+        );
+    }
+
+    protected static function smallBarrelRangeOnAceTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_q72r_kq_turn_a',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_ace_range_barrel',
+            'Barrel pequeño en As favorable',
+            'BTN vs BB · KQ en Q72r · Turn A',
+            'BTN',
+            'BB',
+            ['Kh', 'Qh'],
+            ['Qs', '7d', '2c', 'Ad'],
+            8.5,
+            5.5,
+            44.5,
+            'As turn favorece al agresor',
+            'BTN tiene muchos Ax fuertes y dobles.',
+            'Hero mantiene segunda pareja fuerte y puede apostar pequeño.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: Q♠ 7♦ 2♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: A♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_50',
+            'El As favorece a BTN, pero KQ no quiere inflar demasiado. Sizing medio cobra/protege y presiona pares medios.',
+            'GTO simplificado: cartas muy favorables permiten barrels pequeños/medios con rango amplio.',
+            [
+                'BET_50' => ['grade' => 'best', 'frequency' => 54, 'ev_score' => 78, 'feedback' => 'Bien. Usas carta favorable sin sobrepolarizar.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 36, 'ev_score' => 70, 'feedback' => 'Check también controla bien con showdown value.'],
+                'BET_75' => ['grade' => 'marginal', 'frequency' => 16, 'ev_score' => 52, 'feedback' => 'Grande de más para una mano media.'],
+            ],
+            'Carta favorable no implica sizing grande con mano media.',
+            'En micro, usa tamaño medio: Qx y pares pagan.',
+            78
+        );
+    }
+
+    protected static function checkBackTopPairFacingBadTurn(): array
+    {
+        return self::spot(
+            'turn_barrel_co_vs_bb_t74ss_at_turn_9s',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_top_pair_bad_turn_control',
+            'Top pair en turn muy peligroso',
+            'CO vs BB · AT en T74ss · Turn 9s',
+            'CO',
+            'BB',
+            ['Ah', 'Tc'],
+            ['Ts', '7s', '4d', '9s'],
+            8.5,
+            5.8,
+            45.0,
+            'Turn completa color y aumenta conectividad',
+            'BB tiene colores, 98, J8, pares y proyectos completados.',
+            'Hero tiene top pair, pero su valor relativo bajó mucho.',
+            ['CO opens 2.5 BB', 'BB calls', 'Flop: T♠ 7♠ 4♦', 'BB checks', 'CO bets 2 BB', 'BB calls', 'Turn: 9♠', 'BB checks', 'Action on Hero CO'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'CHECK',
+            'AT tiene showdown value, pero apostar turn se aísla contra colores, escaleras y mejores Tx.',
+            'GTO simplificado: top pair frena en turns que completan muchos proyectos.',
+            [
+                'CHECK' => ['grade' => 'best', 'frequency' => 68, 'ev_score' => 78, 'feedback' => 'Correcto. Controlas bote en turn peligroso.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 24, 'ev_score' => 54, 'feedback' => 'Thin value arriesgado: muchas peores foldean y mejores pagan.'],
+                'BET_75' => ['grade' => 'mistake', 'frequency' => 8, 'ev_score' => 24, 'feedback' => 'Demasiado grande con top pair vulnerable.'],
+            ],
+            'Top pair baja frecuencia cuando el turn completa proyectos.',
+            'En micro, controla bote para evitar raises caros.',
+            80
+        );
+    }
+
+    protected static function barrelPolarWithNutBlocker(): array
+    {
+        return self::spot(
+            'turn_barrel_btn_vs_bb_a84dd_kdqc_turn_2d',
+            'turn_barrel',
+            'Turn Barrel',
+            'turn_polar_nut_blocker',
+            'Barrel polar con blocker fuerte',
+            'BTN vs BB · KdQc en A84dd · Turn 2d',
+            'BTN',
+            'BB',
+            ['Kd', 'Qc'],
+            ['Ad', '8d', '4c', '2d'],
+            8.5,
+            5.5,
+            44.5,
+            'Color completado en turn',
+            'BTN representa colores altos, Ax fuertes y manos polarizadas.',
+            'Hero bloquea colores altos con Kd.',
+            ['BTN opens 2.5 BB', 'BB calls', 'Flop: A♦ 8♦ 4♣', 'BB checks', 'BTN bets 2 BB', 'BB calls', 'Turn: 2♦', 'BB checks', 'Action on Hero BTN'],
+            ['CHECK', 'BET_50', 'BET_75'],
+            'BET_75',
+            'Kd bloquea colores fuertes y permite presionar Ax sin diamante, 8x y pares medios.',
+            'GTO simplificado: blockers fuertes permiten barrels polarizados en cartas que completan proyectos.',
+            [
+                'BET_75' => ['grade' => 'best', 'frequency' => 42, 'ev_score' => 78, 'feedback' => 'Buen bluff polar. Tienes blocker importante.'],
+                'BET_50' => ['grade' => 'marginal', 'frequency' => 28, 'ev_score' => 60, 'feedback' => 'Medio presiona poco y no representa tanta fuerza.'],
+                'CHECK' => ['grade' => 'good', 'frequency' => 42, 'ev_score' => 68, 'feedback' => 'Check también es prudente contra rivales muy pagadores.'],
+            ],
+            'Blockers fuertes convierten manos sin valor en barrels viables.',
+            'En micro, úsalo selectivo: muchos no foldean Ax.',
+            78
         );
     }
 

@@ -13,6 +13,7 @@ use App\SpotTraining\Postflop\Modules\OverbetSpots;
 use App\SpotTraining\Postflop\Modules\DonkBetSpots;
 use App\SpotTraining\Postflop\Modules\FloatSpots;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SpotPoolProgressService;
 
 class PostflopSpotRepository
 {
@@ -20,7 +21,7 @@ class PostflopSpotRepository
 
     public function all(): array
     {
-        return array_merge(
+        $spots = array_merge(
             CbetIpSpots::all(),
             CheckBackIpSpots::all(),
             DefenseVsCbetSpots::all(),
@@ -31,10 +32,6 @@ class PostflopSpotRepository
             DonkBetSpots::all(),
             FloatSpots::all(),
         );
-
-        if (! Auth::user()?->hasPremiumAccess()) {
-            $spots = array_slice($spots, 0, 10);
-        }
 
         return $spots;
     }
@@ -68,24 +65,12 @@ class PostflopSpotRepository
             $spots = $this->all();
         }
 
-        $poolKey = 'postflop_training.seen_spot_ids.' . md5(($module ?? 'all') . '|' . ($concept ?? 'all'));
-        $seen = session($poolKey, []);
-
-        $available = array_values(array_filter($spots, function (array $spot) use ($seen): bool {
-            return ! in_array($spot['id'] ?? null, $seen, true);
-        }));
-
-        if (empty($available)) {
-            $seen = [];
-            $available = $spots;
-        }
-
-        $spot = $available[array_rand($available)];
-        $seen[] = $spot['id'];
-
-        session([
-            $poolKey => array_values(array_unique($seen)),
-        ]);
+        $spot = app(SpotPoolProgressService::class)->pick(
+            $spots,
+            'flop',
+            $module,
+            $concept
+        );
 
         return $this->normalize($spot);
     }

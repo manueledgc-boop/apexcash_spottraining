@@ -1,17 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
+(() => {
+    const CONSENT_KEY = 'apexcash_cookie_consent';
     const banner = document.getElementById('apexcash-cookie-banner');
-    const button = document.getElementById('accept-cookies');
+    const acceptBtn = document.getElementById('cookies-accept');
+    const essentialBtn = document.getElementById('cookies-essential');
 
-    if (!banner || !button) return;
+    if (!banner) return;
 
-    const accepted = localStorage.getItem('apexcash_cookies_accepted');
+    const existingConsent = localStorage.getItem(CONSENT_KEY);
 
-    if (!accepted) {
-        banner.classList.add('is-visible');
+    if (!existingConsent) {
+        banner.hidden = false;
+        banner.style.display = 'flex';
     }
 
-    button.addEventListener('click', () => {
-        localStorage.setItem('apexcash_cookies_accepted', 'yes');
-        banner.classList.remove('is-visible');
+    function saveConsent(type) {
+        localStorage.setItem(CONSENT_KEY, JSON.stringify({
+            type,
+            accepted_at: new Date().toISOString(),
+            version: '1.0',
+        }));
+
+        banner.style.display = 'none';
+        banner.hidden = true;
+    }
+
+    acceptBtn?.addEventListener('click', () => {
+        saveConsent('all');
     });
-});
+
+    essentialBtn?.addEventListener('click', () => {
+        saveConsent('essential');
+    });
+})();

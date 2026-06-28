@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\FreemiumTrainingAccessService;
 use App\Services\SpotTrainingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use RuntimeException;
 
 class SpotTrainingController extends Controller
 {
-    public function index(Request $request, SpotTrainingService $service): View
-    {
+    public function index(
+        Request $request,
+        SpotTrainingService $service,
+        FreemiumTrainingAccessService $freemium
+    ): View {
         $module = $request->query('module');
         $module = is_string($module) && $module !== '' ? $module : null;
 
@@ -30,26 +35,73 @@ class SpotTrainingController extends Controller
             session()->forget('spot_training.current_concept');
         }
 
-        return view('spot-training.index', [
-            'initialModule' => $module,
-            'initialMode' => $mode,
+        $freeLimitReached = $freemium->hasReachedFreeLimit('preflop');
+        $freeLimitMessage = $freeLimitReached
+            ? $freemium->freeLimitMessage('preflop')
+            : null;
 
-            'initialSpot' => $spotId
+        if ($freeLimitReached) {
+            session()->forget('spot_training.current_spot');
+
+            return view('spot-training.index', [
+                'initialModule' => $module,
+                'initialMode' => $mode,
+                'initialSpot' => null,
+                'summary' => $service->summary(),
+                'leaks' => $service->leakSummary(),
+                'lifetime' => $service->lifetimeSummary(),
+                'freeLimitReached' => true,
+                'freeLimitMessage' => $freeLimitMessage,
+            ]);
+        }
+
+        try {
+            $initialSpot = $spotId
                 ? $service->nextSpot($module, $mode, 'gto', $spotId, $concept)
                 : (
                     $module || $mode === 'leak' || $concept
                         ? $service->nextSpot($module, $mode, 'gto', null, $concept)
                         : ($service->currentSpot() ?? $service->nextSpot())
-                ),
+                );
+        } catch (RuntimeException $e) {
+            if ($e->getMessage() !== 'FREE_LIMIT_REACHED') {
+                throw $e;
+            }
 
+            session()->forget('spot_training.current_spot');
+
+            $initialSpot = null;
+            $freeLimitReached = true;
+            $freeLimitMessage = $freemium->freeLimitMessage('preflop');
+        }
+
+        return view('spot-training.index', [
+            'initialModule' => $module,
+            'initialMode' => $mode,
+            'initialSpot' => $initialSpot,
             'summary' => $service->summary(),
             'leaks' => $service->leakSummary(),
             'lifetime' => $service->lifetimeSummary(),
+            'freeLimitReached' => $freeLimitReached,
+            'freeLimitMessage' => $freeLimitMessage,
         ]);
     }
 
-    public function next(Request $request, SpotTrainingService $service): JsonResponse
-    {
+    public function next(
+        Request $request,
+        SpotTrainingService $service,
+        FreemiumTrainingAccessService $freemium
+    ): JsonResponse {
+        if ($freemium->hasReachedFreeLimit('preflop')) {
+            session()->forget('spot_training.current_spot');
+
+            return response()->json([
+                'success' => false,
+                'code' => 'FREE_LIMIT_REACHED',
+                'message' => $freemium->freeLimitMessage('preflop'),
+            ]);
+        }
+
         $module = $request->query('module');
         $mode = $request->query('mode');
         $spotId = $request->query('spot_id');
@@ -70,25 +122,52 @@ class SpotTrainingController extends Controller
             session(['spot_training.current_concept' => $concept]);
         }
 
-        return response()->json([
-            'success' => true,
-
-            'spot' => $service->nextSpot(
+        try {
+            $spot = $service->nextSpot(
                 $module,
                 $mode,
                 'gto',
                 $spotId,
                 $concept
-            ),
+            );
+        } catch (RuntimeException $e) {
+            if ($e->getMessage() === 'FREE_LIMIT_REACHED') {
+                session()->forget('spot_training.current_spot');
 
+                return response()->json([
+                    'success' => false,
+                    'code' => 'FREE_LIMIT_REACHED',
+                    'message' => $freemium->freeLimitMessage('preflop'),
+                ]);
+            }
+
+            throw $e;
+        }
+
+        return response()->json([
+            'success' => true,
+            'spot' => $spot,
             'summary' => $service->summary(),
             'leaks' => $service->leakSummary(),
             'lifetime' => $service->lifetimeSummary(),
         ]);
     }
 
-    public function answer(Request $request, SpotTrainingService $service): JsonResponse
-    {
+    public function answer(
+        Request $request,
+        SpotTrainingService $service,
+        FreemiumTrainingAccessService $freemium
+    ): JsonResponse {
+        if ($freemium->hasReachedFreeLimit('preflop')) {
+            session()->forget('spot_training.current_spot');
+
+            return response()->json([
+                'success' => false,
+                'code' => 'FREE_LIMIT_REACHED',
+                'message' => $freemium->freeLimitMessage('preflop'),
+            ]);
+        }
+
         $validated = $request->validate([
             'answer' => ['required', 'string', 'max:20'],
         ]);

@@ -9,20 +9,41 @@ use App\Models\UserSpotStat;
 use App\Models\UserTrainingStat;
 use App\SpotTraining\Mastery\MasterySpotRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SpotPoolProgressService;
 
 class MasteryTrainingService
 {
-    public function __construct(protected MasterySpotRepository $spots)
-    {
+    public function __construct(
+        protected MasterySpotRepository $spots,
+        protected SpotPoolProgressService $poolProgress,
+    ) {
     }
 
     public function nextSpot(?string $module = null, string $mode = 'normal', ?string $spotId = null, ?string $concept = null): array
     {
-        $spot = $spotId
-            ? ($this->spots->findById($spotId) ?? $this->spots->random($module, $concept))
-            : $this->spots->random($module, $concept);
+        if ($spotId) {
+            $spot = $this->spots->findById($spotId);
+        } else {
+            $spot = null;
+        }
+
+        if (! $spot) {
+            $pool = $this->spots->all($module, $concept);
+
+            if (empty($pool)) {
+                throw new \RuntimeException('No hay spots de mastery disponibles para el filtro seleccionado.');
+            }
+
+            $spot = $this->poolProgress->pick(
+                $pool,
+                'mastery',
+                $module,
+                $concept
+            );
+        }
 
         $spot = $this->spots->normalize($spot);
+
         session(['mastery_training.current_spot' => $spot]);
 
         return $this->publicSpot($spot);

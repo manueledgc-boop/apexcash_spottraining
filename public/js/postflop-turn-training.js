@@ -80,6 +80,78 @@
         return 'decision-btn';
     }
 
+    function showFreeLimit(message) {
+        state.spot = null;
+        state.locked = true;
+
+        if (els.spotModule) els.spotModule.textContent = 'Free';
+        if (els.spotTitle) els.spotTitle.textContent = 'Límite gratuito alcanzado';
+        if (els.spotMeta) els.spotMeta.textContent = '';
+        if (els.boardCards) els.boardCards.innerHTML = '';
+        if (els.heroCards) els.heroCards.innerHTML = '';
+        if (els.spotPot) els.spotPot.textContent = '';
+        if (els.spotSpr) els.spotSpr.textContent = '';
+        if (els.heroPosition) els.heroPosition.textContent = '';
+        if (els.villainPosition) els.villainPosition.textContent = '';
+        if (els.spotActions) els.spotActions.innerHTML = '';
+
+        document.querySelectorAll('.seat').forEach((seat) => {
+            seat.innerHTML = '';
+            seat.classList.remove('hero', 'villain');
+        });
+
+        if (els.decisionButtons) {
+            els.decisionButtons.hidden = true;
+            els.decisionButtons.style.display = 'none';
+            els.decisionButtons.innerHTML = '';
+        }
+
+        if (els.nextSpotBtn) {
+            els.nextSpotBtn.hidden = true;
+            els.nextSpotBtn.style.display = 'none';
+            els.nextSpotBtn.disabled = true;
+        }
+
+        if (els.textureBox) {
+            els.textureBox.hidden = true;
+            els.textureBox.style.display = 'none';
+        }
+
+        if (els.gtoInsightBox) {
+            els.gtoInsightBox.hidden = true;
+            els.gtoInsightBox.innerHTML = '';
+        }
+
+        if (els.lowStakesInsightBox) {
+            els.lowStakesInsightBox.hidden = true;
+            els.lowStakesInsightBox.innerHTML = '';
+        }
+
+        if (els.decisionResultBox) {
+            els.decisionResultBox.hidden = false;
+            els.decisionResultBox.style.display = 'block';
+        }
+
+        [els.gradeBox, els.frequencyBox, els.evBox].forEach((box) => {
+            if (!box) return;
+            box.hidden = true;
+            box.innerHTML = '';
+        });
+
+        if (els.feedbackBox) {
+            els.feedbackBox.hidden = false;
+            els.feedbackBox.style.display = 'block';
+            els.feedbackBox.className = 'feedback wrong';
+            els.feedbackBox.innerHTML = `
+                <strong>Acceso gratuito completado</strong><br>
+                <p>${message || 'Has completado el límite gratuito de Turn. Actualiza a Premium para continuar.'}</p>
+                <a href="/premium" class="upgrade-premium-btn">
+                    Actualizar a Premium
+                </a>
+            `;
+        }
+    }
+
     function renderSpot() {
         const spot = state.spot;
         if (!spot) return;
@@ -108,7 +180,14 @@
         hideInsights();
         hideResult();
 
+        els.decisionButtons.hidden = false;
         els.decisionButtons.style.display = 'grid';
+
+        if (els.nextSpotBtn) {
+            els.nextSpotBtn.hidden = false;
+            els.nextSpotBtn.style.display = '';
+            els.nextSpotBtn.disabled = false;
+        }
 
         renderSummary(state.summary);
         renderLeaks(state.leaks);
@@ -200,9 +279,14 @@
     }
 
     function hideResult() {
-        if (els.textureBox) els.textureBox.hidden = true;
+        if (els.textureBox) {
+            els.textureBox.hidden = true;
+            els.textureBox.style.display = '';
+        }
 
         els.decisionResultBox.hidden = true;
+        els.decisionResultBox.style.display = '';
+
         [els.feedbackBox, els.gradeBox, els.frequencyBox, els.evBox].forEach(box => {
             box.hidden = true;
             box.innerHTML = '';
@@ -226,6 +310,11 @@
             });
 
             const data = await response.json();
+
+            if (data.success === false && data.code === 'FREE_LIMIT_REACHED') {
+                showFreeLimit(data.message);
+                return;
+            }
 
             if (!data.success) {
                 throw new Error(data.message ?? t('answer_error', 'Could not evaluate the answer.'));
@@ -278,6 +367,8 @@
     }
 
     async function nextSpot() {
+        if (state.locked && state.spot === null) return;
+
         hideResult();
 
         const params = new URLSearchParams();
@@ -287,10 +378,16 @@
             const response = await fetch(`${config.nextUrl}?${params.toString()}`, {
                 headers: { 'Accept': 'application/json' },
             });
+
             const data = await response.json();
 
+            if (data.success === false && data.code === 'FREE_LIMIT_REACHED') {
+                showFreeLimit(data.message);
+                return;
+            }
+
             if (!data.success) {
-                throw new Error(t('next_error', 'Could not load the next spot.'));
+                throw new Error(data.message ?? t('next_error', 'Could not load the next spot.'));
             }
 
             state.spot = data.spot;
@@ -306,10 +403,16 @@
 
     els.moduleFilter?.querySelectorAll('button').forEach(button => {
         button.addEventListener('click', () => {
+            if (state.locked && state.spot === null) return;
+
             state.currentModule = button.dataset.module ?? '';
             nextSpot();
         });
     });
 
-    renderSpot();
+    if (config.freeLimitReached) {
+        showFreeLimit(config.freeLimitMessage);
+    } else {
+        renderSpot();
+    }
 })();

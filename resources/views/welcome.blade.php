@@ -6,256 +6,385 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ __('landing.meta_description') }}">
 
-    <link href="{{ asset('assets/css/apexcash-landing.css') }}?v=20260615logo2" rel="stylesheet">
+    <link href="{{ asset('assets/css/apexcash-landing.css') }}?v=20260626v3" rel="stylesheet">
     <link href="{{ asset('assets/css/apexcash-cookies.css') }}" rel="stylesheet">
 </head>
 <body>
 
-<div class="page landing-v2">
+<div class="apex-landing">
 
-    <header class="topbar">
-        <a href="{{ url('/') }}" class="brand">
-            <img
-                src="{{ asset('images/apexcash-icon.png') }}"
-                alt="ApexCash"
-                class="brand-logo"
-            >
+    <header class="apex-nav">
+        <a href="{{ url('/') }}" class="apex-brand">
+            <img src="{{ asset('images/apexcash-icon.png') }}" alt="ApexCash" class="apex-brand-logo">
 
-            <div class="brand-text">
+            <div>
                 <strong>APEXCASH</strong>
                 <span>{{ __('landing.brand_subtitle') }}</span>
             </div>
         </a>
 
-        <nav class="nav">
-            <a href="#training">{{ __('landing.nav_training') }}</a>
-            <a href="#method">{{ __('landing.nav_method') }}</a>
-            <a href="#progress">{{ __('landing.nav_progress') }}</a>
-            <a href="#modules">{{ __('landing.nav_modules') }}</a>
+        <nav class="apex-nav-links">
+            <a href="#product">{{ __('landing.nav_product') }}</a>
+            <a href="#roadmap">{{ __('landing.nav_roadmap') }}</a>
+            <a href="#handlab">{{ __('landing.nav_handlab') }}</a>
+            <a href="#plans">{{ __('landing.nav_plans') }}</a>
 
             <div class="language-selector">
                 <select onchange="window.location.href=this.value">
-                    <option value="{{ route('lang.switch', 'es') }}" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>
-                        {{ __('landing.language_es') }}
+                    <option value="{{ route('lang.switch', 'es') }}" {{ app()->getLocale() === 'es' ? 'selected' : '' }}>
+                        ES
                     </option>
-                    <option value="{{ route('lang.switch', 'en') }}" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>
-                        {{ __('landing.language_en') }}
+                    <option value="{{ route('lang.switch', 'en') }}" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>
+                        EN
                     </option>
                 </select>
             </div>
 
-            <a href="{{ route('login') }}" class="login-link">
-                {{ __('landing.login') }}
+            <a href="{{ route('login') }}" class="apex-login">{{ __('landing.login') }}</a>
+
+            <a href="{{ route('register') }}" class="apex-nav-cta">
+                {{ __('landing.nav_cta') }}
             </a>
         </nav>
     </header>
 
-    <main class="hero">
-        <section class="hero-content">
-            <div class="badge">{{ __('landing.hero_badge') }}</div>
+    <main class="apex-hero">
+        <section class="apex-hero-copy">
+            <div class="apex-badge">
+                {{ __('landing.hero_badge') }}
+            </div>
 
             <h1>{{ __('landing.hero_title') }}</h1>
 
             <p>{{ __('landing.hero_text') }}</p>
 
-            <div class="hero-actions">
-                <a href="{{ route('register') }}" class="btn primary">
+            <div class="apex-actions">
+                <a href="{{ route('register') }}" class="apex-btn apex-btn-primary">
                     {{ __('landing.hero_primary') }}
                 </a>
 
-                <a href="{{ route('login') }}" class="btn secondary">
+                <a href="#plans" class="apex-btn apex-btn-secondary">
                     {{ __('landing.hero_secondary') }}
                 </a>
             </div>
 
-            <div class="hero-stats">
-                <div>
-                    <strong>{{ __('landing.hero_stat_1_value') }}</strong>
-                    <span>{{ __('landing.hero_stat_1_label') }}</span>
-                </div>
-                <div>
-                    <strong>{{ __('landing.hero_stat_2_value') }}</strong>
-                    <span>{{ __('landing.hero_stat_2_label') }}</span>
-                </div>
-                <div>
-                    <strong>{{ __('landing.hero_stat_3_value') }}</strong>
-                    <span>{{ __('landing.hero_stat_3_label') }}</span>
-                </div>
+            <div class="apex-trust-row">
+                <span>{{ __('landing.trust_1') }}</span>
+                <span>{{ __('landing.trust_2') }}</span>
+                <span>{{ __('landing.trust_3') }}</span>
             </div>
         </section>
 
-        <section class="training-preview" aria-label="{{ __('landing.preview_aria') }}">
-            <div class="preview-glow"></div>
-
-            <div class="trainer-card">
-                <div class="trainer-top">
-                    <span>{{ __('landing.preview_badge') }}</span>
-                    <strong>{{ __('landing.preview_title') }}</strong>
-                </div>
-
-                <div class="mini-table">
-                    <div class="mini-seat seat-top">{{ __('landing.preview_villain') }}</div>
-                    <div class="mini-seat seat-left">{{ __('landing.preview_sb') }}</div>
-                    <div class="mini-seat seat-right">{{ __('landing.preview_bb') }}</div>
-
-                    <div class="mini-pot">
-                        <span>{{ __('landing.preview_pot') }}</span>
-                        <strong>{{ __('landing.preview_pot_value') }}</strong>
-                    </div>
-
-                    <div class="mini-card card-one">A♠</div>
-                    <div class="mini-card card-two">J♥</div>
-
-                    <div class="mini-hero">{{ __('landing.preview_hero') }}</div>
-                </div>
-
-                <div class="decision-row">
-                    <button>{{ __('landing.action_fold') }}</button>
-                    <button class="is-best">{{ __('landing.action_call') }}</button>
-                    <button>{{ __('landing.action_raise') }}</button>
-                </div>
-
-                <div class="feedback-preview">
-                    <span>{{ __('landing.feedback_label') }}</span>
-                    <p>{{ __('landing.feedback_text') }}</p>
-                </div>
+        <section class="apex-product-frame apex-hero-frame">
+            <div class="browser-bar">
+                <span></span><span></span><span></span>
+                <small>apexcashtrainer.com</small>
             </div>
+
+            <img src="{{ asset('images/welcome1.png') }}" alt="{{ __('landing.hero_image_alt') }}">
         </section>
     </main>
 
-    <section id="training" class="section-block">
-        <div class="section-heading">
-            <span>{{ __('landing.training_kicker') }}</span>
-            <h2>{{ __('landing.training_title') }}</h2>
-            <p>{{ __('landing.training_text') }}</p>
+    <section id="product" class="apex-section">
+        <div class="apex-section-head">
+            <span>{{ __('landing.product_kicker') }}</span>
+            <h2>{{ __('landing.product_title') }}</h2>
+            <p>{{ __('landing.product_text') }}</p>
         </div>
 
-        <div class="features">
+        <div class="apex-feature-grid">
             <article>
-                <span>01</span>
-                <h3>{{ __('landing.feature_1_title') }}</h3>
-                <p>{{ __('landing.feature_1_text') }}</p>
+                <strong>01</strong>
+                <h3>{{ __('landing.product_card_1_title') }}</h3>
+                <p>{{ __('landing.product_card_1_text') }}</p>
             </article>
 
             <article>
-                <span>02</span>
-                <h3>{{ __('landing.feature_2_title') }}</h3>
-                <p>{{ __('landing.feature_2_text') }}</p>
+                <strong>02</strong>
+                <h3>{{ __('landing.product_card_2_title') }}</h3>
+                <p>{{ __('landing.product_card_2_text') }}</p>
             </article>
 
             <article>
-                <span>03</span>
-                <h3>{{ __('landing.feature_3_title') }}</h3>
-                <p>{{ __('landing.feature_3_text') }}</p>
-            </article>
-        </div>
-    </section>
-
-    <section id="method" class="split-section">
-        <div>
-            <span class="section-kicker">{{ __('landing.method_kicker') }}</span>
-            <h2>{{ __('landing.method_title') }}</h2>
-            <p>{{ __('landing.method_text') }}</p>
-        </div>
-
-        <div class="method-grid">
-            <article>
-                <span>{{ __('landing.method_card_1_label') }}</span>
-                <h3>{{ __('landing.method_card_1_title') }}</h3>
-                <p>{{ __('landing.method_card_1_text') }}</p>
-            </article>
-
-            <article>
-                <span>{{ __('landing.method_card_2_label') }}</span>
-                <h3>{{ __('landing.method_card_2_title') }}</h3>
-                <p>{{ __('landing.method_card_2_text') }}</p>
+                <strong>03</strong>
+                <h3>{{ __('landing.product_card_3_title') }}</h3>
+                <p>{{ __('landing.product_card_3_text') }}</p>
             </article>
         </div>
     </section>
 
-    <section id="progress" class="section-block">
-        <div class="section-heading">
-            <span>{{ __('landing.progress_kicker') }}</span>
-            <h2>{{ __('landing.progress_title') }}</h2>
-            <p>{{ __('landing.progress_text') }}</p>
+    <section class="apex-showcase">
+        <div class="apex-showcase-copy">
+            <span>{{ __('landing.spot_kicker') }}</span>
+            <h2>{{ __('landing.spot_title') }}</h2>
+            <p>{{ __('landing.spot_text') }}</p>
+
+            <ul class="apex-check-list">
+                <li>{{ __('landing.spot_bullet_1') }}</li>
+                <li>{{ __('landing.spot_bullet_2') }}</li>
+                <li>{{ __('landing.spot_bullet_3') }}</li>
+            </ul>
         </div>
 
-        <div class="mode-grid">
-            <article class="mode-card active">
-                <span>{{ __('landing.stage_status_complete') }}</span>
-                <h3>{{ __('landing.stage_preflop_title') }}</h3>
+        <div class="apex-product-frame">
+            <div class="browser-bar">
+                <span></span><span></span><span></span>
+                <small>{{ __('landing.spot_image_label') }}</small>
+            </div>
+
+            <img src="{{ asset('images/welcome2.png') }}" alt="{{ __('landing.spot_image_alt') }}">
+        </div>
+    </section>
+
+    <section id="roadmap" class="apex-section apex-roadmap-section">
+        <div class="apex-section-head">
+            <span>{{ __('landing.roadmap_kicker') }}</span>
+            <h2>{{ __('landing.roadmap_title') }}</h2>
+            <p>{{ __('landing.roadmap_text') }}</p>
+        </div>
+
+        <div class="apex-roadmap">
+            <article>
+                <span>1</span>
+                <h3>{{ __('landing.stage_preflop') }}</h3>
                 <p>{{ __('landing.stage_preflop_text') }}</p>
             </article>
 
-            <article class="mode-card active">
-                <span>{{ __('landing.stage_status_complete') }}</span>
-                <h3>{{ __('landing.stage_flop_title') }}</h3>
+            <article>
+                <span>2</span>
+                <h3>{{ __('landing.stage_flop') }}</h3>
                 <p>{{ __('landing.stage_flop_text') }}</p>
             </article>
 
-            <article class="mode-card active">
-                <span>{{ __('landing.stage_status_complete') }}</span>
-                <h3>{{ __('landing.stage_turn_title') }}</h3>
+            <article>
+                <span>3</span>
+                <h3>{{ __('landing.stage_turn') }}</h3>
                 <p>{{ __('landing.stage_turn_text') }}</p>
             </article>
 
-            <article class="mode-card active">
-                <span>{{ __('landing.stage_status_complete') }}</span>
-                <h3>{{ __('landing.stage_river_title') }}</h3>
+            <article>
+                <span>4</span>
+                <h3>{{ __('landing.stage_river') }}</h3>
                 <p>{{ __('landing.stage_river_text') }}</p>
             </article>
+
+            <article class="premium-step">
+                <span>5</span>
+                <h3>{{ __('landing.stage_mastery') }}</h3>
+                <p>{{ __('landing.stage_mastery_text') }}</p>
+            </article>
+
+            <article class="premium-step">
+                <span>6</span>
+                <h3>{{ __('landing.stage_certification') }}</h3>
+                <p>{{ __('landing.stage_certification_text') }}</p>
+            </article>
         </div>
     </section>
 
-    <section id="modules" class="split-section">
+    <section class="apex-showcase reverse">
+        <div class="apex-product-frame">
+            <div class="browser-bar">
+                <span></span><span></span><span></span>
+                <small>{{ __('landing.dashboard_image_label') }}</small>
+            </div>
+
+            <img src="{{ asset('images/welcome3.png') }}" alt="{{ __('landing.dashboard_image_alt') }}">
+        </div>
+
+        <div class="apex-showcase-copy">
+            <span>{{ __('landing.dashboard_kicker') }}</span>
+            <h2>{{ __('landing.dashboard_title') }}</h2>
+            <p>{{ __('landing.dashboard_text') }}</p>
+
+            <ul class="apex-check-list">
+                <li>{{ __('landing.dashboard_bullet_1') }}</li>
+                <li>{{ __('landing.dashboard_bullet_2') }}</li>
+                <li>{{ __('landing.dashboard_bullet_3') }}</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="handlab" class="apex-showcase">
+        <div class="apex-showcase-copy">
+            <span>{{ __('landing.handlab_kicker') }}</span>
+            <h2>{{ __('landing.handlab_title') }}</h2>
+            <p>{{ __('landing.handlab_text') }}</p>
+
+            <ul class="apex-check-list">
+                <li>{{ __('landing.handlab_bullet_1') }}</li>
+                <li>{{ __('landing.handlab_bullet_2') }}</li>
+                <li>{{ __('landing.handlab_bullet_3') }}</li>
+            </ul>
+        </div>
+
+        <div class="apex-product-frame">
+            <div class="browser-bar">
+                <span></span><span></span><span></span>
+                <small>{{ __('landing.handlab_image_label') }}</small>
+            </div>
+
+            <img src="{{ asset('images/welcome4.png') }}" alt="{{ __('landing.handlab_image_alt') }}">
+        </div>
+    </section>
+
+    <section id="plans" class="apex-section apex-pricing-section">
+        <div class="apex-section-head">
+            <span>{{ __('landing.plans_kicker') }}</span>
+            <h2>{{ __('landing.plans_title') }}</h2>
+            <p>{{ __('landing.plans_text') }}</p>
+        </div>
+
+        <div class="apex-pricing-grid">
+            <article class="apex-plan">
+                <span class="plan-badge">{{ __('landing.free_badge') }}</span>
+                <h3>{{ __('landing.free_title') }}</h3>
+                <p class="plan-price">{{ __('landing.free_price') }}</p>
+
+                <ul>
+                    <li>{{ __('landing.free_item_1') }}</li>
+                    <li>{{ __('landing.free_item_2') }}</li>
+                    <li>{{ __('landing.free_item_3') }}</li>
+                    <li>{{ __('landing.free_item_4') }}</li>
+                    <li>{{ __('landing.free_item_5') }}</li>
+                    <li>{{ __('landing.free_item_6') }}</li>
+                </ul>
+
+                <a href="{{ route('register') }}" class="apex-btn apex-btn-secondary full">
+                    {{ __('landing.free_cta') }}
+                </a>
+            </article>
+
+            <article class="apex-plan premium">
+                <span class="plan-badge">{{ __('landing.premium_badge') }}</span>
+                <h3>{{ __('landing.premium_title') }}</h3>
+                <p class="plan-price">{{ __('landing.premium_price') }}</p>
+
+                <ul>
+                    <li>{{ __('landing.premium_item_1') }}</li>
+                    <li>{{ __('landing.premium_item_2') }}</li>
+                    <li>{{ __('landing.premium_item_3') }}</li>
+                    <li>{{ __('landing.premium_item_4') }}</li>
+                    <li>{{ __('landing.premium_item_5') }}</li>
+                    <li>{{ __('landing.premium_item_6') }}</li>
+                </ul>
+
+                <a href="{{ route('register') }}" class="apex-btn apex-btn-primary full">
+                    {{ __('landing.premium_cta') }}
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <section class="apex-showcase reverse">
+        <div class="apex-product-frame">
+            <div class="browser-bar">
+                <span></span><span></span><span></span>
+                <small>{{ __('landing.cert_image_label') }}</small>
+            </div>
+
+            <img src="{{ asset('images/welcome5.png') }}" alt="{{ __('landing.cert_image_alt') }}">
+        </div>
+
+        <div class="apex-showcase-copy">
+            <span>{{ __('landing.cert_kicker') }}</span>
+            <h2>{{ __('landing.cert_title') }}</h2>
+            <p>{{ __('landing.cert_text') }}</p>
+
+            <ul class="apex-check-list">
+                <li>{{ __('landing.cert_bullet_1') }}</li>
+                <li>{{ __('landing.cert_bullet_2') }}</li>
+                <li>{{ __('landing.cert_bullet_3') }}</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="apex-faq">
+        <div class="apex-section-head">
+            <span>{{ __('landing.faq_kicker') }}</span>
+            <h2>{{ __('landing.faq_title') }}</h2>
+        </div>
+
+        <div class="faq-grid">
+            <article>
+                <h3>{{ __('landing.faq_1_q') }}</h3>
+                <p>{{ __('landing.faq_1_a') }}</p>
+            </article>
+
+            <article>
+                <h3>{{ __('landing.faq_2_q') }}</h3>
+                <p>{{ __('landing.faq_2_a') }}</p>
+            </article>
+
+            <article>
+                <h3>{{ __('landing.faq_3_q') }}</h3>
+                <p>{{ __('landing.faq_3_a') }}</p>
+            </article>
+
+            <article>
+                <h3>{{ __('landing.faq_4_q') }}</h3>
+                <p>{{ __('landing.faq_4_a') }}</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="apex-final-cta">
         <div>
-            <span class="section-kicker">{{ __('landing.modules_kicker') }}</span>
-            <h2>{{ __('landing.modules_title') }}</h2>
-            <p>{{ __('landing.modules_text') }}</p>
+            <span>{{ __('landing.final_kicker') }}</span>
+            <h2>{{ __('landing.final_title') }}</h2>
+            <p>{{ __('landing.final_text') }}</p>
+
+            <div class="apex-actions centered">
+                <a href="{{ route('register') }}" class="apex-btn apex-btn-primary">
+                    {{ __('landing.final_primary') }}
+                </a>
+
+                <a href="{{ route('login') }}" class="apex-btn apex-btn-secondary">
+                    {{ __('landing.final_secondary') }}
+                </a>
+            </div>
         </div>
 
-        <div class="method-grid">
-            <article>
-                <span>{{ __('landing.module_card_1_label') }}</span>
-                <h3>{{ __('landing.module_card_1_title') }}</h3>
-                <p>{{ __('landing.module_card_1_text') }}</p>
-            </article>
-
-            <article>
-                <span>{{ __('landing.module_card_2_label') }}</span>
-                <h3>{{ __('landing.module_card_2_title') }}</h3>
-                <p>{{ __('landing.module_card_2_text') }}</p>
-            </article>
-        </div>
-    </section>
-
-    <section class="final-cta">
-        <span>{{ __('landing.final_kicker') }}</span>
-        <h2>{{ __('landing.final_title') }}</h2>
-        <p>{{ __('landing.final_text') }}</p>
-
-        <div class="hero-actions centered">
-            <a href="{{ route('register') }}" class="btn primary">
-                {{ __('landing.register') }}
-            </a>
-
-            <a href="{{ route('login') }}" class="btn secondary">
-                {{ __('landing.login') }}
-            </a>
+        <div class="apex-final-image">
+            <img src="{{ asset('images/welcome6.png') }}" alt="{{ __('landing.final_image_alt') }}">
         </div>
     </section>
+
+    <footer class="apex-footer">
+
+        <div class="footer-brand">
+            <strong>APEXCASH</strong>
+            <span>© {{ date('Y') }}</span>
+        </div>
+
+        <nav class="footer-links">
+            <a href="{{ route('privacy') }}">Privacy</a>
+
+            <a href="{{ route('cookies') }}">Cookies</a>
+
+            <a href="{{ route('terms') }}">Terms</a>
+
+            <a href="{{ route('contact') }}">Contact</a>
+        </nav>
+
+    </footer>
 
 </div>
 
-<div id="apexcash-cookie-banner" class="cookie-banner">
-    <div>
-        <strong>{{ __('landing.cookies_title') }}</strong>
+<div id="apexcash-cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-copy">
+        <strong>🍪 {{ __('landing.cookies_title') }}</strong>
         <p>{{ __('landing.cookies_text') }}</p>
     </div>
 
     <div class="cookie-actions">
-        <a href="{{ route('cookies') }}">{{ __('landing.cookies_more') }}</a>
-        <button type="button" id="accept-cookies">{{ __('landing.cookies_accept') }}</button>
+        <button type="button" id="cookies-essential" class="cookie-link-btn">
+            Solo necesarias
+        </button>
+
+        <button type="button" id="cookies-accept" class="cookie-primary-btn">
+            Aceptar todas
+        </button>
     </div>
 </div>
 

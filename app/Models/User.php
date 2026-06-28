@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\VerifyEmailApexCash;
+use App\Notifications\ResetPasswordApexCash;
 
 #[Fillable(['name', 'email', 'password', 'plan', 'premium_until', 'is_admin'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -38,6 +40,11 @@ class User extends Authenticatable
         return $this->hasMany(UserLeak::class);
     }
 
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordApexCash($token));
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -51,6 +58,11 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
             'premium_until' => 'datetime',
         ];
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailApexCash);
     }
 
     public function isPremium(): bool

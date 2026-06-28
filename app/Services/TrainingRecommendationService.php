@@ -5,11 +5,13 @@ namespace App\Services;
 use App\Models\UserLeak;
 use App\SpotTraining\SpotRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SpotPoolProgressService;
 
 class TrainingRecommendationService
 {
     public function __construct(
-        protected SpotRepository $spots
+        protected SpotRepository $spots,
+        protected SpotPoolProgressService $poolProgress,
     ) {
     }
 
@@ -135,79 +137,12 @@ class TrainingRecommendationService
         string $mode = 'normal',
         ?string $concept = null
     ): array {
-        $spot = $this->randomFromUnseenPool($spots, $module, $mode, $concept);
-
-        $this->rememberSeenSpot($spot, $module, $mode, $concept);
-
-        return $spot;
+        return $this->poolProgress->pick(
+            $spots,
+            'preflop',
+            $module,
+            $concept
+        );
     }
 
-    protected function randomFromUnseenPool(
-        array $spots,
-        ?string $module = null,
-        string $mode = 'normal',
-        ?string $concept = null
-    ): array {
-        if (empty($spots)) {
-            $spots = $this->spots->all();
-            $module = null;
-            $concept = null;
-        }
-
-        if (empty($spots)) {
-            throw new \RuntimeException('No hay spots disponibles para entrenamiento.');
-        }
-
-        $poolKey = $this->poolKey($module, $mode, $concept);
-        $seenIds = session($poolKey, []);
-
-        $available = array_values(array_filter($spots, function (array $spot) use ($seenIds): bool {
-            $spotId = $this->spotId($spot);
-
-            if (! $spotId) {
-                return true;
-            }
-
-            return ! in_array($spotId, $seenIds, true);
-        }));
-
-        if (empty($available)) {
-            session([$poolKey => []]);
-            $available = $spots;
-        }
-
-        return $available[array_rand($available)];
-    }
-
-    protected function rememberSeenSpot(
-        array $spot,
-        ?string $module = null,
-        string $mode = 'normal',
-        ?string $concept = null
-    ): void {
-        $spotId = $this->spotId($spot);
-
-        if (! $spotId) {
-            return;
-        }
-
-        $poolKey = $this->poolKey($module, $mode, $concept);
-        $seenIds = session($poolKey, []);
-
-        $seenIds[] = $spotId;
-
-        session([
-            $poolKey => array_values(array_unique($seenIds)),
-        ]);
-    }
-
-    protected function poolKey(?string $module = null, string $mode = 'normal', ?string $concept = null): string
-    {
-        return 'spot_training.seen_spot_ids.' . md5(($module ?? 'all') . '|' . $mode . '|' . ($concept ?? 'all'));
-    }
-
-    protected function spotId(array $spot): ?string
-    {
-        return $spot['spot_id'] ?? $spot['id'] ?? null;
-    }
 }

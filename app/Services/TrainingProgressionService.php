@@ -8,18 +8,18 @@ use Illuminate\Support\Collection;
 
 class TrainingProgressionService
 {
-    public const FLOP_XP_REQUIRED = 1000;
+    public const FLOP_XP_REQUIRED = 1000; //1000
     public const TURN_XP_REQUIRED = 3000; //3000
     public const RIVER_XP_REQUIRED = 6000; //6000
     public const MASTERY_XP_REQUIRED = 10000; //10000
     public const CERTIFICATION_XP_REQUIRED = 14000; //14000
 
 
-    public const PREFLOP_ACCURACY_REQUIRED = 75.0;
-    public const FLOP_ACCURACY_REQUIRED = 75.0;
-    public const TURN_ACCURACY_REQUIRED = 75.0;
-    public const RIVER_ACCURACY_REQUIRED = 75.0;
-    public const MASTERY_ACCURACY_REQUIRED = 75.0;
+    public const PREFLOP_ACCURACY_REQUIRED = 75.0; //75
+    public const FLOP_ACCURACY_REQUIRED = 75.0; //75
+    public const TURN_ACCURACY_REQUIRED = 75.0; //75
+    public const RIVER_ACCURACY_REQUIRED = 75.0; //75
+    public const MASTERY_ACCURACY_REQUIRED = 75.0; //75
 
     /*
      * Evita el bug clásico:
@@ -49,6 +49,9 @@ class TrainingProgressionService
             'check_raise',
             'value_bet',
             'semi_bluff',
+            'overbet',
+            'donk_bet',
+            'float',
         ];
     }
 
@@ -57,9 +60,12 @@ class TrainingProgressionService
         return [
             'turn_barrel',
             'turn_probe',
+            'turn_probe_bet',
             'turn_defense',
             'turn_value_bet',
             'turn_check_raise',
+            'turn_donk',
+            'turn_overbet',
         ];
     }
 

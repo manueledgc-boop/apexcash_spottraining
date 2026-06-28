@@ -12,9 +12,9 @@ use RuntimeException;
 
 class MasterySpotRepository
 {
-    public function all(): array
+    public function all(?string $module = null, ?string $concept = null): array
     {
-        return array_merge(
+        $spots = array_merge(
             ThreeBetPotSpots::all(),
             FourBetPotSpots::all(),
             BlindVsBlindAdvancedSpots::all(),
@@ -22,38 +22,33 @@ class MasterySpotRepository
             ShortStackSpots::all(),
             TournamentSpots::all(),
         );
+
+        if ($module) {
+            $spots = array_values(array_filter(
+                $spots,
+                fn (array $spot) => ($spot['module'] ?? null) === $module
+            ));
+        }
+
+        if ($concept) {
+            $spots = array_values(array_filter(
+                $spots,
+                fn (array $spot) => ($spot['concept'] ?? null) === $concept
+            ));
+        }
+
+        return $spots;
     }
 
     public function random(?string $module = null, ?string $concept = null): array
     {
-        $spots = $this->filtered($module, $concept);
+        $spots = $this->all($module, $concept);
 
         if (empty($spots)) {
             throw new RuntimeException('No hay spots disponibles para el filtro seleccionado.');
         }
 
-        $poolKey = $this->poolKey($module, $concept);
-        $seenIds = session($poolKey, []);
-
-        $available = array_values(array_filter(
-            $spots,
-            fn (array $spot) => ! in_array($spot['id'] ?? null, $seenIds, true)
-        ));
-
-        if (empty($available)) {
-            $seenIds = [];
-            $available = $spots;
-        }
-
-        $spot = $available[array_rand($available)];
-        $spotId = $spot['id'] ?? null;
-
-        if ($spotId) {
-            $seenIds[] = $spotId;
-            session([$poolKey => array_values(array_unique($seenIds))]);
-        }
-
-        return $spot;
+        return $spots[array_rand($spots)];
     }
 
     public function findById(string $id): ?array
@@ -82,34 +77,5 @@ class MasterySpotRepository
         $spot['difficulty'] ??= 'Mastery';
 
         return $spot;
-    }
-
-    protected function filtered(?string $module = null, ?string $concept = null): array
-    {
-        $spots = $this->all();
-
-        if ($module) {
-            $spots = array_values(array_filter(
-                $spots,
-                fn (array $spot) => ($spot['module'] ?? null) === $module
-            ));
-        }
-
-        if ($concept) {
-            $spots = array_values(array_filter(
-                $spots,
-                fn (array $spot) => ($spot['concept'] ?? null) === $concept
-            ));
-        }
-
-        return $spots;
-    }
-
-    protected function poolKey(?string $module = null, ?string $concept = null): string
-    {
-        $moduleKey = $module ?: 'all';
-        $conceptKey = $concept ?: 'all';
-
-        return "mastery_training.seen.{$moduleKey}.{$conceptKey}";
     }
 }

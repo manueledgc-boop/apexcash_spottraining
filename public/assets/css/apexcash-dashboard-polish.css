@@ -25,8 +25,9 @@
 .apex-nav-left {
     display: flex;
     align-items: center;
-    gap: 38px;
-    min-width: 0;
+    gap: clamp(12px, 3vw, 38px); /* Reduce el espacio en móviles automáticamente */
+    min-width: 0; 
+    flex: 1; /* Le permite tomar el espacio disponible de forma estable */
 }
 
 .apex-nav-brand {
@@ -313,11 +314,6 @@
     }
 }
 
-@media (max-width: 560px) {
-    .apex-nav-brand div {
-        display: none;
-    }
-
     .dashboard-hero-metrics {
         grid-template-columns: 1fr;
     }
@@ -329,7 +325,7 @@
     .stage-route-card em {
         grid-column: 2;
     }
-}
+
 
 
 /* ==========================================================
@@ -378,36 +374,42 @@
     border-radius: clamp(10px, 1vw, 14px) !important;
 }
 
-.apex-nav-brand div {
-    display: block !important;
-    line-height: 1.05 !important;
-    overflow: hidden !important;
+/* Corrección para el contenedor real del texto */
+.apex-nav-text {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    line-height: 1.1 !important;
+    overflow: visible !important; /* Permitimos que el texto respire */
+    min-width: max-content !important; /* Evita que el contenedor se colapse en móvil */
 }
 
 .apex-nav-brand strong {
-    font-size: clamp(16px, 1.25vw, 18px) !important;
+    font-size: clamp(15px, 4vw, 18px) !important; /* Sube dinámicamente en móvil */
     line-height: 1 !important;
     white-space: nowrap !important;
+    display: block !important;
 }
 
 .apex-nav-brand span {
-    font-size: clamp(9px, .8vw, 11px) !important;
+    font-size: clamp(9px, 2.2vw, 11px) !important; /* Proporcional al ancho de pantalla */
     line-height: 1 !important;
     white-space: nowrap !important;
+    display: block !important;
 }
 
 @media (max-width: 560px) {
-    .apex-nav-brand img,
-    .apex-nav-icon {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-        max-width: 40px !important;
-        max-height: 40px !important;
+    .apex-nav {
+        background: red !important;
     }
+}
 
-    .apex-nav-brand div {
-        display: none !important;
-    }
+.apex-nav-brand .apex-nav-text {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
 }

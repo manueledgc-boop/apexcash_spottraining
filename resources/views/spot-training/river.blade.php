@@ -47,6 +47,8 @@
             answerUrl: @json(route('postflop-river.answer')),
             csrf: @json(csrf_token()),
             i18n: @json($postflopRiverI18n),
+            freeLimitReached: @json($freeLimitReached ?? false),
+            freeLimitMessage: @json($freeLimitMessage ?? null),
         };
     </script>
 

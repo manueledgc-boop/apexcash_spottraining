@@ -216,6 +216,57 @@
         });
     }
 
+    function showFreeLimit(message) {
+        state.spot = null;
+        state.locked = true;
+
+        if (els.spotModule) els.spotModule.textContent = 'Free';
+        if (els.spotTitle) els.spotTitle.textContent = 'Límite gratuito alcanzado';
+        if (els.spotMeta) els.spotMeta.textContent = '';
+        if (els.boardCards) els.boardCards.innerHTML = '';
+        if (els.heroCards) els.heroCards.innerHTML = '';
+        if (els.spotPot) els.spotPot.textContent = '';
+        if (els.spotSpr) els.spotSpr.textContent = '';
+        if (els.spotActions) els.spotActions.innerHTML = '';
+
+        document.querySelectorAll('.seat').forEach((seat) => {
+            seat.innerHTML = '';
+            seat.classList.remove('hero', 'villain');
+        });
+
+        if (els.decisionButtons) {
+            els.decisionButtons.hidden = true;
+            els.decisionButtons.style.display = 'none';
+            els.decisionButtons.innerHTML = '';
+        }
+
+        if (els.nextSpotBtn) {
+            els.nextSpotBtn.hidden = true;
+            els.nextSpotBtn.style.display = 'none';
+            els.nextSpotBtn.disabled = true;
+        }
+
+        if (els.textureBox) {
+            els.textureBox.hidden = true;
+        }
+
+        if (els.decisionResultBox) {
+            els.decisionResultBox.hidden = false;
+        }
+
+        if (els.feedbackBox) {
+            els.feedbackBox.hidden = false;
+            els.feedbackBox.className = 'feedback wrong';
+            els.feedbackBox.innerHTML = `
+                <strong>Acceso gratuito completado</strong><br>
+                <p>${message || 'Has completado el límite gratuito de Flop. Actualiza a Premium para continuar.'}</p>
+                <a href="/premium" class="upgrade-premium-btn">
+                    Actualizar a Premium
+                </a>
+            `;
+        }
+    }
+
     async function answer(selectedAnswer) {
         if (state.locked) return;
         state.locked = true;
@@ -232,6 +283,11 @@
             });
 
             const data = await response.json();
+
+            if (data.success === false && data.code === 'FREE_LIMIT_REACHED') {
+                showFreeLimit(data.message);
+                return;
+            }
 
             if (!data.success) {
                 throw new Error(data.message ?? t('answer_error', 'Could not evaluate the answer.'));
@@ -296,6 +352,11 @@
             });
             const data = await response.json();
 
+            if (data.success === false && data.code === 'FREE_LIMIT_REACHED') {
+                showFreeLimit(data.message);
+                return;
+            }
+
             if (!data.success) {
                 throw new Error(t('next_error', 'Could not load the next spot.'));
             }
@@ -318,5 +379,9 @@
         });
     });
 
-    renderSpot();
+    if (config.freeLimitReached) {
+        showFreeLimit(config.freeLimitMessage);
+    } else {
+        renderSpot();
+    }
 })();

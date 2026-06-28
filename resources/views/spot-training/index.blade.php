@@ -13,6 +13,8 @@
             answerUrl: @json(route('spot-training.answer')),
             csrf: @json(csrf_token()),
             i18n: @json(__('preflop')),
+            freeLimitReached: @json($freeLimitReached ?? false),
+            freeLimitMessage: @json($freeLimitMessage ?? null),
         };
     </script>
 
@@ -98,7 +100,7 @@
                     <h3>{{ __('preflop.current_session') }}</h3>
 
                     <div class="summary-grid">
-                        <div><span>{{ __('preflop.summary.total') }}</span><strong id="summary{{ __('preflop.summary.total') }}">0</strong></div>
+                        <div><span>{{ __('preflop.summary.total') }}</span><strong id="summaryTotal">0</strong></div>
                         <div><span>{{ __('preflop.summary.correct') }}</span><strong id="summaryCorrect">0</strong></div>
                         <div><span>{{ __('preflop.summary.wrong') }}</span><strong id="summaryWrong">0</strong></div>
                         <div><span>{{ __('preflop.summary.accuracy') }}</span><strong id="summaryAccuracy">0%</strong></div>

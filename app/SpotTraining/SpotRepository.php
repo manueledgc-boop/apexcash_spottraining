@@ -9,7 +9,6 @@ use App\SpotTraining\Modules\OpenRaiseSpots;
 use App\SpotTraining\Modules\SbVsBtnSpots;
 use App\SpotTraining\Modules\ThreeBetVsOpenSpots;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 
 class SpotRepository
 {
@@ -23,10 +22,6 @@ class SpotRepository
             SbVsBtnSpots::all(),
             BbVsSbSpots::all(),
         );
-
-        if (! Auth::user()?->hasPremiumAccess()) {
-            $spots = array_slice($spots, 0, 20);
-        }
 
         return array_values(array_map(
             fn (array $spot) => $this->normalize($spot),

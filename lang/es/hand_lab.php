@@ -3,7 +3,7 @@
 return [
     'kicker' => 'APEXCASH HAND REVIEW LAB',
     'title' => 'Laboratorio de Manos',
-    'subtitle' => 'Reconstruye una mano real en la mesa, define el punto de decisión y conviértela en un futuro spot entrenable de ApexCash.',
+    'subtitle' => 'Reconstruye una mano real, analiza tu decisión y aprende cómo jugar situaciones similares con mayor confianza.',
     'back_dashboard' => 'Volver al dashboard',
     'board' => 'Board',
     'pot' => 'Pot',

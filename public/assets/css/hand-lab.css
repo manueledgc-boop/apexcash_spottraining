@@ -943,3 +943,18 @@
 .admin-review-pagination {
     color: var(--apex-text);
 }
+
+.danger-lab-btn {
+    margin-top: 8px;
+    border-color: rgba(255, 95, 87, .55);
+    color: #ffd1ce;
+}
+
+.danger-lab-btn:hover {
+    background: rgba(255, 95, 87, .12);
+}
+
+.danger-lab-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}

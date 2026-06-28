@@ -1,95 +1,342 @@
 <?php
 
 return [
-    'meta_title' => 'ApexCash - Cash Game Poker Training',
-    'meta_description' => 'ApexCash is a Cash Game poker training system with spots, XP, leaks, simplified GTO and low-stakes NL2-NL10 adjustments.',
+
+    'meta_title' => 'ApexCash Trainer | Learn Cash Game Poker Step by Step',
+    'meta_description' => 'Improve your cash game with daily poker spots, Hand Lab, XP, progress tracking, leaks, Mastery Training and Certification.',
 
     'brand_subtitle' => 'Training System',
-    'nav_training' => 'Training',
-    'nav_method' => 'Method',
-    'nav_progress' => 'Progress',
-    'nav_modules' => 'Modules',
-    'language_es' => 'Español',
-    'language_en' => 'English',
-    'login' => 'Sign in',
-    'register' => 'Create account',
 
-    'hero_badge' => 'REAL CASH GAME TRAINING',
-    'hero_title' => 'Stop guessing at the tables. Train your decisions before losing your bankroll.',
-    'hero_text' => 'ApexCash is a poker mental gym: you practice Preflop, Flop, Turn and River spots, get instant feedback, detect leaks and learn the difference between GTO theory and real low-stakes adjustments.',
-    'hero_primary' => 'Start training',
-    'hero_secondary' => 'I already have an account',
-    'hero_stat_1_value' => '1000+',
-    'hero_stat_1_label' => 'training spots',
-    'hero_stat_2_value' => '4',
-    'hero_stat_2_label' => 'streets: Preflop to River',
-    'hero_stat_3_value' => '2',
-    'hero_stat_3_label' => 'approaches: GTO + NL2-NL10',
+    'nav_product' => 'Product',
+    'nav_roadmap' => 'Roadmap',
+    'nav_handlab' => 'Hand Lab',
+    'nav_plans' => 'Pricing',
+    'login' => 'Login',
+    'register' => 'Register',
+    'nav_cta' => 'Start Free',
 
-    'preview_aria' => 'ApexCash training preview',
-    'preview_badge' => 'LIVE SPOT',
-    'preview_title' => 'River · Bluff Catch',
-    'preview_villain' => 'VILLAIN · BTN',
-    'preview_sb' => 'SB',
-    'preview_bb' => 'BB',
-    'preview_pot' => 'Pot',
-    'preview_pot_value' => '42 BB',
-    'preview_hero' => 'HERO · BB',
-    'action_fold' => 'Fold',
-    'action_call' => 'Call',
-    'action_raise' => 'Raise',
-    'feedback_label' => 'Instant feedback',
-    'feedback_text' => 'Correct call: you block strong value, villain has enough missed bluffs and the polarized size does not represent that many nut combinations.',
+    /*
+    |--------------------------------------------------------------------------
+    | HERO
+    |--------------------------------------------------------------------------
+    */
 
-    'training_kicker' => 'NOT PASSIVE THEORY',
-    'training_title' => 'You learn by playing decisions, not by staring at endless charts.',
-    'training_text' => 'Every exercise puts you in a specific situation. You choose an action, receive an evaluation and the system stores your correct answers, mistakes, accuracy, XP and leaks.',
-    'feature_1_title' => 'Real cash spots',
-    'feature_1_text' => 'Open raises, blind defense, c-bets, barrels, value bets, bluff catchers, overbets and tough river decisions.',
-    'feature_2_title' => 'Feedback that fixes mistakes',
-    'feature_2_text' => 'It does not only tell you whether you were right. It explains why one line wins more EV and when to adjust against low-stakes pools.',
-    'feature_3_title' => 'Persistent leaks',
-    'feature_3_text' => 'ApexCash detects your weak modules and worst spots so you do not train blindly.',
+    'hero_badge' => 'Cash Game Training · NL2-NL10',
 
-    'method_kicker' => 'THE DIFFERENCE',
-    'method_title' => 'Simplified GTO + exploitation for low stakes.',
-    'method_text' => 'Pure theory matters, but in NL2-NL10 many opponents do not play like a solver. ApexCash teaches both worlds: what is correct in theory and what is most profitable against real players.',
-    'method_card_1_label' => 'GTO',
-    'method_card_1_title' => 'Understand the baseline strategy',
-    'method_card_1_text' => 'Ranges, nut advantage, range advantage, SPR, blockers, sizes and recommended frequency.',
-    'method_card_2_label' => 'NL2-NL10',
-    'method_card_2_title' => 'Adjust against the real pool',
-    'method_card_2_text' => 'More value against calling stations, fewer bad bluffs, better folds against strong lines and more disciplined bluff catchers.',
+    'hero_title' => 'Train real poker decisions. Not endless theory.',
 
-    'progress_kicker' => 'GUIDED PROGRESSION',
-    'progress_title' => 'Level up street by street.',
-    'progress_text' => 'The system measures XP, accuracy and module performance. The goal is not to rush: it is to master fundamentals before making more complex decisions.',
-    'stage_status_complete' => 'COMPLETE',
-    'stage_preflop_title' => 'Preflop',
-    'stage_preflop_text' => 'Open Raise, blind defense, 3Bet pots and baseline decisions to enter the hand strong.',
-    'stage_flop_title' => 'Flop',
-    'stage_flop_text' => 'IP C-Bet, check back, defense vs c-bet, check raise, value bet and semi bluff.',
-    'stage_turn_title' => 'Turn',
-    'stage_turn_text' => 'Barrels, probes, defense, value bets and check raises on the street where ranges become defined.',
-    'stage_river_title' => 'River',
-    'stage_river_text' => 'Value bet, thin value, bluff, bluff catch and overbet. The street where the most money is won or lost.',
+    'hero_text' =>
+        'Master every street with structured practice, instant feedback, XP progression, Hand Lab and performance tracking.',
 
-    'modules_kicker' => 'MEASURABLE TRAINING',
-    'modules_title' => 'Every decision leaves data.',
-    'modules_text' => 'ApexCash records your progress and turns training into an objective process: you know where you improve, where you fail and what you need to repeat.',
-    'module_card_1_label' => 'XP + Accuracy',
-    'module_card_1_title' => 'Visible progress',
-    'module_card_1_text' => 'Every answer adds experience based on its quality: Best, Good, Marginal, Mistake or Blunder.',
-    'module_card_2_label' => 'Spot Stats',
-    'module_card_2_title' => 'Individual tracking',
-    'module_card_2_text' => 'Times seen, correct answers, mistakes, accuracy and last appearance for each spot.',
+    'hero_primary' => 'Start Free',
 
-    'final_kicker' => 'TRAIN BEFORE YOU PLAY',
-    'final_title' => 'Make the mistakes here, not at real tables.',
-    'final_text' => 'If your goal is to improve in Cash Games, you need decision volume, instant feedback and a system that tells you exactly where you are failing.',
+    'hero_secondary' => 'See Plans',
 
-    'cookies_title' => '🍪 Cookies in ApexCash',
-    'cookies_text' => 'We use technical cookies to keep your session active, improve navigation and ensure the platform works properly.',
-    'cookies_more' => 'More information',
+    'hero_image_alt' => 'ApexCash Trainer',
+
+    'trust_1' => 'No credit card required',
+
+    'trust_2' => 'Instant feedback',
+
+    'trust_3' => 'Track your progress',
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCT
+    |--------------------------------------------------------------------------
+    */
+
+    'product_kicker' => 'Platform',
+
+    'product_title' =>
+        'A complete poker training platform.',
+
+    'product_text' =>
+        'Practice one decision at a time, earn XP, unlock new streets and build real poker skills.',
+
+    'product_card_1_title' => 'Spot Training',
+
+    'product_card_1_text' =>
+        'Practice thousands of real poker situations with immediate explanations.',
+
+    'product_card_2_title' => 'Hand Lab',
+
+    'product_card_2_text' =>
+        'Build your own hands and receive simplified GTO and micro-stakes analysis.',
+
+    'product_card_3_title' => 'Dashboard',
+
+    'product_card_3_text' =>
+        'Track XP, accuracy, leaks and your complete learning progress.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | SPOT TRAINING
+    |--------------------------------------------------------------------------
+    */
+
+    'spot_kicker' => 'Spot Training',
+
+    'spot_title' =>
+        'Learn one decision at a time.',
+
+    'spot_text' =>
+        'Instead of memorizing charts, you build decision-making patterns through constant practice.',
+
+    'spot_bullet_1' => 'Preflop, Flop, Turn and River.',
+
+    'spot_bullet_2' => 'Immediate feedback.',
+
+    'spot_bullet_3' => 'XP and progression system.',
+
+    'spot_image_label' => 'Spot Training',
+
+    'spot_image_alt' => 'Spot Training',
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROADMAP
+    |--------------------------------------------------------------------------
+    */
+
+    'roadmap_kicker' => 'Learning Path',
+
+    'roadmap_title' =>
+        'Progress through every street.',
+
+    'roadmap_text' =>
+        'Each stage unlocks only after mastering the previous one.',
+
+    'stage_preflop' => 'Preflop',
+
+    'stage_preflop_text' =>
+        'Open raises, blind defense and 3-bets.',
+
+    'stage_flop' => 'Flop',
+
+    'stage_flop_text' =>
+        'C-bets, check back, defense and draws.',
+
+    'stage_turn' => 'Turn',
+
+    'stage_turn_text' =>
+        'Second barrels, probes and value betting.',
+
+    'stage_river' => 'River',
+
+    'stage_river_text' =>
+        'Thin value, bluff catching and overbets.',
+
+    'stage_mastery' => 'Mastery',
+
+    'stage_mastery_text' =>
+        'Advanced premium-only training.',
+
+    'stage_certification' => 'Certification',
+
+    'stage_certification_text' =>
+        'Final exam and ApexCash Certificate.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    'dashboard_kicker' => 'Dashboard',
+
+    'dashboard_title' =>
+        'Measure your improvement.',
+
+    'dashboard_text' =>
+        'XP, accuracy, leaks and detailed statistics help you focus on what really matters.',
+
+    'dashboard_bullet_1' => 'XP and Levels',
+
+    'dashboard_bullet_2' => 'Accuracy',
+
+    'dashboard_bullet_3' => 'Leak Detection',
+
+    'dashboard_image_label' => 'Dashboard',
+
+    'dashboard_image_alt' => 'Dashboard',
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAND LAB
+    |--------------------------------------------------------------------------
+    */
+
+    'handlab_kicker' => 'Hand Lab',
+
+    'handlab_title' =>
+        'Analyze your own hands.',
+
+    'handlab_text' =>
+        'Build any poker situation and receive simplified GTO plus practical advice for micro stakes.',
+
+    'handlab_bullet_1' => 'Build any spot.',
+
+    'handlab_bullet_2' => 'GTO simplified.',
+
+    'handlab_bullet_3' => 'Micro-stakes adjustments.',
+
+    'handlab_image_label' => 'Hand Lab',
+
+    'handlab_image_alt' => 'Hand Lab',
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRICING
+    |--------------------------------------------------------------------------
+    */
+
+    'plans_kicker' => 'Pricing',
+
+    'plans_title' =>
+        'Start free. Upgrade whenever you are ready.',
+
+    'plans_text' =>
+        'Free lets you train every day. Premium removes all limits and unlocks advanced content.',
+
+    'free_badge' => 'Free',
+
+    'free_title' => 'Daily Training',
+
+    'free_price' => '$0',
+
+    'free_item_1' => '20 daily Preflop spots',
+
+    'free_item_2' => '10 daily Flop spots',
+
+    'free_item_3' => '10 daily Turn spots',
+
+    'free_item_4' => '10 daily River spots',
+
+    'free_item_5' => '5 Hand Lab analyses every 24 hours',
+
+    'free_item_6' => 'XP and basic statistics',
+
+    'free_cta' => 'Create Free Account',
+
+    'premium_badge' => 'Premium',
+
+    'premium_title' => 'Unlimited',
+
+    'premium_price' => 'Coming Soon',
+
+    'premium_item_1' => 'Unlimited training',
+
+    'premium_item_2' => 'Unlimited Hand Lab',
+
+    'premium_item_3' => 'Mastery Training',
+
+    'premium_item_4' => 'Official Certification',
+
+    'premium_item_5' => 'Complete history',
+
+    'premium_item_6' => 'Advanced statistics',
+
+    'premium_cta' => 'Go Premium',
+
+    /*
+    |--------------------------------------------------------------------------
+    | CERTIFICATION
+    |--------------------------------------------------------------------------
+    */
+
+    'cert_kicker' => 'Certification',
+
+    'cert_title' =>
+        'Turn your progress into an achievement.',
+
+    'cert_text' =>
+        'Pass the final exam and earn your ApexCash Certification.',
+
+    'cert_bullet_1' => 'Timed Exam',
+
+    'cert_bullet_2' => 'Pass or Pass with Distinction',
+
+    'cert_bullet_3' => 'Professional Certificate',
+
+    'cert_image_label' => 'Certification',
+
+    'cert_image_alt' => 'Certification',
+
+    /*
+    |--------------------------------------------------------------------------
+    | FAQ
+    |--------------------------------------------------------------------------
+    */
+
+    'faq_kicker' => 'FAQ',
+
+    'faq_title' => 'Frequently Asked Questions',
+
+    'faq_1_q' => 'Can I start for free?',
+
+    'faq_1_a' =>
+        'Yes. Every account starts with free daily training.',
+
+    'faq_2_q' =>
+        'Do I need previous poker experience?',
+
+    'faq_2_a' =>
+        'No. ApexCash is designed for players learning cash games from the ground up.',
+
+    'faq_3_q' =>
+        'What does Premium include?',
+
+    'faq_3_a' =>
+        'Unlimited training, Hand Lab, Mastery, Certification and advanced statistics.',
+
+    'faq_4_q' =>
+        'Can I cancel Premium?',
+
+    'faq_4_a' =>
+        'Yes. Premium will be available as a recurring subscription that you can cancel at any time.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | FINAL CTA
+    |--------------------------------------------------------------------------
+    */
+
+    'final_kicker' => 'Start Today',
+
+    'final_title' =>
+        'Train smarter. Improve faster.',
+
+    'final_text' =>
+        'Thousands of poker decisions are waiting. Your next level starts today.',
+
+    'final_primary' => 'Create Free Account',
+
+    'final_secondary' => 'I already have an account',
+
+    'final_image_alt' => 'ApexCash',
+
+    /*
+    |--------------------------------------------------------------------------
+    | FOOTER
+    |--------------------------------------------------------------------------
+    */
+
+    'footer_cookies' => 'Cookies',
+
+    /*
+    |--------------------------------------------------------------------------
+    | COOKIES
+    |--------------------------------------------------------------------------
+    */
+
+    'cookies_title' => 'Cookies',
+
+    'cookies_text' =>
+        'We use essential cookies to provide the best experience on ApexCash.',
+
+    'cookies_more' => 'Learn more',
+
     'cookies_accept' => 'Accept',
+
 ];

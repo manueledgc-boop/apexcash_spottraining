@@ -9,6 +9,7 @@ use App\SpotTraining\PostflopRiver\Modules\RiverThinValueSpots;
 use App\SpotTraining\PostflopRiver\Modules\RiverOverbetSpots;
 use App\SpotTraining\PostflopRiver\Modules\RiverValueBetSpots;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SpotPoolProgressService;
 
 class PostflopRiverSpotRepository
 {
@@ -16,17 +17,13 @@ class PostflopRiverSpotRepository
 
     public function all(): array
     {
-        return array_merge(
+        $spots = array_merge(
             RiverValueBetSpots::all(),
             RiverBluffCatchSpots::all(),
             RiverBluffSpots::all(),
             RiverThinValueSpots::all(),
             RiverOverbetSpots::all(),
         );
-
-        if (! Auth::user()?->hasPremiumAccess()) {
-            $spots = array_slice($spots, 0, 10);
-        }
 
         return $spots;
     }
@@ -60,24 +57,12 @@ class PostflopRiverSpotRepository
             $spots = $this->all();
         }
 
-        $poolKey = 'postflop_river_training.seen_spot_ids.' . md5(($module ?? 'all') . '|' . ($concept ?? 'all'));
-        $seen = session($poolKey, []);
-
-        $available = array_values(array_filter($spots, function (array $spot) use ($seen): bool {
-            return ! in_array($spot['id'] ?? null, $seen, true);
-        }));
-
-        if (empty($available)) {
-            $seen = [];
-            $available = $spots;
-        }
-
-        $spot = $available[array_rand($available)];
-        $seen[] = $spot['id'];
-
-        session([
-            $poolKey => array_values(array_unique($seen)),
-        ]);
+        $spot = app(SpotPoolProgressService::class)->pick(
+            $spots,
+            'river',
+            $module,
+            $concept
+        );
 
         return $this->normalize($spot);
     }

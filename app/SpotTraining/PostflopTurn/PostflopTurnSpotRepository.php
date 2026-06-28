@@ -10,6 +10,7 @@ use App\SpotTraining\PostflopTurn\Modules\TurnProbeBetSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnProbeSpots;
 use App\SpotTraining\PostflopTurn\Modules\TurnValueBetSpots;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SpotPoolProgressService;
 
 class PostflopTurnSpotRepository
 {
@@ -17,7 +18,7 @@ class PostflopTurnSpotRepository
 
     public function all(): array
     {
-        return array_merge(
+        $spots = array_merge(
             TurnBarrelSpots::all(),
             TurnProbeSpots::all(),
             TurnProbeBetSpots::all(),
@@ -25,10 +26,6 @@ class PostflopTurnSpotRepository
             TurnValueBetSpots::all(),
             TurnCheckRaiseSpots::all(),
         );
-
-        if (! Auth::user()?->hasPremiumAccess()) {
-            $spots = array_slice($spots, 0, 10);
-        }
 
         return $spots;
     }
@@ -62,24 +59,12 @@ class PostflopTurnSpotRepository
             $spots = $this->all();
         }
 
-        $poolKey = 'postflop_turn_training.seen_spot_ids.' . md5(($module ?? 'all') . '|' . ($concept ?? 'all'));
-        $seen = session($poolKey, []);
-
-        $available = array_values(array_filter($spots, function (array $spot) use ($seen): bool {
-            return ! in_array($spot['id'] ?? null, $seen, true);
-        }));
-
-        if (empty($available)) {
-            $seen = [];
-            $available = $spots;
-        }
-
-        $spot = $available[array_rand($available)];
-        $seen[] = $spot['id'];
-
-        session([
-            $poolKey => array_values(array_unique($seen)),
-        ]);
+        $spot = app(SpotPoolProgressService::class)->pick(
+            $spots,
+            'turn',
+            $module,
+            $concept
+        );
 
         return $this->normalize($spot);
     }

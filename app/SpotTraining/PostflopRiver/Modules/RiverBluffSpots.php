@@ -89,7 +89,7 @@ class RiverBluffSpots
             'CO tiene sets fuertes y algunas escaleras; BB llega con muchos pares y proyectos fallidos.',
             'CO puede representar rango polarizado fuerte tras apostar flop y turn.',
             ['CO opens 2.5 BB', 'BB calls', 'Flop: J♦ 9♣ 8♠', 'BB checks', 'CO bets 5 BB', 'BB calls', 'Turn: 2♥', 'BB checks', 'CO bets 12 BB', 'BB calls', 'River: 3♦', 'BB checks', 'Action on Hero CO'],
-            ['CHECK', 'BET_75', 'RAISE'],
+            ['CHECK', 'BET_50', 'BET_75'],
             'BET_75',
             'QT bloquea una parte importante de las escaleras fuertes y no tiene showdown suficiente. Apostar grande presiona Jx, 9x y pares medios que no pueden aguantar tres barrels cómodamente.',
             'GTO simplificado: en runouts donde el agresor conserva manos muy fuertes, los missed draws con blockers pueden entrar en la región de bluff grande.',

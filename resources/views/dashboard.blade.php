@@ -12,56 +12,6 @@
         $levelBase = max(0, ($level - 1) * 250);
         $levelProgress = max(0, $xp - $levelBase);
         $levelPercent = min(100, round(($levelProgress / 250) * 100));
-
-        $routeForModule = function (?string $module): string {
-            return match ($module) {
-                // Preflop
-                'open_raise',
-                'three_bet',
-                'vs_three_bet',
-                'blind_defense',
-                'bb_vs_btn',
-                'bb_vs_sb',
-                'sb_vs_btn',
-                'btn_vs_3bet',
-                'call_3bet' => 'spot-training.index',
-
-                // Flop
-                'cbet_ip',
-                'check_back_ip',
-                'defense_vs_cbet',
-                'check_raise',
-                'semi_bluff',
-                'value_bet',
-                'overbet',
-                'donk_bet',
-                'float' => 'postflop-training.index',
-
-                // Turn
-                'probe_bet',
-                'second_barrel',
-                'defense_vs_second_barrel',
-                'turn_donk',
-                'turn_overbet' => 'postflop-turn.index',
-
-                // River
-                'river_value',
-                'river_bluffcatch',
-                'river_bluff',
-                'river_overbet' => 'postflop-river.index',
-
-                // Mastery
-                'three_bet_pots',
-                'four_bet_pots',
-                'blind_vs_blind_advanced',
-                'multiway',
-                'short_stack_lab',
-                'tournament_lab' => 'mastery-training.index',
-
-                default => 'spot-training.index',
-            };
-        };
-
     @endphp
 
     <main class="dashboard-page">

@@ -91,6 +91,50 @@
         }
     }
 
+    function showFreeLimit(message) {
+        state.spot = null;
+
+        if (els.module) els.module.textContent = 'Free';
+        if (els.title) els.title.textContent = 'Límite gratuito alcanzado';
+        if (els.meta) els.meta.textContent = '';
+        if (els.pot) els.pot.textContent = '';
+        if (els.actions) els.actions.innerHTML = '';
+        if (els.heroCards) els.heroCards.innerHTML = '';
+
+        document.querySelectorAll('.seat').forEach((seat) => {
+            seat.innerHTML = '';
+            seat.classList.remove('hero', 'villain');
+        });
+
+        if (els.buttons) {
+            els.buttons.hidden = true;
+            els.buttons.style.display = 'none';
+            els.buttons.innerHTML = '';
+        }
+
+        if (els.next) {
+            els.next.hidden = true;
+            els.next.style.display = 'none';
+            els.next.disabled = true;
+        }
+
+        if (els.decisionResultBox) {
+            els.decisionResultBox.removeAttribute('hidden');
+            els.decisionResultBox.style.display = 'block';
+        }
+
+        els.feedback.removeAttribute('hidden');
+        els.feedback.style.display = 'block';
+        els.feedback.className = 'feedback wrong';
+        els.feedback.innerHTML = `
+            <strong>Acceso gratuito completado</strong><br>
+            <p>${message || 'Has completado el límite gratuito de Preflop. Actualiza a Premium para continuar.'}</p>
+            <a href="/premium" class="upgrade-premium-btn">
+                Actualizar a Premium
+            </a>
+        `;
+    }
+
     function renderSpot() {
         const spot = state.spot;
         if (!spot) return;
@@ -179,6 +223,11 @@
 
         const data = await response.json();
 
+        if (data.success === false && data.code === 'FREE_LIMIT_REACHED') {
+            showFreeLimit(data.message);
+            return;
+        }
+
         if (!data.success) {
             if (els.decisionResultBox) {
                 els.decisionResultBox.removeAttribute('hidden');
@@ -260,6 +309,27 @@
 
         const data = await response.json();
 
+        if (!response.ok || data.success === false) {
+            els.feedback.removeAttribute('hidden');
+            els.feedback.style.display = 'block';
+            els.feedback.className = 'feedback wrong';
+            els.feedback.innerHTML = `
+                <strong>Acceso gratuito completado</strong><br>
+                ${data.message || 'Has completado el límite gratuito de este módulo. Actualiza a Premium para continuar.'}
+            `;
+
+            if (els.buttons) {
+                els.buttons.hidden = true;
+                els.buttons.style.display = 'none';
+            }
+
+            if (els.next) {
+                els.next.disabled = true;
+            }
+
+            return;
+        }
+
         state.spot = data.spot;
 
         if (concept) {
@@ -331,5 +401,9 @@
         activeButton?.classList.add('is-active');
     }
 
-    renderSpot();
+    if (window.ApexSpotTraining.freeLimitReached) {
+        showFreeLimit(window.ApexSpotTraining.freeLimitMessage);
+    } else {
+        renderSpot();
+    }
 })();

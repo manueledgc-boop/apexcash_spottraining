@@ -141,6 +141,8 @@
         if (els.builderStage) els.builderStage.hidden = false;
         if (els.evalStage) els.evalStage.hidden = true;
         renderCards(); renderAllActionLists(); updateSeats(); updateLiveSummary();
+
+        refreshActionBuilders();
     }
 
     function updateSeats() {
@@ -173,6 +175,7 @@
         }
 
         updateBuilderLock();
+        refreshActionBuilders();
     }
 
     function handleSeatClick(position) {
@@ -246,6 +249,41 @@
         }
 
         return [...normalizeActionSizes(normalized), ...normalizeActionSizes(['flop','turn','river'].flatMap(street => streetActions(street)))];
+    }
+
+    function isStreetClosed(street) {
+        const actions = streetActions(street).filter(action => !action.auto && !action.locked);
+
+        if (!actions.length) {
+            return false;
+        }
+
+        const last = actions.at(-1);
+
+        if (last.type === 'fold') {
+            return true;
+        }
+
+        const activeActors = orderedAllowedActorsForStreet(street);
+        const { currentBet, committed } = currentBetInfo(street);
+
+        if (activeActors.length < 2) {
+            return true;
+        }
+
+        const actedActors = new Set(actions.map(action => action.actor));
+
+        const everyoneHasActed = activeActors.every(actor => actedActors.has(actor));
+
+        const everyoneMatched = activeActors.every(actor => {
+            return Number(committed[actor] || 0) === Number(currentBet || 0);
+        });
+
+        if (street === 'preflop') {
+            return everyoneHasActed && everyoneMatched && currentBet >=1;
+        }
+
+        return everyoneHasActed && everyoneMatched;
     }
 
     function actionContribution(action, committed, currentBet) {
@@ -351,17 +389,24 @@
             showMessage(t('select_hero_villain_to_start', 'Primero selecciona Hero y Villano.'));
             return;
         }
-        const actor = box.querySelector('[data-action-actor]').value;
 
-        if (!allowedActors().includes(actor)) {
-            showMessage(t('invalid_actor_error', 'Solo Hero y Villano pueden realizar acciones manuales en Hand Lab V1.'));
+        const actor = nextActorForStreet(street);
+
+        if (!actor) {
+            showMessage('No hay actor disponible para esta calle.');
             return;
         }
 
         const type = box.querySelector('[data-action-type]').value;
         const sizeInput = box.querySelector('[data-action-size]');
-        const action = { street, actor, type, size: Number(sizeInput.value || 0) };
- 
+
+        const action = {
+            street,
+            actor,
+            type,
+            size: Number(sizeInput.value || 0),
+        };
+
         if (street === 'preflop' && action.type === 'call' && action.size <= 0) {
             const { currentBet } = currentBetInfo(street);
 
@@ -370,12 +415,20 @@
                 action.size = 1;
             }
         }
- 
+
         const error = validateAction(street, action);
-        if (error) { showMessage(error); return; }
+
+        if (error) {
+            showMessage(error);
+            return;
+        }
+
         state.actions[street].push(action);
+
         sizeInput.value = 0;
+
         renderAllActionLists();
+        refreshActionBuilders();
     }
 
     function showMessage(message) {
@@ -551,8 +604,20 @@
         const { currentBet, committed } = currentBetInfo(payload.street);
         const heroCommitted = Number(committed[payload.hero_position] || 0);
         const facingBet = currentBet > heroCommitted;
-        if (payload.street === 'preflop') return facingBet ? ['Fold','Call','Raise','All-in'] : ['Fold','Call','Raise','All-in'];
-        return facingBet ? ['Fold','Call','Raise','All-in'] : ['Check','Bet 33%','Bet 75%','Overbet','All-in'];
+
+        if (payload.street === 'preflop') {
+            if (isOpenRaiseSpot()) {
+                return ['Fold', 'Raise', 'All-in'];
+            }
+
+            return facingBet
+                ? ['Fold', 'Call', 'Raise', 'All-in']
+                : ['Check', 'Raise', 'All-in'];
+        }
+
+        return facingBet
+            ? ['Fold', 'Call', 'Raise', 'All-in']
+            : ['Check', 'Bet 33%', 'Bet 75%', 'Overbet', 'All-in'];
     }
 
     function inferTechnicalSpotType(street) {
@@ -686,9 +751,20 @@
 
             if (result.status === 'free_limit_reached') {
                 els.labFeedbackTitle.textContent = 'Límite Free alcanzado';
-                els.labFeedbackText.textContent = 'Has usado tus 5 análisis gratuitos de Hand Lab hoy. Actualiza a Premium para análisis ilimitados.';
-                showAiNotice('Límite diario Free alcanzado.');
-                els.labDecisionButtons.querySelectorAll('button').forEach(button => button.disabled = false);
+
+                els.labFeedbackText.innerHTML = `
+                    <p>${result.message || 'Has usado tus 5 análisis gratuitos de Hand Lab por hoy.'}</p>
+                    <a href="/premium" class="upgrade-premium-btn">
+                        Actualizar a Premium
+                    </a>
+                `;
+
+                showAiNotice('Límite gratuito de Hand Lab alcanzado.');
+
+                els.labDecisionButtons.querySelectorAll('button').forEach(button => {
+                    button.disabled = true;
+                });
+
                 return;
             }
 
@@ -765,6 +841,143 @@
         showAiNotice(t('ai_unavailable_notice', 'No se recibió un análisis IA válido. Intenta de nuevo.'));
     }
 
+    function nextActorForStreet(street) {
+        const actors = orderedAllowedActorsForStreet(street);
+
+        if (!actors.length) {
+            return null;
+        }
+
+        const actions = streetActions(street).filter(action => !action.auto && !action.locked);
+
+        if (!actions.length) {
+            return actors[0];
+        }
+
+        const last = actions.at(-1);
+
+        if (!last) {
+            return actors[0];
+        }
+
+        const currentIndex = actors.indexOf(last.actor);
+
+        if (currentIndex === -1) {
+            return actors[0];
+        }
+
+        return actors[(currentIndex + 1) % actors.length];
+    }
+
+    function legalActionTypesForStreet(street, actor) {
+        const { currentBet, committed } = currentBetInfo(street);
+        const actorCommitted = Number(committed[actor] || 0);
+        const facingBet = currentBet > actorCommitted;
+
+        if (street === 'preflop') {
+            const actions = streetActions('preflop').filter(action => !action.auto && !action.locked);
+            const other = actor === state.hero ? state.villain : state.hero;
+
+            if (!actions.length) {
+                if (actor === 'SB' && other === 'BB') {
+                    return ['call', 'raise', 'allin', 'fold'];
+                }
+
+                return ['raise', 'allin', 'fold'];
+            }
+
+            if (facingBet) {
+                return ['fold', 'call', 'raise', 'allin'];
+            }
+
+            return ['check', 'raise', 'allin'];
+        }
+
+        if (facingBet) {
+            return ['fold', 'call', 'raise', 'allin'];
+        }
+
+        return ['check', 'bet', 'allin'];
+    }
+
+    function actionOptionLabel(type) {
+        return {
+            fold: 'Fold',
+            check: 'Check',
+            call: 'Call',
+            limp: 'Limp',
+            bet: 'Bet',
+            raise: 'Raise',
+            allin: 'All-in',
+        }[type] ?? type;
+    }
+
+    function refreshActionBuilders() {
+        document.querySelectorAll('.street-action-builder').forEach(box => {
+            const street = box.dataset.street;
+            const actorSelect = box.querySelector('[data-action-actor]');
+            const typeSelect = box.querySelector('[data-action-type]');
+            const sizeInput = box.querySelector('[data-action-size]');
+            const addButton = box.querySelector('[data-add-action]');
+
+            const actor = nextActorForStreet(street);
+            const streetClosed = isStreetClosed(street);
+
+            if (addButton) {
+                addButton.disabled = streetClosed || !actor;
+                addButton.textContent = streetClosed ? 'Calle cerrada' : 'Añadir acción';
+            }
+
+            if (actorSelect) {
+                actorSelect.innerHTML = actor
+                    ? `<option value="${actor}">${actor}</option>`
+                    : `<option value="">--</option>`;
+
+                actorSelect.disabled = true;
+            }
+
+            const legalTypes = actor && !streetClosed ? legalActionTypesForStreet(street, actor) : [];
+
+            if (typeSelect) {
+                const current = typeSelect.value;
+
+                typeSelect.innerHTML = legalTypes.map(type => {
+                    return `<option value="${type}">${actionOptionLabel(type)}</option>`;
+                }).join('');
+
+                if (legalTypes.includes(current)) {
+                    typeSelect.value = current;
+                }
+            }
+
+            if (sizeInput && typeSelect) {
+                const type = typeSelect.value;
+                const needsSize = ['bet', 'raise', 'allin'].includes(type);
+
+                sizeInput.disabled = !needsSize;
+                if (!needsSize) {
+                    sizeInput.value = 0;
+                }
+            }
+        });
+
+        document.querySelectorAll('[data-remove-last-action]').forEach(button => {
+            const street = button.dataset.removeLastAction;
+            button.disabled = streetActions(street).length === 0;
+        });
+    }
+    function removeLastAction(street) {
+        if (!state.actions[street] || state.actions[street].length === 0) {
+            showMessage('No hay acciones para eliminar en esta calle.');
+            return;
+        }
+
+        state.actions[street].pop();
+
+        renderAllActionLists();
+        refreshActionBuilders();
+    }
+
     function bindEvents() {
         els.seats.forEach(seat => {
             seat.addEventListener('click', () => handleSeatClick(seat.dataset.position));
@@ -774,6 +987,7 @@
             input.addEventListener('input', () => {
                 updateSeats();
                 updateLiveSummary();
+                refreshActionBuilders();
             });
         });
 
@@ -781,6 +995,16 @@
             button.addEventListener('click', () => {
                 addAction(button.dataset.addAction, button.closest('.lab-box'));
             });
+        });
+
+        document.querySelectorAll('[data-remove-last-action]').forEach(button => {
+            button.addEventListener('click', () => {
+                removeLastAction(button.dataset.removeLastAction);
+            });
+        });
+
+        document.querySelectorAll('[data-action-type]').forEach(select => {
+            select.addEventListener('change', refreshActionBuilders);
         });
 
         els.createSpotBtn.addEventListener('click', createSpotPreview);

@@ -1,18 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\HandLabReviewController;
+use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HandLabAiController;
+use App\Http\Controllers\HandLabController;
+use App\Http\Controllers\MasteryTrainingController;
 use App\Http\Controllers\PostflopRiverTrainingController;
 use App\Http\Controllers\PostflopTrainingController;
 use App\Http\Controllers\PostflopTurnTrainingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpotTrainingController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MasteryTrainingController;
-use App\Http\Controllers\CertificationController;
-use App\Http\Controllers\HandLabController;
-use App\Http\Controllers\Admin\HandLabReviewController;
-
-use App\Http\Controllers\HandLabAiController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -31,11 +30,19 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | PREMIUM / UPGRADE
+    |--------------------------------------------------------------------------
+    */
+    Route::view('/premium', 'premium.upgrade')
+        ->name('premium.upgrade');
+
     /*
     |--------------------------------------------------------------------------
     | PREFLOP
     |--------------------------------------------------------------------------
-    | Preflop siempre está disponible.
     */
     Route::get('/spot-training', [SpotTrainingController::class, 'index'])
         ->name('spot-training.index');
@@ -53,7 +60,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     | FLOP
     |--------------------------------------------------------------------------
-    | Requiere XP global + muestra mínima + precisión en Preflop.
     */
     Route::middleware('training.unlocked:flop')->group(function () {
         Route::get('/spot-training/postflop', [PostflopTrainingController::class, 'index'])
@@ -73,7 +79,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     | TURN
     |--------------------------------------------------------------------------
-    | Requiere XP global + muestra mínima + precisión en Flop.
     */
     Route::middleware('training.unlocked:turn')->group(function () {
         Route::get('/postflop-turn', [PostflopTurnTrainingController::class, 'index'])
@@ -93,7 +98,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     | RIVER
     |--------------------------------------------------------------------------
-    | Requiere XP global + muestra mínima + precisión en Turn.
     */
     Route::middleware('training.unlocked:river')->group(function () {
         Route::get('/postflop-river', [PostflopRiverTrainingController::class, 'index'])
@@ -109,7 +113,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('postflop-river.reset');
     });
 
-    Route::middleware('training.unlocked:mastery')->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | MASTERY - PREMIUM
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['premium', 'training.unlocked:mastery'])->group(function () {
         Route::get('/mastery', [MasteryTrainingController::class, 'index'])
             ->name('mastery-training.index');
 
@@ -123,8 +132,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('mastery-training.reset');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | HAND LAB
+    |--------------------------------------------------------------------------
+    */
     Route::get('/hand-lab', [HandLabController::class, 'index'])
         ->name('hand-lab.index');
+
+    Route::post('/hand-lab/ai-analyze', [HandLabAiController::class, 'analyze'])
+        ->name('hand-lab.ai-analyze');
 
     Route::get('/hand-lab/reviews', [HandLabController::class, 'reviews'])
         ->name('hand-lab.reviews.index');
@@ -132,6 +149,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/hand-lab/reviews/{spot}', [HandLabController::class, 'showReview'])
         ->name('hand-lab.reviews.show');
 
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN HAND LAB
+    |--------------------------------------------------------------------------
+    */
     Route::prefix('admin/hand-lab')->name('admin.hand-lab.')->group(function () {
         Route::get('/', [HandLabReviewController::class, 'index'])
             ->name('index');
@@ -146,24 +168,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('reject');
     });
 
-    Route::get('/certification', [CertificationController::class, 'index'])
-        ->name('certification.index');
+    /*
+    |--------------------------------------------------------------------------
+    | CERTIFICATION - PREMIUM
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('premium')->group(function () {
+        Route::get('/certification', [CertificationController::class, 'index'])
+            ->name('certification.index');
 
-    Route::post('/certification/start', [CertificationController::class, 'start'])
-        ->name('certification.start');
+        Route::post('/certification/start', [CertificationController::class, 'start'])
+            ->name('certification.start');
 
-    Route::get('/certification/{attempt}/exam', [CertificationController::class, 'exam'])
-        ->name('certification.exam');
+        Route::get('/certification/{attempt}/exam', [CertificationController::class, 'exam'])
+            ->name('certification.exam');
 
-    Route::post('/certification/{attempt}/answer', [CertificationController::class, 'answer'])
-        ->name('certification.answer');
+        Route::post('/certification/{attempt}/answer', [CertificationController::class, 'answer'])
+            ->name('certification.answer');
 
-    Route::post('/certification/{attempt}/finish', [CertificationController::class, 'finish'])
-        ->name('certification.finish');
+        Route::post('/certification/{attempt}/finish', [CertificationController::class, 'finish'])
+            ->name('certification.finish');
 
-    Route::get('/certification/{attempt}/result', [CertificationController::class, 'result'])
-        ->name('certification.result');
-
+        Route::get('/certification/{attempt}/result', [CertificationController::class, 'result'])
+            ->name('certification.result');
+    });
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -178,9 +206,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::view('/cookies', 'legal.cookies')->name('cookies');
-
-Route::post('/hand-lab/ai-analyze', [HandLabAiController::class, 'analyze'])
-    ->middleware(['auth'])
-    ->name('hand-lab.ai-analyze');
+Route::view('/privacy', 'legal.privacy')->name('privacy');
+Route::view('/terms', 'legal.terms')->name('terms');
+Route::view('/contact', 'legal.contact') ->name('contact');
 
 require __DIR__.'/auth.php';

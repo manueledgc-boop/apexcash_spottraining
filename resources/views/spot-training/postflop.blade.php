@@ -45,6 +45,8 @@
             answerUrl: @json(route('postflop-training.answer')),
             csrf: @json(csrf_token()),
             i18n: @json($postflopI18n),
+            freeLimitReached: @json($freeLimitReached ?? false),
+            freeLimitMessage: @json($freeLimitMessage ?? null),
         };
     </script>
 
