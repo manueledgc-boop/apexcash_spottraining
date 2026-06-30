@@ -9,6 +9,7 @@ use App\Models\UserSpotStat;
 use App\Models\UserTrainingStat;
 use App\Services\TrainingProgressionService;
 use Illuminate\View\View;
+use App\Models\FounderApplication;
 
 class DashboardController extends Controller
 {
@@ -32,6 +33,10 @@ class DashboardController extends Controller
         $masteryUnlocked = (bool) $progress['mastery']['unlocked'];
         $certificationUnlocked = (bool) $progress['certification']['unlocked'];
         $nextGoal = $progression->nextGoal($user);
+        $founderApplication = FounderApplication::query()
+            ->where('user_id', $userId)
+            ->latest()
+            ->first();
 
         $stageModules = $progression->stageAggregateModules();
 
@@ -58,6 +63,7 @@ class DashboardController extends Controller
             if ($rankedModules->count() >= 2) {
 
                 $candidateWorst = $rankedModules
+                    ->where('accuracy', '<', 75)
                     ->sortBy('accuracy')
                     ->first();
 
@@ -73,7 +79,8 @@ class DashboardController extends Controller
 
         $leaks = UserLeak::query()
             ->where('user_id', $userId)
-            ->where('total', '>=', 1)
+            ->where('total', '>=', 5)
+            ->where('accuracy', '<', 75)
             ->orderByDesc('weakness_score')
             ->orderBy('accuracy')
             ->limit(5)
@@ -101,7 +108,8 @@ class DashboardController extends Controller
 
         $worstSpots = UserSpotStat::query()
             ->where('user_id', $userId)
-            ->where('total', '>=', 2)
+            ->where('total', '>=', 5)
+            ->where('accuracy', '<', 75)
             ->orderBy('accuracy')
             ->orderByDesc('wrong')
             ->limit(5)
@@ -110,7 +118,7 @@ class DashboardController extends Controller
         $conceptLeaks = UserSpotStat::query()
             ->where('user_id', $userId)
             ->whereNotNull('concept')
-            ->where('total', '>=', 2)
+            ->where('total', '>=', 5)
             ->selectRaw('
                 module,
                 concept,
@@ -122,6 +130,7 @@ class DashboardController extends Controller
                 ROUND((SUM(correct) / NULLIF(SUM(total), 0)) * 100, 2) as accuracy
             ')
             ->groupBy('module', 'concept', 'concept_label', 'family_label')
+            ->havingRaw('accuracy < 75')
             ->orderBy('accuracy')
             ->orderByDesc('wrong')
             ->limit(5)
@@ -152,6 +161,7 @@ class DashboardController extends Controller
             'masteryGlobal',
             'certificationUnlocked',
             'routeForModule',
+            'founderApplication',
         ));
     }
 }

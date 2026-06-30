@@ -49,41 +49,52 @@
     </header>
 
     <main class="apex-hero">
-        <section class="apex-hero-copy">
-            <div class="apex-badge">
-                {{ __('landing.hero_badge') }}
-            </div>
+    <section class="apex-hero-copy">
+        <div class="apex-badge">
+            🚀 {{ __('landing.founder_memberes') }}
+        </div>
 
-            <h1>{{ __('landing.hero_title') }}</h1>
+        <h1>
+            {{ __('landing.forma_parte_nacimiento') }}
+        </h1>
 
-            <p>{{ __('landing.hero_text') }}</p>
+        <p>
+            {{ __('landing.estamos_seleccionando') }}
+            <strong>{{ __('landing.fecha_lanzamiento') }}</strong>.
+        </p>
 
-            <div class="apex-actions">
+        <div class="apex-actions">
+            @auth
+                <a href="{{ route('dashboard') }}" class="apex-btn apex-btn-primary">
+                    🚀 {{ __('landing.solicitar_acceso') }}
+                </a>
+            @else
                 <a href="{{ route('register') }}" class="apex-btn apex-btn-primary">
-                    {{ __('landing.hero_primary') }}
+                    {{ __('landing.crear_cuenta_gratuita') }}
                 </a>
+            @endauth
 
-                <a href="#plans" class="apex-btn apex-btn-secondary">
-                    {{ __('landing.hero_secondary') }}
-                </a>
-            </div>
+            <a href="{{ route('founder-members') }}" class="apex-btn apex-btn-secondary">
+                {{ __('landing.conocer_programa') }}
+            </a>
+        </div>
 
-            <div class="apex-trust-row">
-                <span>{{ __('landing.trust_1') }}</span>
-                <span>{{ __('landing.trust_2') }}</span>
-                <span>{{ __('landing.trust_3') }}</span>
-            </div>
-        </section>
+        <div class="apex-trust-row">
+            <span>🏅 Founder Badge 2026</span>
+            <span>🎯 {{ __('landing.acceso_anticipado') }}</span>
+            <span>📅 {{ __('landing.lanzamiento1') }}</span>
+        </div>
+    </section>
 
-        <section class="apex-product-frame apex-hero-frame">
-            <div class="browser-bar">
-                <span></span><span></span><span></span>
-                <small>apexcashtrainer.com</small>
-            </div>
+    <section class="apex-product-frame apex-hero-frame">
+        <div class="browser-bar">
+            <span></span><span></span><span></span>
+            <small>apexcashtrainer.com</small>
+        </div>
 
-            <img src="{{ asset('images/welcome1.png') }}" alt="{{ __('landing.hero_image_alt') }}">
-        </section>
-    </main>
+        <img src="{{ asset('images/welcome1.png') }}" alt="ApexCash Trainer Founder Members">
+    </section>
+</main>
 
     <section id="product" class="apex-section">
         <div class="apex-section-head">

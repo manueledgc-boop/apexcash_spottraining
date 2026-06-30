@@ -1,724 +1,247 @@
-# PROJECT STATUS – APEXCASH TRAINER
+PROJECT STATUS – APEXCASH TRAINER
 
-## Fecha: 24 Junio 2026
+Fecha: 28 Junio 2026
 
----
+ESTADO GENERAL
 
-# RESUMEN EJECUTIVO
+ApexCash Trainer ha alcanzado su primera versión candidata para producción (Release Candidate V1).
 
-ApexCash Trainer se encuentra en fase final de estabilización para V1.
+La plataforma ya está desplegada en el dominio definitivo:
 
-El proyecto ya tiene una base funcional muy avanzada:
+https://apexcashtrainer.com
 
-- Registro y login de usuarios.
-- Dashboard de progreso.
-- Sistema de XP y niveles.
-- Entrenamiento Preflop.
-- Entrenamiento Flop.
-- Entrenamiento Turn.
-- Entrenamiento River.
-- Mastery Training.
-- Certificación.
-- Hand Lab con análisis IA vía Gemini.
-- Soporte ES/EN.
-- Responsive desktop/móvil.
-- Sistema de estadísticas y leaks.
-- Base inicial Freemium/Premium.
+El sistema ya puede ser utilizado por usuarios reales para entrenamiento.
 
-El dominio definitivo ya está adquirido:
+MÓDULOS IMPLEMENTADOS
+Sistema de usuarios
 
-**apexcashtrainer.com**
+✅ Registro
 
-La prioridad actual es cerrar limpieza, freemium/premium, validación completa y preparación de producción.
+✅ Login
 
----
+✅ Recuperación de contraseña
 
-# ESTADO GENERAL ACTUAL
+✅ Perfil
 
-## Backend
+Dashboard
 
-Estado estimado: **95%**
-
-Funcional:
-
-- Autenticación de usuarios.
-- Dashboard.
-- Progresión XP/niveles.
-- Spots por módulos.
-- Desbloqueos por progreso.
-- Hand Lab AI.
-- Middleware de entrenamiento desbloqueado.
-- Base de planes Free/Premium.
-
-Pendiente:
-
-- Validar todos los límites Free/Premium.
-- Probar usuarios Free, Premium y Admin.
-- Revisar errores 500 antes de producción.
-- Limpieza final de código antiguo de Hand Lab.
-
----
-
-## Frontend
-
-Estado estimado: **90-95%**
-
-Funcional:
-
-- Dashboard.
-- Pantallas de entrenamiento.
-- Hand Lab visual.
-- Panel de análisis IA.
-- Certificación.
-- Responsive general.
-
-Pendiente:
-
-- Revisión visual final.
-- Mensajes Premium/Free más comerciales.
-- Revisión móvil completa.
-- Pulir pantalla Premium.
-
----
-
-# HAND LAB
-
-## Estado actual
-
-Hand Lab ya no depende de la arquitectura antigua de:
-
-- Similarity.
-- Family Resolver.
-- Library Match.
-- Pending Review como respuesta principal.
-
-La decisión final para V1 fue:
-
-```text
-Usuario crea spot
-↓
-Usuario responde
-↓
-Se envía a Gemini
-↓
-Gemini devuelve JSON
-↓
-Panel derecho muestra análisis
-```
-
-Esto simplifica el sistema y permite analizar casi cualquier situación creada por el usuario.
-
----
-
-## Controlador IA
-
-Archivo principal:
-
-```text
-app/Http/Controllers/HandLabAiController.php
-```
-
-El controlador actualmente:
-
-- Valida payload del spot.
-- Construye prompt.
-- Llama a Gemini.
-- Usa `responseMimeType = application/json`.
-- Usa temperatura baja.
-- Valida JSON.
-- Valida `best_action` contra las opciones disponibles.
-- Valida `grade`.
-- Devuelve respuesta limpia al frontend.
-- Tiene fallback entre modelos.
-
-Modelo principal recomendado:
-
-```env
-GEMINI_MODEL=gemini-2.5-flash
-```
-
-Fallback:
-
-```text
-gemini-2.5-flash-lite
-```
-
----
-
-## Manejo de errores IA
-
-Se detectaron errores reales de Gemini:
-
-### 503
-
-```text
-UNAVAILABLE / high demand
-```
-
-Significa modelo saturado.
-
-Solución aplicada:
-
-- Fallback a otro modelo.
-- Respuesta controlada `ai_busy`.
-- Mensaje amable en frontend.
-
-### 429
-
-```text
-RESOURCE_EXHAUSTED / quota exceeded
-```
-
-Significa cuota gratuita agotada.
-
-Solución aplicada:
-
-- Respuesta controlada `ai_quota_exceeded`.
-- Mensaje amable en frontend.
-- No romper pantalla con error técnico.
-
----
-
-## Prompt actual
-
-El prompt fue simplificado y estabilizado.
-
-Decisiones importantes:
-
-- Sin `concept` en V1.
-- JSON estricto.
-- GTO, Micro y Feedback en español.
-- Máximo 20 palabras por campo principal.
-- Best action debe pertenecer a las opciones disponibles.
-- Se añadió regla para identificar correctamente la fuerza real de la mano.
-
-Motivo:
-
-Gemini cometió un error llamando `overpair` a 88 en board KKJ. Por eso se reforzó el prompt para evitar errores de lectura básica.
-
----
-
-# FREEMIUM / PREMIUM
-
-## Decisión estratégica V1
-
-ApexCash tendrá dos planes principales:
-
-## Free
+Estado: COMPLETO
 
 Incluye:
 
-- 20 spots Preflop.
-- 10 spots Flop.
-- 10 spots Turn.
-- 10 spots River.
-- 5 análisis Hand Lab por día.
-- Dashboard básico.
+XP
+Nivel
+Accuracy
+Spots completados
+Leaks
+Estadísticas
+Progreso
+Ruta de aprendizaje
 
-## Premium
+Responsive.
+
+Preflop Trainer
+
+Estado: COMPLETO
 
 Incluye:
 
-- Todos los spots.
-- Mastery Training.
-- Certificación.
-- Hand Lab ilimitado.
-- Leaks avanzados.
-- Historial completo.
-- Certificados.
+Open Raise
+Defensa BB
+Defensa SB
+3Bet
+Call 3Bet
+Todos los grupos de estudio
+Sistema de badges
+XP
+Leaks
+Estadísticas
+Flop Trainer
 
----
+Estado: COMPLETO
 
-# IMPLEMENTACIÓN DE PLANES
+Cbet
+Check Back
+Defensa
+Check Raise
+Float
+Donk
+Overbet
+Semi Bluff
+Value
+Turn Trainer
 
-## Tabla users
+Estado: COMPLETO
 
-Se añadió soporte para:
+River Trainer
 
-```text
-plan
-premium_until
-```
+Estado: COMPLETO
 
-Valores previstos:
-
-```text
-free
-premium
-admin
-```
-
----
-
-## Modelo User
-
-Archivo:
-
-```text
-app/Models/User.php
-```
-
-Métodos implementados:
-
-```php
-public function isPremium(): bool
-{
-    return $this->plan === 'premium'
-        && (
-            $this->premium_until === null
-            || $this->premium_until->isFuture()
-        );
-}
-
-public function isAdminPlan(): bool
-{
-    return $this->plan === 'admin';
-}
-
-public function hasPremiumAccess(): bool
-{
-    return $this->isAdminPlan() || $this->isPremium();
-}
-```
-
-Cast correcto:
-
-```php
-'premium_until' => 'datetime'
-```
-
-Pendiente corregido:
-
-El atributo `Fillable` debe incluir:
-
-```php
-#[Fillable(['name', 'email', 'password', 'plan', 'premium_until', 'is_admin'])]
-```
-
----
-
-# MIDDLEWARES
-
-## training.unlocked
-
-Este middleware no pertenece a Premium.
-
-Controla la progresión educativa:
-
-```text
-Preflop
-↓
-Flop
-↓
-Turn
-↓
-River
-↓
 Mastery
-```
 
-Alias esperado:
+Estado: COMPLETO
 
-```php
-'training.unlocked' => EnsureTrainingStageUnlocked::class
-```
+Entrenamiento avanzado.
 
----
+Incluye:
 
-## premium
+3Bet Pots
+4Bet Pots
+Blind vs Blind
+Multiway
+Short Stack
+Tournament Lab
+Certification
 
-Nuevo middleware para controlar acceso Premium.
+Estado: COMPLETO
 
-Alias esperado:
+Incluye:
 
-```php
-'premium' => \App\Http\Middleware\EnsurePremiumUser::class
-```
+Examen
+Cronómetro
+Bloqueos
+Envío automático
+Certificado
+Distinción
+Hand Lab
 
----
+Estado: MUY AVANZADO
 
-## Problema detectado
+Actualmente incluye:
 
-Al añadir el alias `premium`, se creó un segundo bloque `$middleware->alias()` y se perdió el alias anterior `training.unlocked`.
+✅ Constructor de manos
 
-Error generado:
+✅ Mesa interactiva
 
-```text
-Target class [training.unlocked] does not exist
-```
+✅ Selección de calles
 
-Solución:
+✅ Hero/Villain
 
-En `bootstrap/app.php`, dejar un solo bloque:
+✅ Board
 
-```php
-$middleware->alias([
-    'training.unlocked' => EnsureTrainingStageUnlocked::class,
-    'premium' => \App\Http\Middleware\EnsurePremiumUser::class,
-]);
-```
+✅ Acción
 
-Luego ejecutar:
+✅ Análisis IA
 
-```bash
-php artisan optimize:clear
-```
+✅ Explicación GTO
 
----
+✅ Explicación Exploit
 
-# LÍMITE HAND LAB FREE
+✅ Historial
 
-## Regla V1
+Pendiente únicamente seguir ampliando la librería de spots para reducir llamadas a IA.
 
-Usuarios Free:
+Responsive
 
-```text
-5 análisis Hand Lab por día
-```
+Estado: COMPLETO
 
-Usuarios Premium/Admin:
+Desktop
 
-```text
-Ilimitado
-```
+Tablet
 
----
+Móvil vertical
 
-## Tabla ai_usage_logs
+Móvil horizontal
 
-Se creó o se debe crear:
+Se realizaron múltiples ajustes de navegación y visualización.
 
-```text
-ai_usage_logs
-```
+Dominio
 
-Campos:
+Estado: COMPLETO
 
-```text
-id
-user_id
-feature
-used_on
-count
-created_at
-updated_at
-```
+Dominio definitivo:
 
-Índice único:
+apexcashtrainer.com
 
-```text
-user_id + feature + used_on
-```
+Hosting
 
-Uso:
+Estado: COMPLETO
 
-```text
-feature = hand_lab_ai
-```
+Migrado desde plan gratuito al plan Basic de AwardSpace.
 
----
+Ya permite conexiones salientes necesarias para IA.
 
-## Flujo del límite
+SSL
 
-Antes de llamar a Gemini:
+Estado: COMPLETO
 
-```text
-Si usuario NO es Premium
-↓
-Buscar registro de uso del día
-↓
-Si count >= 5
-↓
-Devolver free_limit_reached
-↓
-No llamar a Gemini
-```
+Certificado SSL instalado.
 
-Después de análisis exitoso:
+La web funciona mediante HTTPS.
 
-```text
-Incrementar count
-```
+Inteligencia Artificial
 
----
+Estado: FUNCIONANDO
 
-## Frontend Hand Lab
+Proveedor:
 
-Archivo:
+Gemini 2.5 Flash
 
-```text
-public/assets/js/hand-lab.js
-```
+El problema inicial no era la API.
 
-Ya maneja estados controlados:
+El bloqueo provenía del hosting gratuito, que impedía conexiones HTTP salientes.
 
-```text
-ai_quota_exceeded
-ai_busy
-free_limit_reached
-```
+Resuelto al migrar al plan de pago.
 
-Esto evita que el usuario vea errores técnicos feos.
+ESTADO DEL PROYECTO
 
----
+Se puede considerar finalizada la primera versión comercial.
 
-# MASTERy Y CERTIFICACIÓN PREMIUM
+El núcleo del producto ya existe.
 
-## Decisión
+Todo el recorrido de aprendizaje está implementado.
 
-Mastery y Certificación deben ser Premium.
+PRÓXIMOS HITOS
+1. Login con Google
 
-### Mastery
+Laravel Socialite
 
-Debe requerir:
+Registro/Login en un clic.
 
-```php
-['premium', 'training.unlocked:mastery']
-```
+2. Stripe
 
-### Certificación
+Sistema Freemium.
 
-Debe requerir:
+Usuarios gratuitos.
 
-```php
-['premium']
-```
+Usuarios Premium.
 
-La certificación no debe estar disponible para usuarios Free.
+Suscripciones.
 
----
+3. Freemium
 
-# SPOTS LIMITADOS FREE
+Definir exactamente:
 
-## Regla
+límites gratuitos
+desbloqueos Premium
+mensajes comerciales
+upgrade
+4. Landing
 
-Free:
+Pulir pequeños detalles comerciales.
 
-```text
-Preflop: 20 spots
-Flop: 10 spots
-Turn: 10 spots
-River: 10 spots
-```
+5. Pruebas finales
 
-Premium:
+Recorrer toda la plataforma como si fuera un usuario nuevo.
 
-```text
-Todos los spots
-```
+Buscar:
 
----
+errores
+textos
+responsive
+rutas
+estadísticas
+certificación
+IA
+pagos (cuando existan)
+VALORACIÓN
 
-## Implementación recomendada
+ApexCash ya no es un prototipo.
 
-En repositorios de spots:
+Ya no es únicamente un proyecto de desarrollo.
 
-```php
-if (! Auth::user()?->hasPremiumAccess()) {
-    $spots = array_slice($spots, 0, 20); // Preflop
-}
-```
+Es una plataforma funcional, desplegada en Internet, con entrenamiento completo, certificación, análisis mediante IA y preparada para comenzar su fase comercial mediante autenticación social y sistema de suscripciones.
 
-Postflop:
+Estado estimado del proyecto: 98–99% para la versión comercial V1.
 
-```php
-if (! Auth::user()?->hasPremiumAccess()) {
-    $spots = array_slice($spots, 0, 10);
-}
-```
-
-Archivos esperados:
-
-```text
-SpotRepository.php
-PostflopSpotRepository.php
-PostflopTurnSpotRepository.php
-PostflopRiverSpotRepository.php
-```
-
----
-
-# PÁGINA PREMIUM
-
-Debe existir ruta:
-
-```php
-Route::view('/premium', 'premium.upgrade')
-    ->middleware(['auth', 'verified'])
-    ->name('premium.upgrade');
-```
-
-Vista esperada:
-
-```text
-resources/views/premium/upgrade.blade.php
-```
-
-Objetivo:
-
-- Mostrar diferencias Free vs Premium.
-- Explicar beneficios.
-- Preparar futuro botón de pago.
-
-Por ahora no se implementan pagos.
-
----
-
-# PAGOS
-
-## Decisión actual
-
-No integrar Stripe/PayPal todavía.
-
-Primero:
-
-- Crear sistema Free/Premium funcional.
-- Probar permisos.
-- Probar límites.
-- Validar UX.
-
-Después:
-
-- Integrar pagos.
-- Activar premium automáticamente.
-- Controlar expiración con `premium_until`.
-
----
-
-# PRUEBAS NECESARIAS
-
-## Usuario Free
-
-1. Verificar plan:
-
-```sql
-SELECT id, name, plan, premium_until FROM users;
-```
-
-2. Hand Lab:
-
-- Hacer 5 análisis.
-- Verificar contador en `ai_usage_logs`.
-- En el sexto análisis debe salir límite Free.
-
-3. Spots:
-
-- Preflop solo debe cargar 20.
-- Flop solo debe cargar 10.
-- Turn solo debe cargar 10.
-- River solo debe cargar 10.
-
-4. Mastery:
-
-- Debe redirigir a Premium.
-
-5. Certificación:
-
-- Debe redirigir a Premium.
-
----
-
-## Usuario Premium
-
-Actualizar manualmente:
-
-```sql
-UPDATE users SET plan = 'premium', premium_until = NULL WHERE id = 3;
-```
-
-Probar:
-
-- Hand Lab ilimitado.
-- Todos los spots.
-- Mastery accesible si cumple desbloqueo.
-- Certificación accesible.
-
----
-
-## Usuario Admin
-
-Actualizar manualmente:
-
-```sql
-UPDATE users SET plan = 'admin', premium_until = NULL WHERE id = 3;
-```
-
-Debe tener acceso total.
-
----
-
-# LIMPIEZA HAND LAB ANTIGUO
-
-## Decisión
-
-No borrar todavía archivos antiguos de:
-
-```text
-app/HandLab/
-app/HandLab/Library/
-app/Services/HandLabSimilarityService.php
-```
-
-Motivo:
-
-Pueden servir para V2 como sistema de práctica relacionada o biblioteca interna.
-
-Para V1:
-
-- Desconectar de rutas.
-- No usar similarity como análisis.
-- No usar concept.
-- No usar library matching.
-
----
-
-# ESTADO FINAL ACTUAL
-
-## Completado
-
-- Hand Lab con IA funcional.
-- Fallback de modelos.
-- Manejo de errores IA.
-- Eliminación de concept en V1.
-- Base de planes Free/Premium.
-- Métodos Premium en User.
-- Middleware Premium creado.
-- Límite Hand Lab diseñado.
-
-## Pendiente inmediato
-
-1. Confirmar `bootstrap/app.php` con ambos aliases.
-2. Confirmar ruta `/premium`.
-3. Confirmar vista `premium.upgrade`.
-4. Confirmar migración `ai_usage_logs`.
-5. Confirmar límite de 5 análisis/día.
-6. Confirmar restricciones de spots Free.
-7. Confirmar Mastery Premium.
-8. Confirmar Certificación Premium.
-9. Probar usuario Free.
-10. Probar usuario Premium.
-
----
-
-# CONCLUSIÓN
-
-ApexCash ya está cerca de una V1 comercial.
-
-La decisión correcta ahora es no añadir nuevas funciones grandes.
-
-Prioridad:
-
-```text
-Estabilizar
-↓
-Limpiar
-↓
-Probar Free/Premium
-↓
-Comprar tokens Gemini
-↓
-Deploy dominio definitivo
-↓
-Lanzamiento controlado
-```
-
+A partir de este punto, el trabajo deja de centrarse en construir funcionalidades principales y pasa a enfocarse en lanzamiento, monetización y crecimiento.

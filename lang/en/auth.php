@@ -32,8 +32,8 @@ return [
     ],
 
     'login' => [
-        'badge' => 'Welcome back',
-        'title' => 'Enter your dashboard',
+        'badge' => 'Welcome',
+        'title' => 'ApexCash Trainer',
         'subtitle' => 'Continue your progress, review your leaks and keep improving street by street.',
         'remember' => 'Remember me',
         'forgot_password' => 'Forgot password',
@@ -44,12 +44,12 @@ return [
 
     'register' => [
         'badge' => 'Create your account',
-        'title' => 'Start with Preflop',
-        'subtitle' => 'Save XP, unlock modules and train with more than 250 Cash Game spots.',
+        'title' => 'ApexCash Trainer',
+        'subtitle' => 'Save XP, unlock modules and train with more than 800 Cash Game spots.',
         'benefits' => [
             'xp' => ['title' => 'XP', 'text' => 'persistent progress'],
             'leaks' => ['title' => 'Leaks', 'text' => 'detected mistakes'],
-            'spots' => ['title' => '250+', 'text' => 'practice spots'],
+            'spots' => ['title' => '800+', 'text' => 'practice spots'],
         ],
         'submit' => 'Create account and start',
         'already_registered' => 'Already registered?',
@@ -86,5 +86,10 @@ return [
         'sent' => 'A new verification link has been sent to your email.',
         'resend' => 'Resend verification email',
         'logout' => 'Log out',
+    ],
+
+    'google' => [
+        'continue' => 'Continue with Google',
+        'or_email' => 'or create an account with your email',
     ],
 ];

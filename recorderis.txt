@@ -1,184 +1,193 @@
-RECORDERIS - APEXCASH / HAND LAB V1
-Fecha: 2026-06-21
+APEXCASH TRAINER
+RECODERIS
+Fecha: 29/06/2026
 
+====================================================
 ESTADO ACTUAL
+====================================================
 
-Se cerró una fase importante del Hand Lab V1: integración de familias de spot para preflop.
+La V1 está prácticamente terminada.
 
-Lo que quedó hecho:
+✔ Dominio funcionando.
+✔ Hosting migrado al plan Basic.
+✔ SSL instalado correctamente (Let's Encrypt).
+✔ HTTPS funcionando.
+✔ Google Search Console configurado.
+✔ Dominio verificado mediante registro TXT.
+✔ robots.txt funcionando.
+✔ sitemap.xml funcionando.
+✔ Sitemap enviado correctamente.
+✔ Google ha descubierto 9 páginas.
 
-1. SpotFamilyResolver centralizado
-   - Archivo: app/SpotTraining/SpotFamilyResolver.php
-   - Namespace usado: App\SpotTraining
-   - Todos los módulos preflop deben consumir esta clase.
-   - Ya no se deben repetir métodos spotFamilyFromConcept() ni spotFamilyLabelFromConcept() dentro de cada módulo.
+El proyecto ya puede comenzar el trabajo serio de SEO.
 
-2. Familias preflop V1 simplificadas y unificadas
-   Familias activas:
-   - premium_or_strong_value
-   - suited_broadway
-   - broadway_offsuit
-   - ax_suited
-   - ax_offsuit
-   - medium_pair
-   - small_pair
-   - suited_connector
-   - offsuit_connector
-   - weak_suited_broadway
-   - weak_suited_connector
-   - blind_defense
-   - trash_offsuit
-   - uncategorized_preflop
+====================================================
+PRÓXIMOS PASOS
+====================================================
 
-   Decisión importante:
-   No usar por ahora familias demasiado finas como strong_broadway_suited, medium_broadway_suited o premium_broadway.
-   Para V1 es mejor consistencia y seguridad antes que exceso de precisión.
+1. SEO GENERAL
 
-3. Biblioteca oficial preflop actualizada
-   Todos los módulos preflop deben tener dentro del array del spot:
+- Añadir <title> único a todas las páginas.
+- Añadir meta description única.
+- Añadir canonical.
+- Añadir Open Graph.
+- Añadir Twitter Cards.
+- Añadir favicon completo.
+- Añadir datos estructurados (Schema.org).
 
-   'spot_family' => SpotFamilyResolver::fromConcept($concept),
-   'spot_family_label' => SpotFamilyResolver::labelFromConcept($concept),
+====================================================
+2. INDEXACIÓN GOOGLE
+====================================================
 
-   En archivos que usan fromData(array $spot), debe usarse:
+Revisar Search Console.
 
-   'spot_family' => SpotFamilyResolver::fromConcept($spot['concept']),
-   'spot_family_label' => SpotFamilyResolver::labelFromConcept($spot['concept']),
+Comprobar:
 
-   No usar $concept si no existe en esa función.
+- Páginas indexadas.
+- Páginas descubiertas.
+- Posibles errores.
+- Cobertura.
 
-4. Archivos preflop tocados/actualizados
-   - BtnVs3BetSpots.php
-   - ThreeBetVsOpenSpots.php
-   - BbVsBtnSpots.php
-   - SbVsBtnSpots.php
-   - BbVsSbSpots.php
-   - OpenRaiseSpots.php
+====================================================
+3. LOGIN GOOGLE
+====================================================
 
-5. Hand Lab empezó a guardar spot_family
-   Se añadió/planificó columna en hand_lab_spots:
-   - spot_family
-   - spot_family_label
+Implementar OAuth con Google.
 
-   En HandLabSpot.php deben estar en $fillable:
-   - spot_family
-   - spot_family_label
+Objetivo:
 
-6. HandLabController
-   Después de validar el request y antes de llamar al SimilarityService, debe calcular:
+"Continuar con Google"
 
-   if (strtolower($validated['street']) === 'preflop') {
-       $validated['spot_family'] = SpotFamilyResolver::fromCards($validated['hero_cards']);
-       $validated['spot_family_label'] = SpotFamilyResolver::labelFromFamily($validated['spot_family']);
-   } else {
-       $validated['spot_family'] = null;
-       $validated['spot_family_label'] = null;
-   }
+sin necesidad de crear contraseña.
 
-   Esto debe estar antes de:
-   $match = $this->similarity->findBestMatch($validated);
+====================================================
+4. STRIPE
+====================================================
 
-7. SimilarityService
-   Objetivo actual:
-   Para preflop, el match debe ser estricto.
+Preparar sistema Freemium.
 
-   Regla definitiva:
-   - street debe coincidir.
-   - pot_type debe coincidir.
-   - hero_position debe coincidir.
-   - villain_position debe coincidir.
-   - spot_family debe coincidir.
+FREE
 
-   Si street = preflop y falta spot_family en payload o candidato:
-   -> return 0
+- Preflop
+- Flop
+- Turn
+- River
+- Hand Lab
 
-   Si street = preflop y spot_family es distinta:
-   -> return 0
+PREMIUM
 
-   Esto evita errores como responder JTo offsuit con una explicación de KTs suited.
+- Mastery
+- Certificación
+- Futuras funciones
 
-PUNTO DONDE PARAMOS
+Integrar Stripe Checkout.
 
-Se corrigió SpotFamilyResolver para que esté alineado.
-Quedó pendiente confirmar definitivamente:
+====================================================
+5. BLOG
+====================================================
 
-1. Ejecutar migración de spot_family en hand_lab_spots si no se ha ejecutado.
-2. Verificar HandLabSpot.php con fillable correcto.
-3. Verificar HandLabController.php con cálculo de spot_family antes del match.
-4. Verificar HandLabSimilarityService.php con filtro duro de spot_family en preflop.
-5. Probar flujo completo.
+Diseñar estructura del blog.
 
-PRUEBAS PARA MAÑANA
+Objetivo:
 
-Prueba 1 - Preflop mismo spot family
-Crear en Hand Lab:
-- BTN vs BB 3Bet Pot
-- Hero: JTo o QJo
-- Debe buscar solo candidatos broadway_offsuit.
-- Si hay match broadway_offsuit aprobado, responde.
-- Si no hay match, debe ir a Pending Review.
+- SEO
+- Tráfico orgánico
+- Captación de usuarios
 
-Prueba 2 - Evitar match malo
-Crear:
-- BTN vs BB 3Bet Pot
-- Hero: JTo
+Categorías posibles:
 
-No debe responder con análisis de:
-- KTs
-- QTs
-- JTs
-porque esas son suited_broadway.
+Cash Game
 
-Prueba 3 - Community Library
-Aprobar un spot pending con spot_family.
-Luego crear otro similar con la misma familia.
-Debe encontrarlo en Community Library (Approved by ApexCash).
+Preflop
 
-Prueba 4 - Falta spot_family
-Si un candidato preflop no tiene spot_family, no debe poder responder por similitud.
-Debe ir a Pending Review.
+Flop
 
-CAMINO A SEGUIR
+Turn
 
-FASE INMEDIATA
-1. Revisar y cerrar HandLabSimilarityService.
-2. Revisar y cerrar HandLabController.
-3. Revisar Admin Review para que muestre spot_family y permita confirmarla/cambiarla al aprobar.
-4. Hacer pruebas reales en navegador.
-5. Hacer commit si todo funciona.
+River
 
-FASE SIGUIENTE
-Crear familias para postflop.
-No usar las familias preflop para flop/turn/river.
+Mental Game
 
-Para postflop se necesitará algo como:
-- made_hand_family
-- draw_family
-- board_texture
-- action_line
+Leaks
 
-Pero para V1 puede guardarse como un solo campo compuesto:
-spot_family
+Poker GTO
 
-Ejemplos postflop futuros:
-- top_pair_good_kicker_dry_cbet
-- flush_draw_wet_board_call
-- overpair_low_board_vs_raise
-- river_bluffcatcher_missed_draw
-- second_pair_turn_probe
+Microlímites
 
-REGLA IMPORTANTE
+====================================================
+6. DASHBOARD
+====================================================
 
-Para V1, ApexCash debe responder menos pero responder bien.
-Si no está seguro:
--> Pending Review
+Pensar nuevas mecánicas de retención.
 
-El usuario perdona esperar una revisión.
-No perdona una explicación mala.
+Ideas:
 
-COMMIT RECOMENDADO DE ESTA FASE
+- Objetivo diario.
+- Racha.
+- Próximo desbloqueo.
+- XP restante.
+- Entrenamiento recomendado.
+- Tu peor leak.
+- Actividad reciente.
 
-git add .
-git commit -m "Hand Lab V1: add spot family system and safer preflop matching"
-git push
+====================================================
+7. REVISIÓN GENERAL
+====================================================
 
+Probar absolutamente toda la aplicación antes del lanzamiento.
+
+Revisar:
+
+□ Registro
+□ Login
+□ Login Google
+□ Idiomas
+□ Dashboard
+□ Preflop
+□ Flop
+□ Turn
+□ River
+□ Hand Lab
+□ Certificación
+□ Responsive
+□ SEO
+□ SSL
+□ Sitemap
+□ Robots
+□ Search Console
+□ Stripe
+
+====================================================
+OBJETIVO
+
+Dejar ApexCash Trainer preparado para recibir usuarios reales y comenzar a posicionarse en Google.
+
+
+
+====================================================
+DASHBOARD - REVISIÓN PANELES
+====================================================
+
+Revisar el panel de "Peores spots".
+
+Cambios:
+
+□ Cambiar el título "Errores concretos" por un nombre más claro.
+
+Opciones:
+- Tus principales leaks
+- Leaks principales
+- Spots a corregir
+- Áreas de mejora
+
+Revisar cuál encaja mejor con el resto de la interfaz.
+
+Además:
+
+□ No mostrar spots con 0 errores.
+
+Si el usuario no tiene leaks registrados, mostrar un mensaje como:
+
+"🎉 No se han detectado leaks importantes. Sigue entrenando para mantener este nivel."
+
+El panel debe mostrar únicamente conceptos donde realmente existan errores para que la información sea útil y no genere confusión.

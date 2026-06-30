@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'meta_title' => 'ApexCash Trainer | Entrena poker cash game paso a paso',
+    'meta_title' => 'ApexCash Trainer | Entrena poker paso a paso',
     'meta_description' => 'Entrena poker cash game con spots diarios, Hand Lab, XP, leaks, progreso por calles y ruta Premium con Mastery y Certificación.',
 
     'brand_subtitle' => 'Training System',
@@ -13,6 +13,17 @@ return [
     'login' => 'Entrar',
     'register' => 'Registrarse',
     'nav_cta' => 'Empezar gratis',
+
+    'founder_memberes' => 'Founder Members Program 2026',
+    'forma_parte_nacimiento' => 'Forma parte del nacimiento de ApexCash Trainer',
+    'estamos_seleccionando' => 'Estamos seleccionando a los primeros jugadores que quieran ayudarnos a construir una nueva plataforma de entrenamiento de poker. El lanzamiento oficial será el',
+
+    'fecha_lanzamiento' => '1 de septiembre de 2026',
+    'solicitar_acceso' =>'Solicitar acceso Founder',
+    'crear_cuenta_gratuita' => 'Crear cuenta gratuita',
+    'conocer_programa' => 'Conocer el programa',
+    'acceso_anticipado' => 'Acceso anticipado',
+    'lanzamiento1' => 'Lanzamiento 1 septiembre',
 
     'hero_badge' => 'Poker Cash Training · NL2-NL10',
     'hero_title' => 'Entrena decisiones reales de poker, no teoría suelta.',

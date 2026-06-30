@@ -12,6 +12,8 @@ use App\Http\Controllers\PostflopTurnTrainingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpotTrainingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FounderApplicationController;
+use App\Http\Controllers\Admin\FounderApplicationAdminController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -38,6 +40,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     */
     Route::view('/premium', 'premium.upgrade')
         ->name('premium.upgrade');
+
+    /*
+    |--------------------------------------------------------------------------
+    | FOUNDER MEMBERS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/founder/apply', [FounderApplicationController::class, 'create'])
+        ->name('founder.apply');
+
+    Route::post('/founder/apply', [FounderApplicationController::class, 'store'])
+        ->name('founder.store');
 
     /*
     |--------------------------------------------------------------------------
@@ -170,6 +183,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | ADMIN FOUNDER MEMBERS
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('admin/founders')->name('admin.founders.')->group(function () {
+        Route::get('/', [FounderApplicationAdminController::class, 'index'])
+            ->name('index');
+
+        Route::get('/{application}', [FounderApplicationAdminController::class, 'show'])
+            ->name('show');
+
+        Route::patch('/{application}/approve', [FounderApplicationAdminController::class, 'approve'])
+            ->name('approve');
+
+        Route::patch('/{application}/reject', [FounderApplicationAdminController::class, 'reject'])
+            ->name('reject');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | CERTIFICATION - PREMIUM
     |--------------------------------------------------------------------------
     */
@@ -205,9 +237,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('profile.destroy');
 });
 
+Route::view('/founder-members', 'founder-members')->name('founder-members');
 Route::view('/cookies', 'legal.cookies')->name('cookies');
 Route::view('/privacy', 'legal.privacy')->name('privacy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/contact', 'legal.contact') ->name('contact');
+
+require __DIR__.'/seo.php';
 
 require __DIR__.'/auth.php';

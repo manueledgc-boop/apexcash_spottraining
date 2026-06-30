@@ -29,36 +29,35 @@
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <div class="apex-field">
-            <x-input-label for="email" value="Correo electrónico" />
-            <x-text-input
-                id="email"
-                name="email"
-                type="email"
-                :value="old('email', $user->email)"
-                required
-                autocomplete="username"
-            />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            <div class="apex-field">
+        <x-input-label for="email" value="Correo electrónico" />
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div class="apex-verify-box">
-                    <p>
-                        Tu correo electrónico aún no está verificado.
+        <x-text-input
+            id="email"
+            type="email"
+            :value="$user->email"
+            disabled
+            class="bg-gray-100 cursor-not-allowed opacity-75"
+        />
 
-                        <button form="send-verification" class="apex-link-button" type="submit">
-                            Reenviar verificación
-                        </button>
-                    </p>
+        <input
+            type="hidden"
+            name="email"
+            value="{{ $user->email }}"
+        />
 
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="apex-saved" style="margin-top: 10px;">
-                            Se ha enviado un nuevo enlace de verificación.
-                        </p>
-                    @endif
-                </div>
-            @endif
-        </div>
+        @if ($user->google_id)
+            <p class="mt-2 text-sm text-green-600">
+                ✓ Esta cuenta está vinculada con Google.
+            </p>
+        @else
+            <p class="mt-2 text-sm text-gray-500">
+                El correo electrónico está asociado a tu cuenta y no puede modificarse.
+            </p>
+        @endif
+
+        <x-input-error class="mt-2" :messages="$errors->get('email')" />
+    </div>
 
         <div class="apex-profile-actions">
             <x-primary-button class="apex-btn apex-btn-primary">

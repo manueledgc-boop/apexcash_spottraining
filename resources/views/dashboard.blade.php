@@ -170,6 +170,48 @@
             </div>
         </section>
 
+        <section class="dashboard-grid">
+            <article class="dashboard-card active">
+                <span>🚀 Founder Members 2026</span>
+
+                @if(auth()->user()->plan === 'founder')
+                    <h2>Founder Member #{{ str_pad(auth()->user()->founder_number ?? 1, 4, '0', STR_PAD_LEFT) }}</h2>
+                    <p>
+                        Ya formas parte del programa Founder Members 2026.
+                        Tienes acceso anticipado a las funciones avanzadas de ApexCash Trainer.
+                    </p>
+                    <strong>🏅 Badge Founder desbloqueado</strong>
+
+                @elseif(isset($founderApplication) && $founderApplication)
+                    @if($founderApplication->status === 'pending')
+                        <h2>Solicitud enviada</h2>
+                        <p>
+                            Tu solicitud está en revisión. Te avisaremos cuando sea evaluada.
+                        </p>
+                        <strong>🟡 En revisión</strong>
+
+                    @elseif($founderApplication->status === 'rejected')
+                        <h2>Solicitud no aprobada</h2>
+                        <p>
+                            Tu solicitud fue revisada. Podrás seguir usando ApexCash con tu cuenta gratuita.
+                        </p>
+                        <strong>🔴 No aprobada</strong>
+                    @endif
+
+                @else
+                    <h2>Solicita acceso Founder</h2>
+                    <p>
+                        Estamos seleccionando a los primeros jugadores que quieran ayudarnos a construir
+                        ApexCash Trainer antes del lanzamiento oficial del 1 de septiembre de 2026.
+                    </p>
+
+                    <a href="{{ route('founder.apply') }}" class="apex-btn apex-btn-primary">
+                        🚀 Solicitar acceso
+                    </a>
+                @endif
+            </article>
+        </section>
+
         @if ($criticalLeak)
         @php
             $criticalErrors = max(0, (int) $criticalLeak->total - (int) $criticalLeak->correct);

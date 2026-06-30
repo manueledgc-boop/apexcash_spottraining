@@ -50,44 +50,58 @@
     </header>
 
     <main class="apex-hero">
-        <section class="apex-hero-copy">
-            <div class="apex-badge">
-                <?php echo e(__('landing.hero_badge')); ?>
+    <section class="apex-hero-copy">
+        <div class="apex-badge">
+            🚀 <?php echo e(__('landing.founder_memberes')); ?>
 
-            </div>
+        </div>
 
-            <h1><?php echo e(__('landing.hero_title')); ?></h1>
+        <h1>
+            <?php echo e(__('landing.forma_parte_nacimiento')); ?>
 
-            <p><?php echo e(__('landing.hero_text')); ?></p>
+        </h1>
 
-            <div class="apex-actions">
+        <p>
+            <?php echo e(__('landing.estamos_seleccionando')); ?>
+
+            <strong><?php echo e(__('landing.fecha_lanzamiento')); ?></strong>.
+        </p>
+
+        <div class="apex-actions">
+            <?php if(auth()->guard()->check()): ?>
+                <a href="<?php echo e(route('dashboard')); ?>" class="apex-btn apex-btn-primary">
+                    🚀 <?php echo e(__('landing.solicitar_acceso')); ?>
+
+                </a>
+            <?php else: ?>
                 <a href="<?php echo e(route('register')); ?>" class="apex-btn apex-btn-primary">
-                    <?php echo e(__('landing.hero_primary')); ?>
+                    <?php echo e(__('landing.crear_cuenta_gratuita')); ?>
 
                 </a>
+            <?php endif; ?>
 
-                <a href="#plans" class="apex-btn apex-btn-secondary">
-                    <?php echo e(__('landing.hero_secondary')); ?>
+            <a href="<?php echo e(route('founder-members')); ?>" class="apex-btn apex-btn-secondary">
+                <?php echo e(__('landing.conocer_programa')); ?>
 
-                </a>
-            </div>
+            </a>
+        </div>
 
-            <div class="apex-trust-row">
-                <span><?php echo e(__('landing.trust_1')); ?></span>
-                <span><?php echo e(__('landing.trust_2')); ?></span>
-                <span><?php echo e(__('landing.trust_3')); ?></span>
-            </div>
-        </section>
+        <div class="apex-trust-row">
+            <span>🏅 Founder Badge 2026</span>
+            <span>🎯 <?php echo e(__('landing.acceso_anticipado')); ?></span>
+            <span>📅 <?php echo e(__('landing.lanzamiento1')); ?></span>
+        </div>
+    </section>
 
-        <section class="apex-product-frame apex-hero-frame">
-            <div class="browser-bar">
-                <span></span><span></span><span></span>
-                <small>apexcashtrainer.com</small>
-            </div>
+    <section class="apex-product-frame apex-hero-frame">
+        <div class="browser-bar">
+            <span></span><span></span><span></span>
+            <small>apexcashtrainer.com</small>
+        </div>
 
-            <img src="<?php echo e(asset('images/welcome1.png')); ?>" alt="<?php echo e(__('landing.hero_image_alt')); ?>">
-        </section>
-    </main>
+        <img src="<?php echo e(asset('images/welcome1.png')); ?>" alt="ApexCash Trainer Founder Members">
+    </section>
+</main>
 
     <section id="product" class="apex-section">
         <div class="apex-section-head">

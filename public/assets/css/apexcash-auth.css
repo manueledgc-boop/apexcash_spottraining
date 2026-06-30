@@ -11,12 +11,12 @@ body {
         linear-gradient(135deg, #020604 0%, #06140d 44%, #020403 100%);
     color: #f7fff9;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden; /* Evita cualquier desborde horizontal residual en el body */
 }
 
 .auth-shell {
     min-height: 100vh;
     display: grid;
-    /* Evita que el panel derecho aplaste el contenido en pantallas intermedias */
     grid-template-columns: minmax(0, 1.15fr) minmax(440px, 0.85fr);
     gap: 0;
 }
@@ -26,7 +26,7 @@ body {
     padding: clamp(32px, 5vw, 72px);
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Mantiene Logo arriba, Texto al centro, Tarjetas abajo */
+    justify-content: space-between;
     align-items: flex-start;
     isolation: isolate;
 }
@@ -54,26 +54,23 @@ body {
     z-index: -2;
 }
 
-/* --- NUEVO LOGO: GRANDE EN PC, AJUSTABLE EN MÓVIL --- */
-/* --- TAMAÑO DEL LOGO AJUSTADO --- */
 .auth-logo-link {
     display: inline-flex;
     align-items: center;
     width: 100%;
-    max-width: 420px; /* <--- Sube este valor hasta que encuentres el tamaño ideal en PC */
+    max-width: 420px;
     text-decoration: none;
-    margin-bottom: clamp(24px, 4vw, 40px); /* Espaciado fluido abajo del logo */
+    margin-bottom: clamp(24px, 4vw, 40px);
 }
 
 .auth-logo {
     width: 100%;
     height: auto;
-    max-height: 160px; /* <--- Aumentamos la altura máxima permitida */
+    max-height: 160px;
     object-fit: contain;
     filter: drop-shadow(0 12px 30px rgba(255, 194, 65, .22));
 }
 
-/* --- CUERPO DEL TEXTO (CENTRAL) --- */
 .auth-brand-copy {
     width: 100%;
     max-width: 680px;
@@ -92,7 +89,7 @@ body {
 
 .auth-brand-copy h1 {
     margin: 0;
-    font-size: clamp(36px, 5.2vw, 68px); /* Escala armónica basada en tu imagen */
+    font-size: clamp(36px, 5.2vw, 68px);
     line-height: 1.05;
     letter-spacing: -.05em;
     font-weight: 900;
@@ -106,12 +103,10 @@ body {
     max-width: 580px;
 }
 
-/* --- TARJETAS DE PASOS (PREFLOP, FLOP, ETC) --- */
 .auth-stage-card {
     width: 100%;
     max-width: 760px;
     display: grid;
-    /* Se auto-ajustan simétricamente sin romperse */
     grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); 
     gap: 12px;
 }
@@ -150,7 +145,6 @@ body {
     margin-top: 4px;
 }
 
-/* --- PANEL DERECHO DEL FORMULARIO --- */
 .auth-form-panel {
     position: relative;
     min-height: 100vh;
@@ -366,14 +360,64 @@ body {
     font-size: 12px;
 }
 
+.auth-social {
+    margin-bottom: 1.4rem;
+}
+
+.auth-google-btn {
+    width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    background: #ffffff;
+    color: #111827;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.auth-google-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(59, 130, 246, 0.65);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+}
+
+.auth-google-btn svg {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.1rem 0 0;
+    color: rgba(100, 116, 139, 0.9);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: rgba(148, 163, 184, 0.35);
+}
+
 /* ==========================================================================
-   MEDIA QUERIES (Ajustes adaptables de precisión)
+   MEDIA QUERIES MODIFICADAS PARA SOLUCIONAR EL DESCUADRE EN MÓVILES
    ========================================================================== */
 
 @media (max-width: 1080px) {
     .auth-shell {
-        /* Previene que el formulario se aplaste antes de saltar a diseño vertical */
-        grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr); /* Reducido el mínimo rígido */
     }
     .auth-logo-link {
         max-width: 300px;
@@ -382,27 +426,19 @@ body {
 
 @media (max-width: 960px) {
     .auth-shell {
-        grid-template-columns: 1fr; /* Colapsa a una sola columna (Formulario abajo o arriba) */
+        grid-template-columns: 1fr; /* Pasa a diseño de una sola columna */
     }
 
+    /* Ocultamos el panel izquierdo para no saturar al usuario en móviles */
     .auth-brand-panel {
-        min-height: auto;
-        padding-bottom: 40px;
-    }
-
-    .auth-brand-panel::before {
-        inset: 16px;
-    }
-
-    .auth-brand-copy {
-        margin: 48px 0 36px;
+        display: none; 
     }
 
     .auth-form-panel {
-        min-height: auto;
+        min-height: 100vh; /* Forzamos a que el formulario ocupe toda la pantalla */
         border-left: 0;
-        border-top: 1px solid rgba(255, 255, 255, .08);
-        padding-top: 40px;
+        border-top: 0;
+        padding: 40px 24px;
     }
 }
 
@@ -410,29 +446,34 @@ body {
     .auth-brand-panel,
     .auth-form-panel {
         padding: 24px 16px;
+        width: 100%; /* Asegura que los paneles no midan más que el viewport */
     }
 
     .auth-brand-panel::before {
-        display: none; /* Elimina bordes extra innecesarios en celulares */
+        display: none;
     }
 
     .auth-logo-link {
-        max-width: 220px; /* Tamaño perfecto y legible para móviles */
+        max-width: 200px;
     }
 
     .auth-stage-card {
-        /* Permite pasar a un formato de 2x2 muy limpio en móviles medianos */
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        /* Bajamos el minmax a 110px para que entren en parejas de 2 sin desbordar pantallas pequeñas */
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
         gap: 8px;
+        width: 100%;
     }
 
     .auth-benefits {
         grid-template-columns: 1fr;
+        width: 100%;
     }
 
     .auth-card {
         border-radius: 24px;
-        padding: 28px 20px;
+        padding: 24px 16px; /* Ajuste suave interno del formulario */
+        width: 100%;
+        max-width: 100%; /* Evita romper el contenedor padre */
     }
 
     .auth-options-row {
@@ -443,8 +484,11 @@ body {
 }
 
 @media (max-width: 360px) {
-    /* Pantallas ultra pequeñas */
     .auth-stage-card {
-        grid-template-columns: 1fr; /* Apilado completo de fases */
+        grid-template-columns: 1fr; /* Apilado en vertical completo en teléfonos muy angostos */
+    }
+    
+    .auth-form-header h2 {
+        font-size: 22px; /* Evita saltos de línea bruscos en el título */
     }
 }

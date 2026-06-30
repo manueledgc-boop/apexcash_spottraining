@@ -5,7 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'ApexCash') }}</title>
+        @include('partials.seo', [
+            'title' => $title ?? null,
+            'description' => $description ?? null,
+            'image' => $image ?? null,
+        ])
 
         <link rel="icon" href="{{ asset('favicon/apexcash.ico') }}">
 

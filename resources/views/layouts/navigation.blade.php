@@ -23,6 +23,10 @@
                     <x-nav-link :href="route('admin.hand-lab.index')" :active="request()->routeIs('admin.hand-lab.*')">
                         {{ __('hand_lab.admin_nav_label') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('admin.founders.index')" :active="request()->routeIs('admin.founders.*')">
+                        Founder Members
+                    </x-nav-link>
                 @endif
 
             </div>

@@ -15,6 +15,16 @@ return [
     'register' => 'Register',
     'nav_cta' => 'Start Free',
 
+    'founder_memberes' => 'Founder Members Program 2026',
+    'forma_parte_nacimiento' => 'It is part of the birth of Apex Cash Trainer',
+    'estamos_seleccionando' => 'We are selecting the first players who want to help us build a new poker training platform. The official launch will be on',
+    'fecha_lanzamiento' => 'September 1, 2026',
+    'solicitar_acceso' =>'Request Founder Access',
+    'crear_cuenta_gratuita' => 'Create a free Acount',
+    'conocer_programa' => 'Learn about the program',
+    'acceso_anticipado' => 'Early access',
+    'lanzamiento1' => 'Launch September 1st',
+
     /*
     |--------------------------------------------------------------------------
     | HERO

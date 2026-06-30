@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Notifications\VerifyEmailApexCash;
 use App\Notifications\ResetPasswordApexCash;
 
-#[Fillable(['name', 'email', 'password', 'plan', 'premium_until', 'is_admin'])]
+#[Fillable(['name', 'email', 'password', 'plan', 'premium_until', 'is_admin', 'google_id', 'avatar', 'email_verified_at',])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -67,11 +67,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isPremium(): bool
     {
+        if ($this->plan === 'founder') {
+            return true;
+        }
+
         return $this->plan === 'premium'
             && (
                 $this->premium_until === null
                 || $this->premium_until->isFuture()
             );
+    }
+
+    public function isFounder(): bool
+    {
+        return $this->plan === 'founder';
     }
 
     public function isAdminPlan(): bool
@@ -81,6 +90,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasPremiumAccess(): bool
     {
-        return $this->isAdminPlan() || $this->isPremium();
+        return
+            $this->isAdminPlan()
+            || $this->isFounder()
+            || $this->isPremium();
     }
 }
